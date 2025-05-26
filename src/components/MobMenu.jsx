@@ -3,41 +3,6 @@ import { motion } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Link } from 'react-router-dom';
 
-const navBarItem = (name, hasSubMenu, isClicked, i, setClicked, subMenuDrawer, subMenu) => (
-  <li key={name} className="">
-                
-                <span
-                  className="flex-center-between p-4 hover:bg-white/5 rounded-md cursor-pointer relative"
-                  onClick={() => setClicked(isClicked ? null : i)}
-                >
-                  {name}
-                  {hasSubMenu && (
-                    <ChevronDown
-                      className={`ml-auto ${isClicked && "rotate-180"} `}
-                    />
-                  )}
-                </span>
-                {hasSubMenu && (
-                  <motion.ul
-                    initial="exit"
-                    animate={isClicked ? "enter" : "exit"}
-                    variants={subMenuDrawer}
-                    className="ml-5"
-                  >
-                    {subMenu.map(({ name, icon: Icon }) => (
-                      <li
-                        key={name}
-                        className="p-2 flex-center hover:bg-white/5 rounded-md gap-x-2 cursor-pointer"
-                      >
-                        <Icon size={17} />
-                        {name}
-                      </li>
-                    ))}
-                  </motion.ul>
-                )}
-              </li>
-);
-
 export default function MobMenu({ Menus }) {
   const [isOpen, setIsOpen] = useState(false);
   const [clicked, setClicked] = useState(null);
@@ -72,16 +37,49 @@ export default function MobMenu({ Menus }) {
           {Menus.map(({ name, path, subMenu }, i) => {
             const isClicked = clicked === i;
             const hasSubMenu = subMenu?.length;
-            return (
-              <>
-              {!hasSubMenu ? (
-                <Link to={path}>
-                  {navBarItem(name, hasSubMenu, isClicked, i, setClicked, subMenuDrawer, subMenu)}
-                </Link>
-              ) : 
-              navBarItem(name, hasSubMenu, isClicked, i, setClicked, subMenuDrawer, subMenu)
+
+            if (!hasSubMenu) {
+              return (
+                <li key={name}>
+                  <Link 
+                    to={path}
+                    onClick={toggleDrawer}
+                    className="flex-center-between p-4 hover:bg-white/5 rounded-md cursor-pointer relative"
+                  >
+                    {name}
+                  </Link>
+                </li>
+              );
             }
-            </>
+
+            return (
+              <li key={name}>
+                <span
+                  className="flex-center-between p-4 hover:bg-white/5 rounded-md cursor-pointer relative"
+                  onClick={() => setClicked(isClicked ? null : i)}
+                >
+                  {name}
+                  <ChevronDown className={`ml-auto ${isClicked && "rotate-180"}`} />
+                </span>
+                <motion.ul
+                  initial="exit"
+                  animate={isClicked ? "enter" : "exit"}
+                  variants={subMenuDrawer}
+                  className="ml-5"
+                >
+                  {subMenu.map(({ name: subName, subpath, icon: Icon }) => (
+                    <Link to={`${path}${subpath}`} key={`${path}${subpath}`}>
+                      <li
+                        className="p-2 flex-center hover:bg-white/5 rounded-md gap-x-2 cursor-pointer"
+                        onClick={toggleDrawer}
+                      >
+                        <Icon size={17} />
+                        {subName}
+                      </li>
+                    </Link>
+                  ))}
+                </motion.ul>
+              </li>
             );
           })}
         </ul>

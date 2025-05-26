@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import PageContainer from '../components/PageContainer';
+import SnapSectionContainer from '../components/SnapSectionContainer';
 
 const sections = [
   { id: 1, color: '#4B5563', title: 'Section 1' },
@@ -11,28 +12,15 @@ const sections = [
 
 const HomePage = () =>  {
   return (
-    <motion.div
-      className="page"
-      initial={{ opacity: 0, x: -100 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 100 }}
-      transition={{ duration: 0.5 }}
-    >
-      <div className="h-screen w-screen overflow-y-scroll snap-y snap-mandatory">
+    <PageContainer>
+      <div className="scroll-snap-container">
         {sections.map((section) => (
-          <motion.section
-            key={section.id}
-            className="h-screen w-full flex items-center justify-center snap-start"
-            style={{ backgroundColor: section.color }}
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <SnapSectionContainer section={section} key={section.id}>
             <h1 className="text-5xl font-bold text-white">{section.title}</h1>
-          </motion.section>
+          </SnapSectionContainer>
         ))}
       </div>
-    </motion.div>
+    </PageContainer>
   );
 }
 

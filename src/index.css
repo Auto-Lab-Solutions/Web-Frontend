@@ -21,4 +21,10 @@ body {
   .flex-center-between {
     @apply flex items-center justify-between;
   }
+  .scroll-snap-container {
+    @apply h-screen w-screen overflow-y-scroll snap-y snap-mandatory;
+  }
+  .scroll-snap-item {
+    @apply h-screen w-full flex items-center justify-center snap-start;
+  }
 }
