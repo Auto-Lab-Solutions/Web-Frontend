@@ -9,7 +9,7 @@ import ServicePage from "./pages/ServicePage";
 import PricingPage from "./pages/PricingPage";
 import DiscoverPage from "./pages/DiscoverPage";
 import AboutUsPage from "./pages/AboutUsPage";
-
+import ChatBox from "./components/ChatBox";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -67,10 +67,10 @@ export default function App() {
           </ul>
           <div className="flex-center gap-x-5">
             <button
-              aria-label="sign-in"
+              aria-label="inspection-progress"
               className="bg-white/5 z-[999] relative px-3 py-1.5 shadow rounded-xl flex-center"
             >
-              Sign In
+              Inspection Status
             </button>
             <div className="lg:hidden">
               <MobMenu Menus={Menus} />
@@ -79,6 +79,7 @@ export default function App() {
         </nav>
       </header>
       <AnimatedRoutes />
+      <ChatBox />
     </div>
   );
 }
