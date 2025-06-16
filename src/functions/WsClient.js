@@ -3,7 +3,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 const webSocketEndpoint = 'wss://ayk691kl90.execute-api.ap-southeast-2.amazonaws.com/production/';
 
 class WsClient {
-  constructor(userData, messages, setMessages, restClient) {
+  constructor(userData, messages, setMessages, restClient, setShowTyping) {
     this.ws = new ReconnectingWebSocket(webSocketEndpoint, [], {
       WebSocket: window.WebSocket,
       connectionTimeout: 1000,
@@ -23,7 +23,32 @@ class WsClient {
       if (eventData.type) {
         switch (eventData.type) {
           case 'notification':
-            console.log('📬 Notification received:', eventData);
+            if (eventData.subtype === "status" && eventData.status === 'MESSAGE_EDITED' && eventData.success === true) {
+              setMessages(prevMessages => {
+                const updatedMessages = prevMessages.map(msg => {
+                  if (msg.messageId === eventData.messageId) {
+                    return {
+                      ...msg,
+                      message: eventData.newMessage,
+                    };
+                  }
+                  return msg;
+                });
+                return updatedMessages;
+              });
+            } else if (eventData.subtype === "status" && eventData.status === 'MESSAGE_DELETED' && eventData.success === true) {
+              setMessages(prevMessages => prevMessages.filter(msg => msg.messageId !== eventData.messageId));
+            } else if (eventData.subtype === "status" && eventData.status === 'TYPING' && eventData.success === true) {
+              if (setShowTyping) {
+                setShowTyping(true);
+                setTimeout(() => {
+                  setShowTyping(false);
+                }, 3000);
+              }
+            }
+            else {
+              console.error('❗ Unknown notification subtype:', eventData);
+            }
             return;
           case 'message':
             if (eventData.subtype === 'send' && eventData.success === true) {
@@ -80,12 +105,12 @@ class WsClient {
 
 }
 
-const getWsClient = (setWsInitialized, currentWsClient, userData, messages, setMessages, restClient) => {
+const getWsClient = (setWsInitialized, currentWsClient, userData, messages, setMessages, restClient, setShowTyping) => {
   if (currentWsClient && currentWsClient instanceof WsClient) {
     currentWsClient.ws.close();
   }
   setWsInitialized(false);
-  const wsclient = new WsClient(userData, messages, setMessages, restClient);
+  const wsclient = new WsClient(userData, messages, setMessages, restClient, setShowTyping);
   setWsInitialized(true);
   return wsclient;
 }

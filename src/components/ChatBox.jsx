@@ -27,7 +27,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { getWsClient } from '../functions/WsClient';
 import { RestClient } from '../functions/RestClient';
 import { UAParser } from 'ua-parser-js';
-import { ClipLoader, HashLoader } from 'react-spinners';
+import { ClipLoader, HashLoader, SyncLoader } from 'react-spinners';
 
 const LINE_CHAR_LIMIT = 32;
 
@@ -43,6 +43,7 @@ export default function ChatBox() {
   const [editting, setEditting] = useState(false);
   const [sending, setSending] = useState(false);
   const [msgsLoading, setMsgsLoading] = useState(true);
+  const [showTyping, setShowTyping] = useState(false);
   const messagesEndRef = useRef(null);
 
   // Set user info on mount
@@ -59,7 +60,8 @@ export default function ChatBox() {
       userData,
       messages,
       setMessages,
-      restClient.current
+      restClient.current,
+      setShowTyping
     );
     // eslint-disable-next-line
   }, [userData]);
@@ -122,7 +124,7 @@ export default function ChatBox() {
       });
     }
     // eslint-disable-next-line
-  }, [messages, wsInitialized, sending]);
+  }, [messages, wsInitialized, sending, showTyping]);
 
   // Send message when "sending" is true
   useEffect(() => {
@@ -307,6 +309,14 @@ export default function ChatBox() {
                       handleUserDataSubmit={handleUserDataSubmit}
                     />
                   ))}
+                  {showTyping && (
+                    <div className="grid grid-cols-5 items-center gap-4">
+                      <div className="col-span-4 flex justify-start ml-2 mb-2">
+                        <SyncLoader size={8} />
+                      </div>
+                      <div className="col-span-1" />
+                    </div>
+                  )}
                   <div key="ref" ref={messagesEndRef} />
                 </div>
               )}
@@ -383,13 +393,6 @@ function MessageRow({
   setFormData,
   handleUserDataSubmit
 }) {
-  if (msg.type === 'typing') {
-    return (
-      <div className="grid grid-cols-5 items-center gap-4">
-        <span className="col-span-4 h-8">Loading...</span>
-      </div>
-    );
-  }
   if (msg.type === 'sent') {
     return (
       <ContextMenu>
