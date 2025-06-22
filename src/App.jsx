@@ -9,7 +9,7 @@ import ServicePage from "./pages/ServicePage";
 import PricingPage from "./pages/PricingPage";
 import DiscoverPage from "./pages/DiscoverPage";
 import AboutUsPage from "./pages/AboutUsPage";
-import ChatBox from "./components/ChatBox";
+// import ChatBox from "./components/ChatBox";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -60,7 +60,7 @@ export default function App() {
             <h3 className="text-lg font-semibold">Framer</h3>
           </div>
 
-          <ul className="gap-x-1 lg:flex-center hidden">
+          <ul className="gap-x-1 hidden lg:flex lg:items-center">
             {Menus.map((menu) => (
               <DesktopMenu menu={menu} key={menu.name} />
             ))}
@@ -79,7 +79,7 @@ export default function App() {
         </nav>
       </header>
       <AnimatedRoutes />
-      <ChatBox />
+      {/* <ChatBox /> */}
     </div>
   );
 }
