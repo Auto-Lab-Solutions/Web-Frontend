@@ -7,8 +7,9 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import HomePage from "./pages/HomePage";
 import ServicePage from "./pages/ServicePage";
 import PricingPage from "./pages/PricingPage";
-import DiscoverPage from "./pages/DiscoverPage";
+import NewsFeedPage from "./pages/NewsFeedPage";
 import AboutUsPage from "./pages/AboutUsPage";
+import ContactUsPage from "./pages/ContactUsPage";
 // import ChatBox from "./components/ChatBox";
 
 function AnimatedRoutes() {
@@ -34,16 +35,17 @@ function AnimatedRoutes() {
             />
           ))
         }
+        <Route path={getMenuByName("NewsFeed").path} element={<NewsFeedPage />} />
+        <Route path={getMenuByName("About Us").path} element={<AboutUsPage />} />
         {
-          getMenuByName("Discover").subMenu.map(subMenu => (
+          getMenuByName("More").subMenu.map(subMenu => (
             <Route
               key={subMenu.name}
-              path={`${getMenuByName("Discover").path}${subMenu.subpath}`}
-              element={<DiscoverPage subMenu={subMenu.name} />}
+              path={`${getMenuByName("More").path}${subMenu.subpath}`}
+              element={subMenu.name === "Contact Us" ? <ContactUsPage /> : <div>{subMenu.name} Page</div>}
             />
           ))
         }
-        <Route path="/about" element={<AboutUsPage />} />
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
     </AnimatePresence>
