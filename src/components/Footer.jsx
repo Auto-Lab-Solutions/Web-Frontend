@@ -40,37 +40,25 @@ function Footer() {
 
       {/* Main Footer Content */}
       <div className="container mx-auto px-6 py-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
           {/* Company Info */}
           <div>
             <h6 className="uppercase font-bold mb-4 flex items-center gap-2">
-              <Gem size={16} /> Company name
+              <Gem size={16} /> Auto Lab Solutions
             </h6>
             <p>
-              Here you can use rows and columns to organize your footer content. Lorem ipsum dolor sit amet,
-              consectetur adipisicing elit.
+              Auto Lab Solutions is a leading provider of automotive inspection and repair solutions, dedicated to ensuring the highest standards of quality and safety in the automotive industry. Our team of experts utilizes state-of-the-art technology to deliver comprehensive inspection services tailored to meet the needs of our clients.
             </p>
-          </div>
-
-          {/* Products */}
-          <div>
-            <h6 className="uppercase font-bold mb-4">Products</h6>
-            <ul className="space-y-2">
-              <li><a href="#" className="hover:text-gray-800">Angular</a></li>
-              <li><a href="#" className="hover:text-gray-800">React</a></li>
-              <li><a href="#" className="hover:text-gray-800">Vue</a></li>
-              <li><a href="#" className="hover:text-gray-800">Laravel</a></li>
-            </ul>
           </div>
 
           {/* Useful Links */}
           <div>
             <h6 className="uppercase font-bold mb-4">Useful links</h6>
             <ul className="space-y-2">
-              <li><a href="#" className="hover:text-gray-800">Pricing</a></li>
-              <li><a href="#" className="hover:text-gray-800">Settings</a></li>
-              <li><a href="#" className="hover:text-gray-800">Orders</a></li>
-              <li><a href="#" className="hover:text-gray-800">Help</a></li>
+              <li><a href="#" className="hover:text-gray-800">About Us</a></li>
+              <li><a href="#" className="hover:text-gray-800">Contact Us</a></li>
+              <li><a href="#" className="hover:text-gray-800">Newsfeed</a></li>
+              <li><a href="#" className="hover:text-gray-800">Inspection Status</a></li>
             </ul>
           </div>
 
@@ -78,10 +66,9 @@ function Footer() {
           <div>
             <h6 className="uppercase font-bold mb-4">Contact</h6>
             <ul className="space-y-2">
-              <li className="flex items-center gap-2"><Home size={16} /> New York, NY 10012, US</li>
+              <li className="flex items-center gap-2"><Home size={16} /> 70b Division St, Welshpool WA 6106, Australia</li>
               <li className="flex items-center gap-2"><Mail size={16} /> info@example.com</li>
-              <li className="flex items-center gap-2"><Phone size={16} /> + 01 234 567 88</li>
-              <li className="flex items-center gap-2"><Printer size={16} /> + 01 234 567 89</li>
+              <li className="flex items-center gap-2"><Phone size={16} /> +61 451 237 048</li>
             </ul>
           </div>
         </div>
@@ -91,7 +78,7 @@ function Footer() {
       <div className="bg-neutral-700 text-center py-4">
         © {new Date().getFullYear()} Copyright: 
         <a className="text-neutral-200 font-semibold ml-1" href="https://yourcompany.com">
-          YourCompany.com
+          AutoLabSolutions.com
         </a>
       </div>
     </footer>

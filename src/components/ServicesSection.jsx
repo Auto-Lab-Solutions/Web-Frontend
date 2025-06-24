@@ -17,7 +17,7 @@ const HorizontalScrollCarousel = () => {
   const x = useTransform(scrollYProgress, [0, 1], ["0%", "-80%"]);
 
   return (
-    <section ref={targetRef} className="relative h-[300vh] bg-neutral-900">
+    <section ref={targetRef} className="relative h-[300vh]">
       <div className="sticky top-20">
         <SectionHeading text="Our Services" />
         <div className="flex items-center overflow-hidden">
@@ -47,7 +47,7 @@ const VerticalScrollList = () => {
 
 const ServiceCard = ({ service }) => {
   return (
-    <div className="group relative h-[350px] w-[300px] sm:w-[400px] md:w-[450px] overflow-hidden bg-neutral-200 rounded-xl shadow-lg">
+    <div className="group relative h-[350px] w-[300px] sm:w-[400px] md:w-[450px] overflow-hidden bg-neutral-200 rounded-xl shadow-lg hover:scale-[1.03]">
       {/* Background Image */}
       <div
         style={{

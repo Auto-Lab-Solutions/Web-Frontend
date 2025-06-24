@@ -24,44 +24,43 @@ const InspectionFeatures = () => {
 };
 
 const Schedule = () => {
-  const iconStyle = "text-500 size-8";
+  const iconStyle = "text-500 sm:size-8 mr-1";
   return (
     <section
       id="inspection-features"
-      className="mx-auto max-w-5xl sm:px-4 px-8 text-white py-4"
+      className="mx-auto max-w-5xl sm:px-4 pl-6 pr-5 text-white py-4"
     >
       <SectionHeading text="What’s Included in a Car Pre-Purchase Inspection" />
 
       <ScheduleItem text="Engine Condition: Inspect for leaks, corrosion, and assess the condition of belts and hoses">
-        <PiEngineFill className={iconStyle} />
+        <PiEngineFill className={`${iconStyle} size-28`} />
       </ScheduleItem>
 
       <ScheduleItem text="Battery Testing and Comprehensive Indicator Check">
-        <FaCarBattery className={iconStyle} />
+        <FaCarBattery className={`${iconStyle} size-15`} />
       </ScheduleItem>
 
       <ScheduleItem text="Brakes, Suspension, Driveline, Exhaust">
-        <SiSpeedtest className={iconStyle} />
+        <SiSpeedtest className={`${iconStyle} size-12`} />
       </ScheduleItem>
 
       <ScheduleItem text="Steering and Suspension, Wheel Vibrations and shudders,Pulling to One Side">
-        <GiSteeringWheel className={iconStyle} />
+        <GiSteeringWheel className={`${iconStyle} size-26`} />
       </ScheduleItem>
 
       <ScheduleItem text="Tyre Condition, Consistent, Reguler Wear Patterns Alighnment, Balancing Assessment">
-        <GiCarWheel className={iconStyle} />
+        <GiCarWheel className={`${iconStyle} size-28`} />
       </ScheduleItem>
 
       <ScheduleItem text="Full Car Scan Report and Live Data analize to find any Hidden Troubles">
-        <TbPresentationAnalyticsFilled className={iconStyle} />
+        <TbPresentationAnalyticsFilled className={`${iconStyle} size-26`} />
       </ScheduleItem>
 
       <ScheduleItem text="Accident, Stolen Ownership History Check and recall status">
-        <FaHistory className={iconStyle} />
+        <FaHistory className={`${iconStyle} size-17 ml-1 mr-2`} />
       </ScheduleItem>
 
       <ScheduleItem text="And many more...">
-        {/* <CgMoreO className={iconStyle} /> */}
       </ScheduleItem>
     </section>
   );
@@ -77,7 +76,7 @@ const ScheduleItem = ({ text, children  }) => {
     >
       <div className="flex items-center justify-center gap-4 flex-1">
         {children}
-        <p className="text-xl font-semibold ">{text}</p>
+        <p className="text-xl font-normal ">{text}</p>
       </div>
     </motion.div>
   );

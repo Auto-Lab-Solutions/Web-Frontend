@@ -85,6 +85,7 @@ const CenterBackground = () => {
   );
 };
 
+
 const ParallaxImages = () => {
   return (
     <div className="mx-auto max-w-5xl px-4 pt-[200px] flex lg:justify-between lg:flex-row flex-col lg:gap-4 gap-12">
@@ -95,13 +96,14 @@ const ParallaxImages = () => {
       >
         <GoogleRatingCard />
       </ParallaxRatingsDiv>
+
       <ParallaxRatingsDiv
         className="lg:w-1/3 w-full"
         start={-200}
         end={-500}
       >
-        <div className="max-w-xs mx-auto bg-white rounded-lg shadow-md border-4 border-green-500 p-4 text-center">
-          <div className="flex items-center justify-center mb-2 text-2xl font-bold text-green-600">
+        <div className="max-w-xs mx-auto bg-zinc-900 rounded-lg shadow-md border-4 border-green-500 p-4 text-center">
+          <div className="flex items-center justify-center mb-2 text-2xl font-bold text-green-400">
             Lowest Prices in Western Australia
           </div>
         </div>
