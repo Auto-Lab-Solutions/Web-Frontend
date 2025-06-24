@@ -13,26 +13,31 @@ function FAQSection() {
   return (
     <div className="w-full space-y-6">
       <SectionHeading text="Frequently Asked Questions" />
-      <Accordion type="single" collapsible className="space-y-4 my-8 mx-5 sm:mx-auto max-w-3xl">
+      <Accordion
+        type="single"
+        collapsible
+        className="space-y-4 my-8 mx-5 sm:mx-auto max-w-3xl"
+      >
         {faqs.map((faq) => (
           <AccordionItem
             key={faq.id}
             value={`item-${faq.id}`}
-            className="rounded-xl transition-all bg-zinc-900 border border-zinc-700 hover:border-primary shadow-sm"
+            className="rounded-xl transition-all bg-zinc-900 border border-zinc-700 shadow-sm"
             onMouseEnter={() => setHoveredItem(faq.id)}
             onMouseLeave={() => setHoveredItem(null)}
           >
-            <div className="p-5 text-lg font-medium text-zinc-100 hover:text-primary transition-colors cursor-pointer">
+            <div className="p-5 text-lg font-medium text-zinc-100 transition-colors cursor-pointer">
               {faq.question}
             </div>
-            <AnimatePresence>
+
+            <AnimatePresence initial={false}>
               {hoveredItem === faq.id && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="px-5 pb-4 text-sm text-zinc-400"
+                  className="px-5 pb-4 text-sm text-zinc-400 overflow-hidden"
                 >
                   {faq.answer.map((answer, idx) => (
                     <p key={idx} className="mb-2 leading-relaxed">
