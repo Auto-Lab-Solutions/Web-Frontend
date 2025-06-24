@@ -5,6 +5,7 @@ import MobMenu from "./components/MobMenu";
 import { AnimatePresence } from 'framer-motion';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import HomePage from "./pages/HomePage";
+import InspectionsPage from "./pages/InspectionsPage";
 import PricingPage from "./pages/PricingPage";
 import NewsFeedPage from "./pages/NewsFeedPage";
 import AboutUsPage from "./pages/AboutUsPage";
@@ -18,6 +19,7 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <Routes key={location.pathname} location={location}>
         <Route path={getMenuByName("Home").path} element={<HomePage />} />
+        <Route path={getMenuByName("Inspections").path} element={<InspectionsPage />} />
         {
           services.map(service => (
             <Route

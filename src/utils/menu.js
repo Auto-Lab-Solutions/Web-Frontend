@@ -59,7 +59,7 @@ export const Menus = [
   },
   {
     name: "Inspections",
-    path: "/pricing/pre-purchase-inspection",
+    path: "/inspections",
   },
   {
     name: "Plans & Pricing",
