@@ -1,0 +1,137 @@
+
+
+export const reviewsSummary = {
+    rating: 5.0,
+    starsCount: 5,
+    reviewsCount: 35,
+}
+
+export const topReviews = [
+    {
+        id: 1,
+        name: "Kavindi Dabare",
+        review: "Today, we went to inspect a corolla 2015 . And he was really good at inspecting things. Like normally another person will inspect for 20-30mins. But he inspected the car for 1hr by looking all the interior parts like engine, belts, gasket, under the vehicle and everything that should be looked before buy a car. And at the end he gave us all the pros and cons by giving us the chance to decide. More likely he was friendly, not judging ( we can ask anything). That's the thing we need in a pre purchase inspection. And he gives a service that includes everything. !!!",
+        rating: 5,
+        avatarSrc: "https://lh3.googleusercontent.com/a-/ALV-UjVocyuYhCIxugSnWMbxSVwo42-0cyoUBzjqdgAHJZk-qfNYRZ8L=w144-h144-p-rp-mo-br100",
+    },
+    {
+        id: 2,
+        name: "Stephanie C",
+        review: "Jani was very professional and saved me from buying a very poorly maintained car! Would definitely recommend his services, money well spent!",
+        rating: 5,
+        avatarSrc: "https://lh3.googleusercontent.com/a/ACg8ocK5TLjQVd03YXs-BzPOFRb5OiX_N7OB-E0hso3kM1f7SxD0fw=w144-h144-p-rp-mo-br100",
+    },
+    {
+        id: 3,
+        name: "Pavithra De silva",
+        review: "He carried out a thorough inspection of the car and explained everything clearly. The report was detailed and gave me peace of mind in making my purchase. I’d highly recommend his service to anyone looking for an honest and professional assessment.",
+        rating: 5,
+        avatarSrc: "https://lh3.googleusercontent.com/a-/ALV-UjXjJAFnQIx5-B3y7W6QpGkMRIm1_5u4PbXIZ1lKeskDl9EZ2PAp=w144-h144-p-rp-mo-br100",
+    },
+    {
+        id: 4,
+        name: "Sacha Narangoda",
+        review: "Jani was extremely professional and gave me a detailed assessment and report prior to purchasing a car I was interested in. He was able to accommodate to meet at the seller's home which was a fair distance away, which I greatly appreciated. I'd highly recommend him for your pre purchase needs. Thanks.",
+        rating: 5,
+        avatarSrc: "https://lh3.googleusercontent.com/a-/ALV-UjWEKNLqmdlRroDlFNb_qn82YZwW9DAKoivvHfSFSBTwXsEhM6Kq=w144-h144-p-rp-mo-ba2-br100",
+    },
+    {
+        id: 5,
+        name: "kadyn pearce",
+        review: "Contacted Jani Friday night and he had the inspection done Saturday afternoon - incredibly responsive! The report was very detailed and thorough, covering everything I needed. His analysis helped me save additional money on the purchase. Highly recommend Perth Cars Pre-Purchase Inspection Service!",
+        rating: 5,
+        avatarSrc: "https://lh3.googleusercontent.com/a/ACg8ocKMnODCsWAIYyPPgf00W-8FUFmm8zuIrSbXTi8PXWpktE6mbw=w144-h144-p-rp-mo-br100",
+    },
+    {
+        id: 6,
+        name: "Amal C Sunny",
+        review: "I had a pre-purchase inspection done and was impressed with the service. Jani was thorough and explained everything clearly. Super professional and easy to deal with — highly recommend!",
+        rating: 5,
+        avatarSrc: "https://lh3.googleusercontent.com/a/ACg8ocISg8EYWYx8iSCVEYOrVXl8WtNuKQ80p7NUybax-pKXHcGlUPk=w144-h144-p-rp-mo-br100",
+    },
+    {
+        id: 7,
+        name: "Thien Tran",
+        review: "Jani provided an exceptional pre-purchase car inspection! His thoroughness and attention to detail gave me complete confidence in my decision. Professional, knowledgeable, and friendly, Jani’s report was clear and comprehensive, highlighting both strengths and potential issues. Highly recommend his services for anyone buying a used car!",
+        rating: 5,
+        avatarSrc: "https://lh3.googleusercontent.com/a-/ALV-UjXVRqJdDRfkAFb3JiWJSAa4FcCUqpk14TnQd2phmpfhB1fqtxE=w144-h144-p-rp-mo-br100",
+    },
+    {
+        id: 8,
+        name: "Emma T",
+        review: "I cannot recommend Jani enough for a prepurchase inspection. He was very professional, detailed and honest, even the seller was impressed. He even checked under the car and took it for a test drive. Look no further, Jani is your man!",
+        rating: 5,
+        avatarSrc: "https://lh3.googleusercontent.com/a/ACg8ocK5pz1FiON0nLd6N8OvWKNwj7mgs_APcWmtRBFEHzYk1w_O6w=w144-h144-p-rp-mo-ba3-br100",
+    },
+    {
+        id: 9,
+        name: "Sam Kitson",
+        review: "Jani was very easy and quick to communicate with . Provided a detailed inspection document with pictures too . Very impressed would recommend.",
+        rating: 5,
+        avatarSrc: "https://lh3.googleusercontent.com/a/ACg8ocKkDz9Uerh7ZDTNPLgIabwmyK7FNhJKPysr28rSwKTtV33Jig=w144-h144-p-rp-mo-br100",
+    },
+    {
+        id: 10,
+        name: "Brookelyn Worton",
+        review: "I can’t recommend this car inspector highly enough! He went above and beyond to assist me, providing exceptional service from start to finish. I’ll absolutely be using his services again in the future and will be consistently recommending him to anyone in need of a reliable and thorough inspection or even minor mechanical repairs he’s fantastic!!",
+        rating: 5,
+        avatarSrc: "https://lh3.googleusercontent.com/a-/ALV-UjUVJ4gwX0FblzKf5h3_cvrrTKHtsfvctIeHTESfXrDb8LnIKHsVlw=w144-h144-p-rp-mo-br100",
+    },
+    {
+        id: 11,
+        name: "Yaish Matheen",
+        review: "Excellent inspection, even wrote us a report and gave us a discount on a BMW dealership inspection. Janith is professional and kind.",
+        rating: 5,
+        avatarSrc: "https://lh3.googleusercontent.com/a/ACg8ocLLpVswabFOc9lJe8JRfH8RYmg6-Ge2L_TIF1laVWr3dxUBdA=w144-h144-p-rp-mo-br100",
+    },
+    {
+        id: 12,
+        name: "Irene",
+        review: "Very professional, on time to the inspection, and gave a very detailed report. Answered any follow up questions in had.",
+        rating: 5,
+        avatarSrc: "https://lh3.googleusercontent.com/a/ACg8ocKjrg09GLojwEcm91fA2zQYzFyOW5YgsZ2u5APwr0T-Cq1YRQ=w144-h144-p-rp-mo-br100",
+    },
+    {
+        id: 13,
+        name: "Kadee Jane (Lady Jane)",
+        review: "Amazing from start to finish. Super easy to organise and he was happy to meet me at the seller’s house for a pre-purchase inspection. Very affordable, yet thorough. I got sent a full report about an hour later - but I got the thumbs up at the appointment so I could go ahead with the sale. Very impressed and would definitely recommend to anyone wanting to buy a preowned car!",
+        rating: 5,
+        avatarSrc: "https://lh3.googleusercontent.com/a-/ALV-UjV2WlmnJsb2hN_AcLNYuwKpwoNykaWAIAN2xeGz40docFgcTb47nw=w144-h144-p-rp-mo-br100",
+    },
+    {
+        id: 14,
+        name: "Jeremy Hams",
+        review: "Quick turn around time and really reasonably priced. A high quality review / report which gave me confidence to proceed with the car purchase. Nice guy too.",
+        rating: 5,
+        avatarSrc: "https://lh3.googleusercontent.com/a/ACg8ocLbgqEe1gi3RQkavcn8Aj3iFKQV-f2jQaZKnALEi18fk5Z-Cw=w144-h144-p-rp-mo-br100",
+    },
+    {
+        id: 15,
+        name: "Emily Sullivan",
+        review: "Came out to inspect two cars opposite sides of Perth very last minute - went above and beyond on both inspections so we had peace of mind. Very happy with the service provided & we will be getting all mechanical work done through him from now on 😃 10/10 highly recommend 👍",
+        rating: 5,
+        avatarSrc: "https://lh3.googleusercontent.com/a/ACg8ocLaV0fAQJnEDrR9QfVT4SUyQOiiTr_GxTHRscMJEL6id7HCNQ=w144-h144-p-rp-mo-br100",
+    },
+    {
+        id: 16,
+        name: "Chamil Nawalage",
+        review: "Had a pre-purchase inspection with him, and he did a great job covering every corner of the car. He provided us with all the pros and cons, making the decision very easy.",
+        rating: 5,
+        avatarSrc: "https://lh3.googleusercontent.com/a-/ALV-UjXJaQklEOPcDqnudJQPfN_tD4LBbhAZGJtUKjujeTlAssG68tI6=w144-h144-p-rp-mo-br100",
+    },
+    {
+        id: 17,
+        name: "smit shahu",
+        review: "I’ve used this service for three pre-purchase vehicle inspections, and I’m extremely impressed. The inspector was very thorough, checking every detail of the cars. Thanks to his expertise, I was able to make informed decisions—I got three cars inspected because had to get two cars. The rates are very reasonable, and the peace of mind it provides is absolutely worth it. Highly recommend to anyone looking to buy a used car! Also thanks for coming on short notice.",
+        rating: 5,
+        avatarSrc: "https://lh3.googleusercontent.com/a/ACg8ocJ3iKy1nxnxgc1ckdSONufWmp-d0DjJuaPPsMw2jK83Xtgz9g=w144-h144-p-rp-mo-br100",
+    },
+    {
+        id: 18,
+        name: "rukshan pathirana",
+        review: "Had a great inspection car isnpection service with Janith on 02.02.2025. He not only conducted a thorough inspection but also repaired some parts of my car. He was professional, detailed and explained everything clearly. Efficient and reliable service. Highly recommend Janith for expert car inspections and repairs .",
+        rating: 5,
+        avatarSrc: "https://lh3.googleusercontent.com/a/ACg8ocLD58R7SoAZunuOnJgpAocs4Zs6I_JAzcC9kEWSN5eMmVuOTA=w144-h144-p-rp-mo-br100",
+    },
+    
+]

@@ -5,7 +5,6 @@ import MobMenu from "./components/MobMenu";
 import { AnimatePresence } from 'framer-motion';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import HomePage from "./pages/HomePage";
-import ServicePage from "./pages/ServicePage";
 import PricingPage from "./pages/PricingPage";
 import NewsFeedPage from "./pages/NewsFeedPage";
 import AboutUsPage from "./pages/AboutUsPage";
@@ -19,13 +18,6 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <Routes key={location.pathname} location={location}>
         <Route path={getMenuByName("Home").path} element={<HomePage />} />
-        {services.map(service => (
-            <Route
-              key={service.name}
-              path={`${getMenuByName("Services").path}${service.subpath}`}
-              element={<ServicePage subMenu={service.name} />}
-            />
-        ))}
         {
           services.map(service => (
             <Route
@@ -55,11 +47,12 @@ function AnimatedRoutes() {
 export default function App() {
   return (
     <div>
+      <AnimatedRoutes />
       <header className="h-16 text-[15px] fixed inset-0 flex-center bg-white-50">
         <nav className=" px-3.5 flex-center-between w-full max-w-7xl mx-auto">
           <div className="flex-center gap-x-3 z-[999] relative">
             <img src={Logo} alt="" className="size-8" />
-            <h3 className="text-lg font-semibold">Framer</h3>
+            <h3 className="text-lg font-semibold">Auto Lab</h3>
           </div>
 
           <ul className="gap-x-1 hidden lg:flex lg:items-center">
@@ -80,7 +73,6 @@ export default function App() {
           </div>
         </nav>
       </header>
-      <AnimatedRoutes />
       {/* <ChatBox /> */}
     </div>
   );
