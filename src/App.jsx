@@ -11,6 +11,10 @@ import PricingPage from "./pages/PricingPage";
 import NewsFeedPage from "./pages/NewsFeedPage";
 import AboutUsPage from "./pages/AboutUsPage";
 import ContactUsPage from "./pages/ContactUsPage";
+import SlotsSelectionPage from "./pages/SlotsSelectionPage";
+import BookingFormPage from "./pages/BookingFormPage";
+import BookingConfirmationPage from "./pages/BookingConfirmationPage";
+import { FormDataProvider } from "./components/FormDataContext";
 // import ChatBox from "./components/ChatBox";
 
 function AnimatedRoutes() {
@@ -26,7 +30,7 @@ function AnimatedRoutes() {
             <Route
               key={service.name}
               path={`${getMenuByName("Plans & Pricing").path}${service.subpath}`}
-              element={<PricingPage subMenu={service.name} />}
+              element={<PricingPage serviceId={service.id} />}
             />
           ))
         }
@@ -41,6 +45,10 @@ function AnimatedRoutes() {
             />
           ))
         }
+        <Route path="booking-form" element={<BookingFormPage />} />
+        <Route path="slot-selection" element={<SlotsSelectionPage />} />
+        <Route path="booking-confirmation" element={<BookingConfirmationPage />} />
+        {/* Catch-all route for 404 */}
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
     </AnimatePresence>
@@ -50,34 +58,36 @@ function AnimatedRoutes() {
 export default function App() {
   return (
     <div>
-      <AnimatedRoutes />
-      <header className="h-16 text-[15px] fixed inset-0 flex-center bg-white-50">
-        <nav className=" px-3.5 flex-center-between w-full max-w-7xl mx-auto">
-          <div className="flex-center gap-x-3 z-[999] relative">
-            <img src={Logo} alt="" className="size-8" />
-            <h3 className="text-lg font-semibold">Auto Lab</h3>
-          </div>
-
-          <ul className="gap-x-1 hidden lg:flex lg:items-center">
-            {Menus.map((menu) => (
-              <DesktopMenu menu={menu} key={menu.name} />
-            ))}
-          </ul>
-          <div className="flex-center gap-x-5">
-            <button
-              aria-label="inspection-progress"
-              className="bg-white/5 z-[999] relative px-3 py-1.5 shadow rounded-xl flex-center"
-            >
-              Inspection Status
-            </button>
-            <div className="lg:hidden">
-              <MobMenu Menus={Menus} />
+      <FormDataProvider>
+        <AnimatedRoutes />
+        <header className="h-16 text-[15px] fixed inset-0 flex-center bg-white-50">
+          <nav className=" px-3.5 flex-center-between w-full max-w-7xl mx-auto">
+            <div className="flex-center gap-x-3 z-[999] relative">
+              <img src={Logo} alt="" className="size-8" />
+              <h3 className="text-lg font-semibold">Auto Lab</h3>
             </div>
-          </div>
-        </nav>
-      </header>
-      {/* <ChatBox /> */}
-      <Footer />
+
+            <ul className="gap-x-1 hidden lg:flex lg:items-center">
+              {Menus.map((menu) => (
+                <DesktopMenu menu={menu} key={menu.name} />
+              ))}
+            </ul>
+            <div className="flex-center gap-x-5">
+              <button
+                aria-label="inspection-progress"
+                className="bg-white/5 z-[999] relative px-3 py-1.5 shadow rounded-xl flex-center"
+              >
+                Check Status
+              </button>
+              <div className="lg:hidden">
+                <MobMenu Menus={Menus} />
+              </div>
+            </div>
+          </nav>
+        </header>
+        {/* <ChatBox /> */}
+        <Footer />
+      </FormDataProvider>
     </div>
   );
 }
