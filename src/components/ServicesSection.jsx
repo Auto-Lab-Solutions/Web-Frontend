@@ -51,7 +51,7 @@ const ServiceCard = ({ service }) => {
       {/* Background Image */}
       <div
         style={{
-          backgroundImage: `url(${service.imgLocation + "/1.jpg"})`,
+          backgroundImage: `url(${service.imgLocation + "/1.webp"})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
