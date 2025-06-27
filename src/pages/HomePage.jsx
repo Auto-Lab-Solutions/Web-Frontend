@@ -4,8 +4,6 @@ import HeroSection from '../components/HeroSection';
 import InspectionFeatures from '../components/InspectionFeatures';
 import FAQSection from '../components/FAQSection';
 import ReviewsSection from '../components/ReviewsSection';
-import Footer from '../components/Footer';
-
 
 const HomePage = () =>  {
   return (
@@ -15,7 +13,6 @@ const HomePage = () =>  {
       <ReviewsSection />
       <InspectionFeatures />
       <FAQSection />
-      <Footer />
     </PageContainer>
   );
 }

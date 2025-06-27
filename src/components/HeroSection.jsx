@@ -14,18 +14,13 @@ import image1 from "/mobileSlideshow/1.webp";
 import image2 from "/mobileSlideshow/2.webp";
 import image3 from "/mobileSlideshow/3.webp";
 import image4 from "/mobileSlideshow/4.webp";
-import image5 from "/mobileSlideshow/5.webp";
-import image6 from "/mobileSlideshow/6.webp";
 
 import image11 from "/desktopSlideshow/1.webp";
 import image12 from "/desktopSlideshow/2.webp";
 import image13 from "/desktopSlideshow/3.webp";
-import image14 from "/desktopSlideshow/4.webp";
-import image15 from "/desktopSlideshow/5.webp";
-import image16 from "/desktopSlideshow/6.webp";
 
-const mobileSlideshowImages = [ image1, image2, image3, image4, image5, image6 ];
-const desktopSlideshowImages = [ image11, image12, image13, image14, image15, image16 ];
+const mobileSlideshowImages = [ image1, image2, image3, image4 ];
+const desktopSlideshowImages = [ image11, image12, image13 ];
 const SECTION_HEIGHT = 300;
 
 const HeroSection = () => {

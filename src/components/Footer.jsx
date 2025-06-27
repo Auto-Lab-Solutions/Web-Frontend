@@ -70,6 +70,15 @@ function Footer() {
               <li className="flex items-center gap-2"><Mail size={16} /> info@example.com</li>
               <li className="flex items-center gap-2"><Phone size={16} /> +61 451 237 048</li>
             </ul>
+            {/* align button to right bottom corner */}
+            <div className="flex justify-end">
+              <button 
+                className="mt-6 px-8 py-3 bg-white text-blue-800 font-semibold rounded-lg hover:bg-gray-100 transition"
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              >
+                Go on Top
+              </button>
+            </div>
           </div>
         </div>
       </div>
