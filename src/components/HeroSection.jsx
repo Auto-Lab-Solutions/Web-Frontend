@@ -6,7 +6,7 @@ import {
   useTransform,
 } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
-import videoBg from "../assets/video/main.mp4";
+import videoBg from "/main.mp4";
 import GoogleRatingCard from '../components/GoogleRatingCard';
 import HeroSlider from '../components/HeroSlider';
 
