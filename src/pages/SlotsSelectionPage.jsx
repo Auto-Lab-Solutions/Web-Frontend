@@ -82,8 +82,7 @@ function SlotsSelectionPage() {
 
   if (!formData.serviceId || !formData.planId) {
     navigate('/');
-  } else if (formData.isBuyer) {
-    if (!formData.buyerData.name 
+  }
 
   const isOverlapping = (newSlotObj) => {
     const newStart = new Date(`${newSlotObj.date}T${newSlotObj.start}`);
