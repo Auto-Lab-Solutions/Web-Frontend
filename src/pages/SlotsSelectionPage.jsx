@@ -7,7 +7,8 @@ import {
   closestCenter,
   useSensor,
   useSensors,
-  PointerSensor
+  PointerSensor,
+  TouchSensor
 } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -53,7 +54,20 @@ function SlotsSelectionPage() {
   const { formData, getFormData, updateFormData } = useFormData();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedSlots, setSelectedSlots] = useState([]);
-  const sensors = useSensors(useSensor(PointerSensor));
+  
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5, // Slight drag before activating
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 150,
+        tolerance: 5,
+      },
+    })
+  );
 
   useEffect(() => {
     const prevFormData = getFormData();
@@ -65,6 +79,11 @@ function SlotsSelectionPage() {
       end: slot.end,
     })) : []);
   }, []);
+
+  if (!formData.serviceId || !formData.planId) {
+    navigate('/');
+  } else if (formData.isBuyer) {
+    if (!formData.buyerData.name 
 
   const isOverlapping = (newSlotObj) => {
     const newStart = new Date(`${newSlotObj.date}T${newSlotObj.start}`);
