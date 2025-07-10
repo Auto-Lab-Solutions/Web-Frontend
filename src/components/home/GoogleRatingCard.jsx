@@ -1,10 +1,10 @@
 import { FaStar } from 'react-icons/fa';
-import { reviewsSummary } from '../utils/reviews';
+import { reviewsSummary } from '@/utils/reviews';
 import googleLogo from '/google-logo.svg';
 
 const GoogleRatingCard = () => {
   return (
-    <div className="max-w-xs mx-auto bg-zinc-900 rounded-lg shadow-md border-4 border-green-500 p-4 text-center">
+    <div className="w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto bg-zinc-900 rounded-lg shadow-md border-4 border-green-500 p-4 text-center">
       <div className="flex items-center justify-center mb-2">
         <img
           src={googleLogo}

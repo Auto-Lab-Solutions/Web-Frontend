@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import videoBg from '../assets/video/main.mp4';
-import imageBg from '../assets/main.jpg';
+import videoBg from '@/assets/video/main.mp4';
+import imageBg from '@/assets/main.jpg';
 
 export default function BackgroundVideo({ children }) {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);

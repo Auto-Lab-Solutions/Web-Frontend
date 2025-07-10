@@ -1,4 +1,4 @@
-import PageContainer from '../components/PageContainer';
+import PageContainer from '../components/common/PageContainer';
 import GoogleMap from '../components/GoogleMap';
 import { motion } from 'framer-motion';
 

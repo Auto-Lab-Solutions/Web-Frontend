@@ -2,8 +2,8 @@ import {
   Accordion,
   AccordionItem,
 } from "@/components/ui/accordion";
-import { faqs } from "../utils/faqs";
-import SectionHeading from "./SectionHeading";
+import { faqs } from "@/utils/itemContent";
+import SectionHeading from "@/components/home/SectionHeading";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
@@ -11,8 +11,8 @@ function FAQSection() {
   const [hoveredItem, setHoveredItem] = useState(null);
 
   return (
-    <div className="w-full space-y-6">
-      <SectionHeading text="Frequently Asked Questions" />
+    <div className="w-full space-y-6 bg-background-tertiary">
+      <SectionHeading text="Frequently Asked Questions" dark={false} />
       <Accordion
         type="single"
         collapsible

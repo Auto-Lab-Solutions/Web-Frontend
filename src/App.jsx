@@ -1,8 +1,8 @@
 import { Menus, getMenuByName, services } from "./utils/menu";
 import Logo from "./assets/logo.webp";
-import DesktopMenu from "./components/DesktopMenu";
-import MobMenu from "./components/MobMenu";
-import Footer from './components/Footer';
+import DesktopMenu from "./components/common/DesktopMenu";
+import MobMenu from "./components/common/MobMenu";
+import Footer from './components/common/Footer';
 import { AnimatePresence } from 'framer-motion';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import HomePage from "./pages/HomePage";

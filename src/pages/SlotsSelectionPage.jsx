@@ -62,11 +62,10 @@ function SlotsSelectionPage() {
       },
     }),
     useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 150,
-        tolerance: 5,
-      },
-    })
+  activationConstraint: {
+    distance: 5, // Instead of delay, use distance
+  },
+}),
   );
 
   useEffect(() => {
@@ -277,7 +276,7 @@ function SortableSlot({ slot, onRemove }) {
       {/* Bigger drag handle */}
       <div
         {...listeners}
-        className="cursor-grab w-10 h-10 flex items-center justify-center mr-4 rounded hover:bg-gray-100"
+        className="cursor-grab w-10 h-10 flex items-center justify-center mr-4 rounded hover:bg-gray-100 touch-none"
         title="Drag to reorder"
       >
         {/* Drag icon */}

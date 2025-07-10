@@ -37,3 +37,26 @@ export const faqs = [
         ]
     }
 ];
+
+export const reasons = [
+  {
+    title: "Expert Technicians",
+    description: "Our skilled professionals deliver top-notch service every time.",
+  },
+  {
+    title: "Trusted by Thousands",
+    description: "We’re trusted by a growing community of loyal customers.",
+  },
+  {
+    title: "Eco-Friendly Practices",
+    description: "We care for the planet using sustainable materials and processes.",
+  },
+  {
+    title: "24/7 Support",
+    description: "Reach out anytime — we’re always ready to help.",
+  },
+  {
+    title: "Affordable Pricing",
+    description: "Transparent and competitive pricing with no hidden costs.",
+  },
+];

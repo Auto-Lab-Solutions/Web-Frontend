@@ -1,12 +1,14 @@
+import { useState } from "react";
 import { Star } from "lucide-react";
 import googleLogo from '/google-logo.svg';
 
 const GoogleReviewCard = ({ reviewData }) => {
   const { name, review, rating, avatarSrc = [] } = reviewData;
+  const [expanded, setExpanded] = useState(false);
 
   return (
     <div 
-      className="max-w-sm rounded-xl border border-zinc-700 shadow-md p-6 bg-zinc-900 text-zinc-200 space-y-3 sm:mx-0 mx-8 sm:h-[23rem] h-[28rem] transition-transform duration-300 hover:scale-[1.03]"
+      className="max-w-sm rounded-xl border shadow-md p-5 space-y-3 sm:mx-0 mx-8 sm:h-auto transition-transform duration-300 hover:scale-[1.03] bg-card-primary text-text-primary border-border-primary"
     >
       {/* User Info */}
       <div className="flex items-center space-x-3">
@@ -40,11 +42,22 @@ const GoogleReviewCard = ({ reviewData }) => {
       </div>
 
       {/* Review Text */}
-      <p className="text-sm text-zinc-400 sm:line-clamp-12 line-clamp-16">
-        {review}
-      </p>
+      <div className="text-sm text-zinc-400 relative">
+        <p className={expanded ? "" : "sm:line-clamp-5 line-clamp-6"}>
+          {review}
+        </p>
+        {review.length > 100 && (
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="mt-1 text-blue-400 hover:underline text-xs font-medium"
+          >
+            {expanded ? "See less" : "See more"}
+          </button>
+        )}
+      </div>
     </div>
   );
 };
+
 
 export default GoogleReviewCard;

@@ -7,8 +7,8 @@ import {
 } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import videoBg from "/main.mp4";
-import GoogleRatingCard from '../components/GoogleRatingCard';
-import HeroSlider from '../components/HeroSlider';
+import GoogleRatingCard from '@/components/home/GoogleRatingCard';
+import HeroSlider from '@/components/home/HeroSlider';
 
 import image1 from "/mobileSlideshow/1.webp";
 import image2 from "/mobileSlideshow/2.webp";

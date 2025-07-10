@@ -2,9 +2,10 @@ import React, { useRef, useEffect, useState } from "react";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import { cn } from "@/lib/utils"; // ShadCN utility for class merging
-import GoogleReviewCard from "./GoogleReviewCard";
-import { topReviews } from "../utils/reviews";
-import SectionHeading from "./SectionHeading";
+import GoogleRatingCard from "@/components/home/GoogleRatingCard";
+import GoogleReviewCard from "@/components/home/GoogleReviewCard";
+import { topReviews } from "@/utils/reviews";
+import SectionHeading from "@/components/home/SectionHeading";
 
 function ReviewsSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -36,13 +37,15 @@ function ReviewsSection() {
   }, []);
 
   return (
-    <div className="relative w-full max-w-6xl mx-auto my-20 px-4">
+    <div className="relative w-full px-auto bg-background-primary">
       <SectionHeading text="What Our Customers Say" />
+
+      <GoogleRatingCard />
 
       {/* Slider */}
       <div
         ref={sliderRef}
-        className="keen-slider py-4"
+        className="keen-slider py-10 max-w-5xl mx-auto"
       >
         {topReviews.map((review, i) => (
           <div key={i} className="keen-slider__slide rounded-xl overflow-hidden">
@@ -52,7 +55,7 @@ function ReviewsSection() {
       </div>
 
       {/* Dots */}
-      <div className="absolute left-0 right-0 flex justify-center space-x-2 mt-4">
+      <div className="absolute left-0 right-0 flex justify-center space-x-2">
         {Array.from({ length: topReviews.length }).map((_, idx) => (
           <button
             key={idx}

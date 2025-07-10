@@ -1,4 +1,4 @@
-import PageContainer from "../components/PageContainer";
+import PageContainer from '../components/common/PageContainer';
 import { FacebookEmbed } from 'react-social-media-embed';
 
 const NewsFeedPage = () => {

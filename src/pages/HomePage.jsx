@@ -1,15 +1,19 @@
-import PageContainer from '../components/PageContainer';
-import ServicesSection from '../components/ServicesSection';
-import HeroSection from '../components/HeroSection';
-import InspectionFeatures from '../components/InspectionFeatures';
-import FAQSection from '../components/FAQSection';
-import ReviewsSection from '../components/ReviewsSection';
-import QuotaForm from '../components/QuotaForm';
+import PageContainer from '../components/common/PageContainer';
+import ServicesSection from '../components/home/ServicesSection';
+import HeroSection from '../components/home/HeroSection';
+import InspectionFeatures from '../components/home/InspectionFeatures';
+import FAQSection from '../components/home/FAQSection';
+import ReviewsSection from '../components/home/ReviewsSection';
+import QuotaForm from '../components/common/QuotaForm';
+import WhyChooseUsSection from '../components/home/WhyChooseUsSection';
+import WhoWeAreSection from '../components/home/WhoWeAreSection';
 
 const HomePage = () =>  {
   return (
     <PageContainer>
       <HeroSection />
+      <WhoWeAreSection />
+      <WhyChooseUsSection />
       <ServicesSection />
       <ReviewsSection />
       <InspectionFeatures />

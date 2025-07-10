@@ -76,7 +76,7 @@ function Footer() {
                 className="mt-6 px-8 py-3 bg-white text-blue-800 font-semibold rounded-lg hover:bg-gray-100 transition"
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               >
-                Go on Top
+                Scroll to top
               </button>
             </div>
           </div>

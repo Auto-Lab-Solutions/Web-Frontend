@@ -1,4 +1,4 @@
-import PageContainer from "../components/PageContainer";
+import PageContainer from '../components/common/PageContainer';
 import { motion } from 'framer-motion';
 
 const steps = [
