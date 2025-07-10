@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 
 const QuotaForm = () => {
   const [form, setForm] = useState({
@@ -19,80 +20,73 @@ const QuotaForm = () => {
   };
 
   return (
-    <section className="bg-black text-white py-20 px-6">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-12 justify-center items-start">
-        {/* Left Text */}
-        <div className="md:w-1/3 flex justify-center md:justify-end">
-          <p className="text-2xl font-medium leading-relaxed text-center md:text-right">
-            For quotes or any <br /> inquiry, contact us
+    <section className="bg-zinc-950 text-white py-20 px-6">
+      <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-12 items-start">
+        {/* Left Side Text */}
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="md:col-span-1 text-center md:text-right"
+        >
+          <h2 className="text-3xl font-bold mb-4">Get in Touch</h2>
+          <p className="text-zinc-400">
+            Have questions or need a quote? <br /> Fill out the form and we’ll get back to you shortly.
           </p>
-        </div>
+        </motion.div>
 
         {/* Form */}
-        <form
+        <motion.form
           onSubmit={handleSubmit}
-          className="md:w-2/3 w-full grid grid-cols-1 lg:grid-cols-3 gap-6"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="md:col-span-2 grid grid-cols-1 lg:grid-cols-3 gap-6"
         >
           {/* Input Fields */}
           <div className="col-span-1 space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">First Name *</label>
-              <input
-                type="text"
-                name="firstName"
-                value={form.firstName}
-                onChange={handleChange}
-                required
-                className="w-full bg-transparent border border-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Last Name *</label>
-              <input
-                type="text"
-                name="lastName"
-                value={form.lastName}
-                onChange={handleChange}
-                required
-                className="w-full bg-transparent border border-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Email *</label>
-              <input
-                type="email"
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                required
-                className="w-full bg-transparent border border-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-              />
-            </div>
+            {[
+              { name: 'firstName', label: 'First Name *', type: 'text' },
+              { name: 'lastName', label: 'Last Name *', type: 'text' },
+              { name: 'email', label: 'Email *', type: 'email' },
+            ].map((field) => (
+              <div key={field.name}>
+                <label className="block text-sm font-medium mb-1">{field.label}</label>
+                <input
+                  type={field.type}
+                  name={field.name}
+                  value={form[field.name]}
+                  onChange={handleChange}
+                  required
+                  className="w-full bg-zinc-800 border border-zinc-700 text-sm text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition"
+                />
+              </div>
+            ))}
           </div>
 
-          {/* Message and Send */}
-          <div className="col-span-2 flex flex-col justify-between">
-            <div>
-              <label className="block text-sm font-medium mb-1">Message</label>
+          {/* Message + Button */}
+          <div className="col-span-1 lg:col-span-2 flex flex-col justify-between">
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">Message *</label>
               <textarea
                 name="message"
                 value={form.message}
                 onChange={handleChange}
                 rows={7}
                 required
-                className="w-full bg-transparent border border-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 text-sm text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition"
               />
             </div>
-            <div className="mt-6 flex justify-start lg:justify-end">
+            <div className="mt-2 flex justify-start lg:justify-end">
               <button
                 type="submit"
-                className="text-red-500 border-2 border-red-500 rounded-full px-8 py-2 font-semibold hover:bg-red-500 hover:text-white transition-all duration-200"
+                className="bg-red-500 text-white rounded-full px-8 py-2 font-medium hover:bg-red-600 transition-all duration-200"
               >
-                Send
+                Send Message
               </button>
             </div>
           </div>
-        </form>
+        </motion.form>
       </div>
     </section>
   );

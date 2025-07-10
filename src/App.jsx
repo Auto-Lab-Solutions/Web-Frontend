@@ -15,6 +15,7 @@ import SlotsSelectionPage from "./pages/SlotsSelectionPage";
 import BookingFormPage from "./pages/BookingFormPage";
 import BookingConfirmationPage from "./pages/BookingConfirmationPage";
 import { FormDataProvider } from "./components/FormDataContext";
+import { useEffect, useState } from "react";
 // import ChatBox from "./components/ChatBox";
 
 function AnimatedRoutes() {
@@ -56,11 +57,29 @@ function AnimatedRoutes() {
 }
 
 export default function App() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 10); // adjust sensitivity if needed
+    };
+
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  
   return (
     <div>
       <FormDataProvider>
         <AnimatedRoutes />
-        <header className="h-16 text-[15px] fixed inset-0 flex-center bg-white-50">
+        {/* <header className="h-16 text-[15px] fixed inset-0 flex-center bg-white-50"> */}
+        <header
+          className={`h-16 text-[15px] fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+            scrolled
+              ? "bg-zinc-900/95 backdrop-blur-md shadow-md text-white"
+              : "bg-transparent text-white"
+          }`}
+        >
           <nav className=" px-3.5 flex-center-between w-full max-w-7xl mx-auto">
             <div className="flex-center gap-x-3 z-[999] relative">
               <img src={Logo} alt="" className="size-8" />

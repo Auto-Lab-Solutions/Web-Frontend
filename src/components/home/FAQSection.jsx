@@ -11,22 +11,22 @@ function FAQSection() {
   const [hoveredItem, setHoveredItem] = useState(null);
 
   return (
-    <div className="w-full space-y-6 bg-background-tertiary">
-      <SectionHeading text="Frequently Asked Questions" dark={false} />
+    <div className="w-full space-y-6 pb-8 px-4 bg-background-primary">
+      <SectionHeading text="Frequently Asked Questions" />
       <Accordion
         type="single"
         collapsible
-        className="space-y-4 my-8 mx-5 sm:mx-auto max-w-3xl"
+        className="space-y-4 my-8 mx-auto max-w-xl sm:max-w-6xl"
       >
         {faqs.map((faq) => (
           <AccordionItem
             key={faq.id}
             value={`item-${faq.id}`}
-            className="rounded-xl transition-all bg-zinc-900 border border-zinc-700 shadow-sm"
+            className="rounded-xl transition-all border shadow-sm bg-card-primary border-border-primary hover:border-border-secondary hover:shadow-lg"
             onMouseEnter={() => setHoveredItem(faq.id)}
             onMouseLeave={() => setHoveredItem(null)}
           >
-            <div className="p-5 text-lg font-medium text-zinc-100 transition-colors cursor-pointer">
+            <div className="p-5 text-lg font-medium transition-colors cursor-pointer text-text-primary">
               {faq.question}
             </div>
 

@@ -37,7 +37,7 @@ function ReviewsSection() {
   }, []);
 
   return (
-    <div className="relative w-full px-auto bg-background-primary">
+    <div className="relative w-full px-auto bg-background-primary pb-12">
       <SectionHeading text="What Our Customers Say" />
 
       <GoogleRatingCard />
