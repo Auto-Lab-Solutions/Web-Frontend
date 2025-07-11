@@ -4,14 +4,14 @@ import googleLogo from '/google-logo.svg';
 
 const GoogleRatingCard = () => {
   return (
-    <div className="w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto bg-zinc-900 rounded-lg shadow-md border-4 border-green-500 p-4 text-center">
+    <div className="w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto bg-zinc-900 rounded-lg shadow-md border-3 border-highlight-primary p-4 text-center">
       <div className="flex items-center justify-center mb-2">
         <img
           src={googleLogo}
           alt="Google logo"
           className="w-8 h-8 mr-2"
         />
-        <span className="text-lg font-semibold text-white">Google Rating</span>
+        <span className="card-heading">Google Rating</span>
       </div>
 
       <div className="flex items-center justify-center mb-1">
@@ -24,10 +24,12 @@ const GoogleRatingCard = () => {
           ))}
         </div>
       </div>
-
-      <p className="text-sm text-zinc-400 underline cursor-pointer hover:text-blue-400">
-        Read our {reviewsSummary.reviewsCount} reviews
-      </p>
+      
+      <div className="flex flex-col items-center">
+        <p className="card-description underline hover:text-blue-500 transition-colors">
+          Read our {reviewsSummary.reviewsCount} reviews
+        </p>
+      </div>
     </div>
   );
 };

@@ -3,7 +3,7 @@ import {
   AccordionItem,
 } from "@/components/ui/accordion";
 import { faqs } from "@/utils/itemContent";
-import SectionHeading from "@/components/home/SectionHeading";
+import SectionHeading from "@/components/common/SectionHeading";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 

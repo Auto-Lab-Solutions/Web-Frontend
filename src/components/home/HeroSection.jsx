@@ -32,7 +32,7 @@ const HeroSection = () => {
       >
         <CenterBackground />
         <ParallaxImages />
-        <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-b from-zinc-950/0 to-zinc-950" />
+        <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-b from-background-secondary/0 to-background-secondary" />
       </div>
     </ReactLenis>
   );
@@ -62,21 +62,10 @@ const CenterBackground = () => {
     <motion.div className="sticky top-0 h-screen w-full" style={{ opacity }}>
       <div className="relative w-full h-full overflow-hidden">
         {!isMobile && (
-          // <img
-          //   src={imageBg}
-          //   alt="Background"
-          //   className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-          //     isVideoLoaded ? "opacity-0" : "opacity-100"
-          //   }`}
           <HeroSlider images={desktopSlideshowImages}
           />
         )}
         {isMobile ? (
-          // <img
-          //   src={mainPortrait}
-          //   alt="Background"
-          //   className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
-          // />
           <HeroSlider images={mobileSlideshowImages} />
         ) : (
           <video
@@ -116,8 +105,8 @@ const ParallaxImages = () => {
         start={-200}
         end={-500}
       >
-        <div className="max-w-xs mx-auto bg-zinc-900 rounded-lg shadow-md border-4 border-green-500 p-4 text-center">
-          <div className="flex items-center justify-center mb-2 text-2xl font-bold text-green-400">
+        <div className="max-w-xs mx-auto bg-zinc-900 rounded-lg shadow-md border-3 border-highlight-primary p-4 text-center">
+          <div className="flex items-center justify-center mb-2 text-2xl font-bold text-highlight-primary">
             Lowest Prices in Western Australia
           </div>
         </div>

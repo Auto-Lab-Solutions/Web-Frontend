@@ -1,7 +1,7 @@
 import { motion, useTransform, useScroll } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { services } from "@/utils/menu";
-import SectionHeading from "@/components/home/SectionHeading";
+import SectionHeading from "@/components/common/SectionHeading";
 
 const ServicesSection = () => {
   return (

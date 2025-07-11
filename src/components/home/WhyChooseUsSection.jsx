@@ -5,56 +5,84 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
-import SectionHeading from "@/components/home/SectionHeading";
-import { reasons } from "@/utils/itemContent";
+import SectionHeading from "@/components/common/SectionHeading";
+import FadeInItem from "../common/FadeInItem";
+import Autoplay from "embla-carousel-autoplay"
 
+const iconStyles = "w-6 h-6 text-highlight-primary";
+const reasons = [
+  {
+    icon: <CheckCircle className={iconStyles} />,
+    title: "Expert Technicians",
+    description: "Our skilled professionals deliver top-notch service every time.",
+  },
+  {
+    icon: <CheckCircle className={iconStyles} />,
+    title: "Trusted by Thousands",
+    description: "We’re trusted by a growing community of loyal customers.",
+  },
+  {
+    icon: <CheckCircle className={iconStyles} />,
+    title: "Eco-Friendly Practices",
+    description: "We care for the planet using sustainable materials and processes.",
+  },
+  {
+    icon: <CheckCircle className={iconStyles} />,   
+    title: "24/7 Support",
+    description: "Reach out anytime — we’re always ready to help.",
+  },
+  {
+    icon: <CheckCircle className={iconStyles} />,
+    title: "Affordable Pricing",
+    description: "Transparent and competitive pricing with no hidden costs.",
+  },
+];
 
 const WhyChooseUsSection = () => {
   return (
     <section className="bg-background-primary py-16 px-4">
         <SectionHeading text="Why Choose Us?" />
-        <motion.p
-            initial={{ y: 48, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ ease: "easeInOut", duration: 0.75 }}
-            className="section-subheading"
-        >
+        <FadeInItem element="p" direction="x" className="section-subheading">
             We go the extra mile to ensure your satisfaction and peace of mind.
-        </motion.p>
-
+        </FadeInItem>
+        
         <Carousel
             opts={{
                 align: "center",
                 loop: true,
             }}
-            className="w-full max-w-5xl mx-auto px-4 mt-4 overflow-hidden xl:overflow-visible"
+            plugins={[
+                Autoplay({
+                    delay: 4000,
+                }),
+            ]}
+            className="w-[78%] sm:w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-5xl mx-auto mt-4"
         >
             <CarouselContent>
                 {reasons.map((reason, index) => (
                 <CarouselItem
                     key={index}
-                    className="md:basis-1/2 lg:basis-1/3 p-4"
+                    className="md:basis-1/2 lg:basis-1/3 p-4 ml-2 sm:ml-0"
                 >
-                    <motion.div
-                    whileHover={{ scale: 1.03 }}
-                    className="bg-card-primary rounded-xl p-6 h-full flex flex-col justify-between shadow-md border border-border-primary"
+                    <FadeInItem
+                        element="div"
+                        direction="y"
+                        className="bg-card-primary rounded-xl px-2 py-6 sm:p-6 flex flex-col gap-3 shadow-md border border-border-primary"
                     >
-                    <div className="flex items-center mb-3 text-green-400 justify-center md:justify-start">
-                        <CheckCircle className="mr-2 w-5 h-5" />
-                        <h3 className="card-heading">
-                        {reason.title}
-                        </h3>
+                    <div className="flex items-center text-highlight-primary justify-center md:justify-start gap-2">
+                        {reason.icon}
+                        <h3 className="card-heading">{reason.title}</h3>
                     </div>
                     <div className="flex justify-center md:justify-start">
-                    <p className="card-description">{reason.description}</p>
+                        <p className="card-description">{reason.description}</p>
                     </div>
-                    </motion.div>
+                    </FadeInItem>
                 </CarouselItem>
                 ))}
+                
             </CarouselContent>
-            <div className="flex justify-center mt-6 gap-4 max-w-full">
+            <div className="flex justify-between">
                 <CarouselPrevious className="text-white border-border-primary" />
                 <CarouselNext className="text-white border-border-primary" />
             </div>

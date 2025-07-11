@@ -7,41 +7,41 @@ import { PiEngineFill } from "react-icons/pi";
 import { TbPresentationAnalyticsFilled } from "react-icons/tb";
 import { GiCarWheel, GiSteeringWheel } from "react-icons/gi";
 import { SiSpeedtest } from "react-icons/si";
-import SectionHeading from "@/components/home/SectionHeading";
+import SectionHeading from "@/components/common/SectionHeading";
 
 const features = [
   {
-    icon: <PiEngineFill className="w-7 h-7 text-green-400" />,
+    icon: <PiEngineFill className="w-7 h-7 text-highlight-primary" />,
     title: "Engine Condition",
     description: "Inspect for leaks, corrosion, and assess belts and hoses.",
   },
   {
-    icon: <FaCarBattery className="w-7 h-7 text-green-400" />,
+    icon: <FaCarBattery className="w-7 h-7 text-highlight-primary" />,
     title: "Battery & Indicators",
     description: "Battery testing and comprehensive dashboard indicator check.",
   },
   {
-    icon: <SiSpeedtest className="w-7 h-7 text-green-400" />,
+    icon: <SiSpeedtest className="w-7 h-7 text-highlight-primary" />,
     title: "Brake & Exhaust",
     description: "Brakes, suspension, driveline, and exhaust system inspection.",
   },
   {
-    icon: <GiSteeringWheel className="w-7 h-7 text-green-400" />,
+    icon: <GiSteeringWheel className="w-7 h-7 text-highlight-primary" />,
     title: "Steering & Vibrations",
     description: "Check for wheel shudders, pulling, and steering responsiveness.",
   },
   {
-    icon: <GiCarWheel className="w-7 h-7 text-green-400" />,
+    icon: <GiCarWheel className="w-7 h-7 text-highlight-primary" />,
     title: "Tyre & Alignment",
     description: "Tyre wear patterns, balancing, and alignment analysis.",
   },
   {
-    icon: <TbPresentationAnalyticsFilled className="w-7 h-7 text-green-400" />,
+    icon: <TbPresentationAnalyticsFilled className="w-7 h-7 text-highlight-primary" />,
     title: "Full Diagnostic Scan",
     description: "Live data scan to detect hidden faults and system health.",
   },
   {
-    icon: <FaHistory className="w-7 h-7 text-green-400" />,
+    icon: <FaHistory className="w-7 h-7 text-highlight-primary" />,
     title: "Ownership History",
     description: "Check for accident records, theft, recalls, and ownership history.",
   },

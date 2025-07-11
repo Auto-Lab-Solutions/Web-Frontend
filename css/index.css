@@ -85,11 +85,11 @@ body {
 
 
   .section-heading {
-    @apply text-text-primary font-bold text-2xl md:text-4xl lg:text-5xl text-center pt-8;
+    @apply text-text-primary font-bold text-2xl md:text-3xl lg:text-4xl text-center pt-8;
   }
 
   .section-subheading {
-    @apply text-text-secondary text-center text-base md:text-lg lg:text-xl max-w-2xl mx-auto;
+    @apply text-text-secondary text-center text-base lg:text-lg mx-auto;
   }
 
   .card-heading {
@@ -97,7 +97,7 @@ body {
   }
 
   .card-description {
-    @apply text-sm text-text-secondary leading-relaxed md:leading-normal text-center md:text-left;
+    @apply text-text-secondary leading-snug text-center md:text-left text-base;
   }
 }
 

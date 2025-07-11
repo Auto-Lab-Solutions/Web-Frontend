@@ -80,7 +80,7 @@ const QuotaForm = () => {
             <div className="mt-2 flex justify-start lg:justify-end">
               <button
                 type="submit"
-                className="bg-red-500 text-white rounded-full px-8 py-2 font-medium hover:bg-red-600 transition-all duration-200"
+                className="bg-red-500 text-white rounded-full px-8 py-2 font-medium hover:bg-warning-primary transition-all duration-200"
               >
                 Send Message
               </button>

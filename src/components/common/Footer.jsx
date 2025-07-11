@@ -87,7 +87,7 @@ const Footer = () => {
             <div className="mt-6 flex justify-end">
               <button
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full font-medium transition"
+                className="bg-red-500 hover:bg-warning-primary text-white px-6 py-2 rounded-full font-medium transition"
               >
                 Scroll to top
               </button>

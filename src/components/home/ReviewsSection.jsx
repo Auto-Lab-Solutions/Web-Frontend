@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"; // ShadCN utility for class merging
 import GoogleRatingCard from "@/components/home/GoogleRatingCard";
 import GoogleReviewCard from "@/components/home/GoogleReviewCard";
 import { topReviews } from "@/utils/reviews";
-import SectionHeading from "@/components/home/SectionHeading";
+import SectionHeading from "@/components/common/SectionHeading";
 
 function ReviewsSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
