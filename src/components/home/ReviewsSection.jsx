@@ -41,33 +41,39 @@ function ReviewsSection() {
     <div className="relative w-full px-auto bg-background-primary pb-12">
       <SectionHeading text="What Our Customers Say" />
 
-      <GoogleRatingCard />
+      <FadeInItem element="div" direction="y">
+        <GoogleRatingCard />
+      </FadeInItem>
 
       {/* Slider */}
-      <div
-        ref={sliderRef}
-        className="keen-slider py-10 max-w-5xl mx-auto"
-      >
-        {topReviews.map((review, i) => (
-          <div key={i} className="keen-slider__slide rounded-xl overflow-hidden">
-            <GoogleReviewCard reviewData={review} />
-          </div>
-        ))}
-      </div>
+      <FadeInItem element="div" direction="y">
+        <div
+          ref={sliderRef}
+          className="keen-slider py-10 max-w-5xl mx-auto"
+        >
+          {topReviews.map((review, i) => (
+            <div key={i} className="keen-slider__slide rounded-xl overflow-hidden">
+              <GoogleReviewCard reviewData={review} />
+            </div>
+          ))}
+        </div>
+      </FadeInItem>
 
       {/* Dots */}
-      <div className="absolute left-0 right-0 flex justify-center space-x-2">
-        {Array.from({ length: topReviews.length }).map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => instanceRef.current?.moveToIdx(idx)}
-            className={cn(
-              "w-2.5 h-2.5 rounded-full",
-              currentSlide === idx ? "bg-white" : "bg-gray-600"
-            )}
-          />
-        ))}
-      </div>
+      <FadeInItem element="div" direction="y">
+        <div className="absolute left-0 right-0 flex justify-center space-x-2">
+          {Array.from({ length: topReviews.length }).map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => instanceRef.current?.moveToIdx(idx)}
+              className={cn(
+                "w-2.5 h-2.5 rounded-full",
+                currentSlide === idx ? "bg-white" : "bg-gray-600"
+              )}
+            />
+          ))}
+        </div>
+      </FadeInItem>
     </div>
   );
 }

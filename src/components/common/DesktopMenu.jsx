@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Link } from 'react-router-dom';
 
 const navBarItem = (menuName) => (
-    <span className="flex-center gap-1 hover:bg-white/5 cursor-pointer px-3 py-1 rounded-xl">
+    <span className="flex-center gap-1 hover:bg-white/20 cursor-pointer px-3 py-1 rounded-xl">
       {menuName}
       {/* {hasSubMenu && (
           <ChevronDown className="mt-[0.6px] group-hover:rotate-180 duration-200" />

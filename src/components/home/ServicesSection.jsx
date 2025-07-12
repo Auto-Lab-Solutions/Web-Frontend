@@ -1,12 +1,11 @@
-import { motion, useTransform, useScroll } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { services } from "@/utils/menu";
 import SectionHeading from "@/components/common/SectionHeading";
 import FadeInItem from "../common/FadeInItem";
 
 const ServicesSection = () => {
   return (
-    <section className="mx-auto px-6 pb-8 bg-background-tertiary">
+    <section className="mx-auto px-6 pb-8 sm:pb-12 bg-background-tertiary">
       {/* <h2 className="text-3xl font-semibold mb-8 text-center">Our Services</h2> */}
       <SectionHeading text="Our Services" />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 justify-items-center mt-8">

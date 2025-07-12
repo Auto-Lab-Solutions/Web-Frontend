@@ -6,6 +6,7 @@ import { faqs } from "@/utils/itemContent";
 import SectionHeading from "@/components/common/SectionHeading";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import FadeInItem from "../common/FadeInItem";
 
 function FAQSection() {
   const [hoveredItem, setHoveredItem] = useState(null);
@@ -19,14 +20,14 @@ function FAQSection() {
         className="space-y-2 my-8 mx-auto max-w-xl sm:max-w-6xl"
       >
         {faqs.map((faq) => (
+          <FadeInItem element="div" direction="y">
           <AccordionItem
             key={faq.id}
             value={`item-${faq.id}`}
-            className="rounded-xl transition-all border shadow-sm bg-card-primary border-border-primary hover:border-border-secondary hover:shadow-lg"
+            className="rounded-xl transition-all border shadow-sm bg-card-secondary border-border-primary hover:border-border-secondary hover:shadow-lg"
             onMouseEnter={() => setHoveredItem(faq.id)}
             onMouseLeave={() => setHoveredItem(null)}
           >
-
             <div className="flex items-center justify-between">
               <div className="card-heading p-5 transition-colors cursor-pointer">
                 {faq.question}
@@ -54,6 +55,7 @@ function FAQSection() {
               )}
             </AnimatePresence>
           </AccordionItem>
+          </FadeInItem>
         ))}
       </Accordion>
     </div>

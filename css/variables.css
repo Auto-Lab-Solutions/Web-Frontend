@@ -1,8 +1,9 @@
 @theme {
   --color-background-primary: #18181B;
   --color-background-secondary: #09090b;
-  --color-background-tertiary: #1e293b;
+  --color-background-tertiary: #27272a;
   --color-card-primary: #27272A;
+  --color-card-secondary: #3F3F46;
   --color-text-primary: #F3F4F6;
   --color-text-secondary: #a1a1aa;
   --color-text-tertiary: #0F172A;
