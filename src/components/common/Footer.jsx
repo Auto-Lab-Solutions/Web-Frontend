@@ -45,7 +45,7 @@ const Footer = () => {
               <h6 className="uppercase font-bold text-text-primary mb-4 flex items-center gap-2">
                 <CarFront size={20} /> Auto Lab Solutions
               </h6>
-              <p className="text-base text-text-primary/90 leading-relaxed">
+              <p className="text-base text-text-primary/90">
                 We deliver cutting-edge automotive inspection and repair solutions
                 with state-of-the-art technology, expert service, and a commitment
                 to safety and quality.
