@@ -15,8 +15,8 @@ const HomePage = () =>  {
       <WhoWeAreSection />
       <WhyChooseUsSection />
       <ServicesSection />
-      <ReviewsSection />
       <InspectionFeatures />
+      <ReviewsSection />
       <FAQSection />
       <QuotaForm />
     </PageContainer>

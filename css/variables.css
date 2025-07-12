@@ -1,7 +1,7 @@
 @theme {
   --color-background-primary: #18181B;
-  --color-background-secondary: #0F172A;
-  --color-background-tertiary: #F3F4F6;
+  --color-background-secondary: #09090b;
+  --color-background-tertiary: #1e293b;
   --color-card-primary: #27272A;
   --color-text-primary: #F3F4F6;
   --color-text-secondary: #a1a1aa;
@@ -10,5 +10,6 @@
   --color-border-secondary: #71717A;
   --color-border-tertiary: #D1D5DB;
   --color-highlight-primary: #22C55E;
-  --color-warning-primary: #F59E0B;
+  --color-highlight-secondary: #F59E0B;
+  --color-warning-primary: #EA4335;
 }

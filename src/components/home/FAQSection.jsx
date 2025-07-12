@@ -11,12 +11,12 @@ function FAQSection() {
   const [hoveredItem, setHoveredItem] = useState(null);
 
   return (
-    <div className="w-full space-y-6 pb-8 px-4 bg-background-primary">
+    <div className="w-full space-y-6 pb-8 px-4 bg-background-tertiary">
       <SectionHeading text="Frequently Asked Questions" />
       <Accordion
         type="single"
         collapsible
-        className="space-y-4 my-8 mx-auto max-w-xl sm:max-w-6xl"
+        className="space-y-2 my-8 mx-auto max-w-xl sm:max-w-6xl"
       >
         {faqs.map((faq) => (
           <AccordionItem
@@ -26,8 +26,14 @@ function FAQSection() {
             onMouseEnter={() => setHoveredItem(faq.id)}
             onMouseLeave={() => setHoveredItem(null)}
           >
-            <div className="p-5 text-lg font-medium transition-colors cursor-pointer text-text-primary">
-              {faq.question}
+
+            <div className="flex items-center justify-between">
+              <div className="card-heading p-5 transition-colors cursor-pointer">
+                {faq.question}
+              </div>
+              <div className="card-heading p-5 transition-colors cursor-pointer">
+                {hoveredItem === faq.id ? "" : "▼"}
+              </div>
             </div>
 
             <AnimatePresence initial={false}>
@@ -37,10 +43,10 @@ function FAQSection() {
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
-                  className="px-5 pb-4 text-sm text-zinc-400 overflow-hidden"
+                  className="px-5 pb-6 overflow-hidden"
                 >
                   {faq.answer.map((answer, idx) => (
-                    <p key={idx} className="mb-2 leading-relaxed">
+                    <p key={idx} className="card-description">
                       {answer}
                     </p>
                   ))}

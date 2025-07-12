@@ -4,7 +4,7 @@ import googleLogo from '/google-logo.svg';
 
 const GoogleRatingCard = () => {
   return (
-    <div className="w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto bg-zinc-900 rounded-lg shadow-md border-3 border-highlight-primary p-4 text-center">
+    <div className="w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto bg-background-primary rounded-lg shadow-md border-3 border-highlight-primary p-4 text-center">
       <div className="flex items-center justify-center mb-2">
         <img
           src={googleLogo}

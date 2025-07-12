@@ -93,7 +93,7 @@ body {
   }
 
   .card-heading {
-    @apply text-lg font-semibold text-white;
+    @apply text-lg font-semibold text-text-primary;
   }
 
   .card-description {

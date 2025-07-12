@@ -45,7 +45,7 @@ const WhoWeAreSection = () => {
               element="div"
               direction="y"
               scale={1.02}
-              className="bg-zinc-800 rounded-xl p-6 border border-zinc-700 shadow-md flex flex-col items-start gap-3"
+              className="bg-card-primary rounded-xl p-6 border border-border-primary shadow-md flex flex-col items-start gap-3"
             >
               <div className="flex items-center gap-2 justify-center md:justify-start w-full">
                 {point.icon}

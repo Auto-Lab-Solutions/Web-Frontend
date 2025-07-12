@@ -22,7 +22,7 @@ const GoogleReviewCard = ({ reviewData }) => {
           }}
         />
         <div>
-          <p className="font-semibold text-zinc-100">{name}</p>
+          <p className="font-semibold text-lg text-text-primary">{name}</p>
         </div>
         <img
           src={googleLogo}
@@ -36,20 +36,20 @@ const GoogleReviewCard = ({ reviewData }) => {
         {Array.from({ length: rating }).map((_, index) => (
           <Star
             key={index}
-            className="w-4 h-4 text-yellow-500 fill-yellow-500"
+            className="w-5 h-5 text-yellow-500 fill-yellow-500"
           />
         ))}
       </div>
 
       {/* Review Text */}
-      <div className="text-sm text-zinc-400 relative">
-        <p className={expanded ? "" : "sm:line-clamp-5 line-clamp-6"}>
+      <div className="text-base text-text-secondary relative">
+        <p className={expanded ? "" : "sm:line-clamp-4 line-clamp-5"}>
           {review}
         </p>
         {review.length > 100 && (
           <button
             onClick={() => setExpanded(!expanded)}
-            className="mt-1 text-blue-400 hover:underline text-xs font-medium"
+            className="mt-1 text-blue-400 hover:underline text-sm font-medium"
           >
             {expanded ? "See less" : "See more"}
           </button>

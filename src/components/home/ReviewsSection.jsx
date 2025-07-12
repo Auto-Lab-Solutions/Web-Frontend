@@ -6,6 +6,7 @@ import GoogleRatingCard from "@/components/home/GoogleRatingCard";
 import GoogleReviewCard from "@/components/home/GoogleReviewCard";
 import { topReviews } from "@/utils/reviews";
 import SectionHeading from "@/components/common/SectionHeading";
+import FadeInItem from "../common/FadeInItem";
 
 function ReviewsSection() {
   const [currentSlide, setCurrentSlide] = useState(0);

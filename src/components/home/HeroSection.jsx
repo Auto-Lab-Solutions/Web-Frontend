@@ -105,7 +105,7 @@ const ParallaxImages = () => {
         start={-200}
         end={-500}
       >
-        <div className="max-w-xs mx-auto bg-zinc-900 rounded-lg shadow-md border-3 border-highlight-primary p-4 text-center">
+        <div className="max-w-xs mx-auto bg-background-primary rounded-lg shadow-md border-3 border-highlight-primary p-4 text-center">
           <div className="flex items-center justify-center mb-2 text-2xl font-bold text-highlight-primary">
             Lowest Prices in Western Australia
           </div>

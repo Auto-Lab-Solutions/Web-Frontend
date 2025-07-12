@@ -74,16 +74,17 @@ export default function App() {
         <AnimatedRoutes />
         {/* <header className="h-16 text-[15px] fixed inset-0 flex-center bg-white-50"> */}
         <header
-          className={`h-16 text-[15px] fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          className={`h-15 text-[15px] fixed top-0 left-0 right-0 z-50 transition-all duration-300 pt-3 ${
             scrolled
-              ? "bg-zinc-900/95 backdrop-blur-md shadow-md text-white"
+              ? "bg-zinc-900/40 backdrop-blur-md shadow-md text-white"
               : "bg-transparent text-white"
           }`}
         >
           <nav className=" px-3.5 flex-center-between w-full max-w-7xl mx-auto">
             <div className="flex-center gap-x-3 z-[999] relative">
               <img src={Logo} alt="" className="size-8" />
-              <h3 className="text-lg font-semibold">Auto Lab</h3>
+              <h3 className="text-lg font-semibold block md:hidden">Auto Lab</h3>
+              <h3 className="text-lg font-semibold hidden md:block">Auto Lab Solutions</h3>
             </div>
 
             <ul className="gap-x-1 hidden lg:flex lg:items-center">

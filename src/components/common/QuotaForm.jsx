@@ -20,7 +20,7 @@ const QuotaForm = () => {
   };
 
   return (
-    <section className="bg-zinc-950 text-white py-20 px-6">
+    <section className="bg-background-secondary text-text-primary py-20 px-6">
       <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-12 items-start">
         {/* Left Side Text */}
         <motion.div
@@ -29,8 +29,8 @@ const QuotaForm = () => {
           transition={{ duration: 0.6 }}
           className="md:col-span-1 text-center md:text-right"
         >
-          <h2 className="text-3xl font-bold mb-4">Get in Touch</h2>
-          <p className="text-zinc-400">
+          <h2 className="text-3xl text-text-primary font-bold mb-4">Get in Touch</h2>
+          <p className="text-text-secondary">
             Have questions or need a quote? <br /> Fill out the form and we’ll get back to you shortly.
           </p>
         </motion.div>
@@ -51,14 +51,14 @@ const QuotaForm = () => {
               { name: 'email', label: 'Email *', type: 'email' },
             ].map((field) => (
               <div key={field.name}>
-                <label className="block text-sm font-medium mb-1">{field.label}</label>
+                <label className="block text-base font-medium mb-1">{field.label}</label>
                 <input
                   type={field.type}
                   name={field.name}
                   value={form[field.name]}
                   onChange={handleChange}
                   required
-                  className="w-full bg-zinc-800 border border-zinc-700 text-sm text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition"
+                  className="w-full bg-card-primary border border-border-primary text-base text-text-primary px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-highlight-primary transition"
                 />
               </div>
             ))}
@@ -74,13 +74,13 @@ const QuotaForm = () => {
                 onChange={handleChange}
                 rows={7}
                 required
-                className="w-full bg-zinc-800 border border-zinc-700 text-sm text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition"
+                className="w-full bg-card-primary border border-border-primary text-base text-text-primary px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-highlight-primary transition"
               />
             </div>
             <div className="mt-2 flex justify-start lg:justify-end">
               <button
                 type="submit"
-                className="bg-red-500 text-white rounded-full px-8 py-2 font-medium hover:bg-warning-primary transition-all duration-200"
+                className="bg-text-primary text-text-tertiary rounded-full px-8 py-2 font-medium hover:bg-highlight-primary transition-all duration-200"
               >
                 Send Message
               </button>
