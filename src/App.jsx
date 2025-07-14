@@ -95,7 +95,7 @@ export default function App() {
             <div className="flex-center gap-x-5">
               <button
                 aria-label="inspection-progress"
-                className="bg-white/5 z-[999] relative px-3 py-1.5 shadow rounded-xl flex-center"
+                className="bg-white/5 relative px-3 py-1.5 shadow rounded-xl flex-center font-semibold hover:bg-highlight-primary hover:text-text-tertiary transition"
               >
                 Check Status
               </button>

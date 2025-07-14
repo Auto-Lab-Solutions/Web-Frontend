@@ -4,13 +4,13 @@ import { motion } from "framer-motion";
 import { Link } from 'react-router-dom';
 
 const navBarItem = (menuName) => (
-    <span className="flex-center gap-1 hover:bg-white/20 cursor-pointer px-3 py-1 rounded-xl">
-      {menuName}
-      {/* {hasSubMenu && (
-          <ChevronDown className="mt-[0.6px] group-hover:rotate-180 duration-200" />
-      )} */}
-    </span>
-  );
+  <span className="flex-center gap-1 font-semibold hover:bg-highlight-primary hover:text-text-tertiary cursor-pointer px-3 py-1 rounded-xl">
+    {menuName}
+    {/* {hasSubMenu && (
+        <ChevronDown className="mt-[0.6px] group-hover:rotate-180 duration-200" />
+    )} */}
+  </span>
+);
 
 export default function DesktopMenu({ menu }) {
   const [isHover, toggleHover] = useState(false);
@@ -71,7 +71,8 @@ export default function DesktopMenu({ menu }) {
                 : menu.gridCols === 2
                 ? "grid-cols-2"
                 : "grid-cols-1"
-            }`}
+            } rounded-lg p-3 bg-card-primary
+            `}
           >
             {hasSubMenu &&
               menu.subMenu.map((submenu, i) => (
@@ -80,17 +81,17 @@ export default function DesktopMenu({ menu }) {
                     to={`${menu.path}${submenu.subpath}`}
                   >
                     {menu.gridCols > 1 && menu?.subMenuHeading?.[i] && (
-                      <p className="text-sm mb-4 text-gray-500">
+                      <p className="text-sm mb-4 text-gray-700">
                         {menu?.subMenuHeading?.[i]}
                       </p>
                     )}
                     <div className="flex-center gap-x-4 group/menubox">
-                      <div className="bg-white/5 w-fit p-2 rounded-md group-hover/menubox:bg-white group-hover/menubox:text-gray-900 duration-300">
+                      <div className="bg-white/5 w-fit p-2 rounded-md group-hover/menubox:bg-highlight-primary group-hover/menubox:text-gray-900 duration-300">
                         {submenu.icon && <submenu.icon />}
                       </div>
                       <div>
-                        <h6 className="font-semibold">{submenu.name}</h6>
-                        <p className="text-sm text-gray-400">{submenu.desc}</p>
+                        <h6 className="text-text-primary font-semibold group-hover/menubox:text-highlight-primary">{submenu.name}</h6>
+                        <p className="text-sm text-text-secondary group-hover/menubox:text-highlight-primary">{submenu.desc}</p>
                       </div>
                     </div>
                   </Link>
