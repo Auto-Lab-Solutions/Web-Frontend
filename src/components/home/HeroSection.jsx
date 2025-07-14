@@ -32,7 +32,7 @@ const HeroSection = () => {
       >
         <CenterBackground />
         <ParallaxImages />
-        <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-b from-background-secondary/0 to-background-secondary" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-b from-background-secondary/0 to-background-secondary" />
       </div>
     </ReactLenis>
   );

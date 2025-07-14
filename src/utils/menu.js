@@ -17,7 +17,7 @@ export const services = [
     plans: [
       {
         id: 1,
-        name: "Standard Pre-Purchase Inspection",
+        name: "Standard Pre Purchase Inspection",
         price: 220,
         features: [
           "Engine bay & powertrain visual inspection",
@@ -27,7 +27,7 @@ export const services = [
           "Fluid leakage detection",
           "Battery & charging check",
           "OBD2 scan & live data",
-          "Interior/dashboard tests",
+          "Interior / dashboard tests",
           "Safety systems & electrics",
           "Detailed report & consultation",
           "Test drive on request"
@@ -35,11 +35,11 @@ export const services = [
       },
       {
         id: 2,
-        name: "Comprehensive Pre-Purchase Inspection",
+        name: "Comprehensive Pre Purchase Inspection",
         price: 280,
         features: [
-          "Full chassis/frame structural examination",
-          "Advanced suspension/steering/drivetrain assessment",
+          "Full chassis / frame structural examination",
+          "Advanced suspension / steering / drivetrain assessment",
           "Brake performance analysis",
           "Fuel system evaluation",
           "Ignition system & coil resistance check",
@@ -56,12 +56,12 @@ export const services = [
         name: "Advanced Diagnostic Inspection",
         price: 350,
         features: [
-          "Oscilloscope-based cam/crank correlation",
+          "Oscilloscope-based cam / crank correlation",
           "Ignition waveform analysis",
           "Compression oscilloscope testing",
           "Fuel injector & rail pressure testing",
           "Alternator ripple & charging diagnostics",
-          "Thermal imaging of electrical/cooling systems",
+          "Thermal imaging of electrical / cooling systems",
           "Advanced suspension load testing",
           "Exhaust gas & emissions analysis",
           "Undercarriage boroscope exam",
