@@ -5,61 +5,17 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { FileText, Search, Leaf, Brain, Star, Wallet, DollarSign, CalendarClock } from "lucide-react";
 import SectionHeading from "@/components/common/SectionHeading";
 import FadeInItem from "../common/FadeInItem";
 import Autoplay from "embla-carousel-autoplay"
-
-const iconStyles = "w-6 h-6 text-highlight-primary";
-const reasons = [
-  {
-    icon: <Brain className={iconStyles} />,
-    title: "Expert Technicians",
-    description: "Our skilled professionals deliver top-notch service every time.",
-  },
-  {
-    icon: <Search className={iconStyles} />,
-    title: "In-Depth Inspections",
-    description: "Our skilled professionals deliver top-notch service every time.",
-  },
-  {
-    icon: <FileText className={iconStyles} />,
-    title: "Detailed Reports",
-    description: "Our skilled professionals deliver top-notch service every time.",
-  },
-  {
-    icon: <Star className={iconStyles} />,
-    title: "Trusted by Thousands",
-    description: "We’re trusted by a growing community of loyal customers.",
-  },
-  {
-    icon: <Leaf className={iconStyles} />,
-    title: "Eco-Friendly Practices",
-    description: "We care for the planet using sustainable materials and processes.",
-  },
-  {
-    icon: <CalendarClock className={iconStyles} />,   
-    title: "Flexible Scheduling",
-    description: "Reach out anytime — we’re always ready to help.",
-  },
-  {
-    icon: <DollarSign className={iconStyles} />,
-    title: "Affordable Pricing",
-    description: "Transparent and competitive pricing with no hidden costs.",
-  },
-  {
-    icon: <Wallet className={iconStyles} />,
-    title: "Flexible Pay Methods",
-    description: "We offer exceptional service that exceeds expectations.",
-  }
-];
+import { whyChooseUsDesc, whyChooseUsPoints } from "../../meta/companyData";
 
 const WhyChooseUsSection = () => {
   return (
     <section className="bg-background-primary pt-8 pb-16 px-4">
         <SectionHeading text="Why Choose Us" />
         <FadeInItem element="p" direction="x" className="section-subheading">
-            We go the extra mile to ensure your satisfaction and peace of mind.
+            {whyChooseUsDesc}
         </FadeInItem>
         
         <Carousel
@@ -75,7 +31,7 @@ const WhyChooseUsSection = () => {
             className="w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-5xl mx-auto mt-4 overflow-hidden sm:overflow-visible"
         >
             <CarouselContent className="ml-1">
-                {reasons.map((reason, index) => (
+                {whyChooseUsPoints.map((reason, index) => (
                 <CarouselItem
                     key={index}
                     className="md:basis-1/2 lg:basis-1/3 p-4"

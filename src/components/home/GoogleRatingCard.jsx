@@ -1,5 +1,5 @@
 import { FaStar } from 'react-icons/fa';
-import { reviewsSummary } from '@/utils/reviews';
+import { reviewsSummary } from '@/meta/reviews';
 import googleLogo from '/google-logo.svg';
 
 const GoogleRatingCard = () => {

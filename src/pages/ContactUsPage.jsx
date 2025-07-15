@@ -2,7 +2,7 @@ import PageContainer from '../components/common/PageContainer';
 import QuotaForm from '../components/common/QuotaForm';
 import FadeInItem from '@/components/common/FadeInItem';
 import GoogleMap from '../components/GoogleMap';
-import { companyAddress, companyLocalPhone, companyEmail } from '../metaData';
+import { companyAddress, companyLocalPhone, companyEmail } from '../meta/companyData';
 
 const ContactUsPage = () => {
 

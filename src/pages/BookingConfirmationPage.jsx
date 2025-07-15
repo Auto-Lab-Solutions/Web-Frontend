@@ -1,6 +1,6 @@
 import React, { useEffect} from "react";
 import { useFormData } from "../components/FormDataContext";
-import { getServiceById, getPlanById } from "../utils/menu";
+import { getServiceById, getPlanById } from "../meta/menu";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

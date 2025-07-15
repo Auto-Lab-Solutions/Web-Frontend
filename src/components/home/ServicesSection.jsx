@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { services } from "@/utils/menu";
+import { services } from "@/meta/menu";
 import SectionHeading from "@/components/common/SectionHeading";
 import FadeInItem from "../common/FadeInItem";
 

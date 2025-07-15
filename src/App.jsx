@@ -1,4 +1,4 @@
-import { Menus, getMenuByName, services } from "./utils/menu";
+import { Menus, getMenuByName, services } from "./meta/menu";
 import Logo from "./assets/logo.webp";
 import DesktopMenu from "./components/common/DesktopMenu";
 import MobMenu from "./components/common/MobMenu";

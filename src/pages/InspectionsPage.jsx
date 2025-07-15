@@ -19,7 +19,7 @@ import {
 import { MousePointerClick, Clock, ShieldCheck, BadgeCheck } from "lucide-react";
 import SectionHeading from "@/components/common/SectionHeading";
 import Autoplay from "embla-carousel-autoplay"
-import { companyName, coverageAreas } from '../metaData';
+import { companyName, coverageAreas } from '../meta/companyData';
 import MechanicsSection from '@/components/common/MechanicsSection';
 
 const iconStyles = "w-8 h-8 text-highlight-primary";

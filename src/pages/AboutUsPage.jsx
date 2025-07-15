@@ -5,7 +5,7 @@ import SectionHeading from '@/components/common/SectionHeading';
 import FadeInItem from '@/components/common/FadeInItem';
 import GoogleMap from '../components/GoogleMap';
 import MechanicsSection from '@/components/common/MechanicsSection';
-import { companyName, whoWeAre, ourValues, aboutShort, ourMission, ourVision, locationDesc } from '../metaData';
+import { companyName, whoWeAreDesc, ourValues, aboutShort, ourMission, ourVision, locationDesc } from '../meta/companyData';
 
 
 const AboutUsPage = () => {
@@ -34,7 +34,7 @@ const AboutUsPage = () => {
         {/* Company Overview */}
         <section className="bg-background-primary text-text-primary pt-16 pb-20 px-6 text-center">
           <SectionHeading text="Who We Are" />
-          {whoWeAre.map((line, idx) => (
+          {whoWeAreDesc.map((line, idx) => (
             <FadeInItem
               element="p"
               direction="y"

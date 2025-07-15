@@ -1,4 +1,4 @@
-import { companyMapLink } from '../metaData';
+import { companyMapLink } from '../meta/companyData';
 
 const GoogleMapEmbed = () => {
   const mapsUrl = companyMapLink;

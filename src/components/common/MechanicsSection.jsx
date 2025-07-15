@@ -1,5 +1,5 @@
 import FadeInItem from "@/components/common/FadeInItem";
-import { mechanics } from "../../metaData";
+import { mechanics } from "../../meta/companyData";
 import SectionHeading from "@/components/common/SectionHeading";
 import { Linkedin } from "lucide-react";
 

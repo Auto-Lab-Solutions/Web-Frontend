@@ -2,7 +2,7 @@ import {
   Accordion,
   AccordionItem,
 } from "@/components/ui/accordion";
-import { faqs } from "@/utils/itemContent";
+import { faqs } from "@/meta/faqs";
 import SectionHeading from "@/components/common/SectionHeading";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -20,7 +20,7 @@ function FAQSection() {
         className="space-y-2 my-8 mx-auto max-w-xl sm:max-w-6xl"
       >
         {faqs.map((faq) => (
-          <FadeInItem element="div" direction="y">
+          <FadeInItem element="div" direction="y" key={faq.id}>
           <AccordionItem
             key={faq.id}
             value={`item-${faq.id}`}

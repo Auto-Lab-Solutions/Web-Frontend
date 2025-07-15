@@ -107,7 +107,7 @@ const ParallaxImages = () => {
       >
         <div className="max-w-xs mx-auto bg-background-primary rounded-lg shadow-md border-3 border-highlight-primary p-4 text-center">
           <div className="flex items-center justify-center mb-2 text-2xl font-bold text-highlight-primary">
-            Lowest Prices in Western Australia
+            Top Rated Car Inspection Service in Perth
           </div>
         </div>
       </ParallaxRatingsDiv>

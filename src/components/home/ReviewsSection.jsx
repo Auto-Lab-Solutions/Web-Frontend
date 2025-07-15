@@ -4,7 +4,7 @@ import "keen-slider/keen-slider.min.css";
 import { cn } from "@/lib/utils"; // ShadCN utility for class merging
 import GoogleRatingCard from "@/components/home/GoogleRatingCard";
 import GoogleReviewCard from "@/components/home/GoogleReviewCard";
-import { topReviews } from "@/utils/reviews";
+import { topReviews } from "@/meta/reviews";
 import SectionHeading from "@/components/common/SectionHeading";
 import FadeInItem from "../common/FadeInItem";
 
