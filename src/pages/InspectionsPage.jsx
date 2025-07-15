@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import {
   MapPin,
   Wrench,
-  UserCheck,
   CalendarDays,
   ClipboardList,
   CheckCircle,
@@ -11,22 +10,15 @@ import {
 import SectionHeading from "@/components/common/SectionHeading";
 import FadeInItem from "@/components/common/FadeInItem";
 import InspectionFeatures from '../components/home/InspectionFeatures';
-import InspectionBenefitsSection from '../components/other/InspectionBenefitsSection';
+import InspectionBenefitsSection from '../components/InspectionBenefitsSection';
 
 const iconStyle = "w-8 h-8 text-highlight-primary";
 
-const BenefitIcons = {
-  1: <ClipboardList className={iconStyle} />, // Booking
-  2: <CalendarDays className={iconStyle} />, // Scheduling
-  3: <Wrench className={iconStyle} />,        // Inspection
-  4: <CheckCircle className={iconStyle} />,   // Report
-};
-
-const steps = [
-  { number: 1, title: 'Book Online', desc: "Select your service and submit our quick form." },
-  { number: 2, title: 'We Schedule', desc: "We’ll arrange inspection time with the seller and notify you." },
-  { number: 3, title: 'Expert Inspection', desc: "Our mechanic inspects thoroughly and calls you afterward." },
-  { number: 4, title: 'Get Your Report', desc: "A detailed digital report with insights lands in your inbox." },
+const inspectionSteps = [
+  { number: 1, title: 'Book Online', desc: "Select your inspection plan and submit our quick form.", icon: <ClipboardList className={iconStyle} /> },
+  { number: 2, title: 'We Schedule', desc: "We’ll arrange inspection time with the seller and notify you.", icon: <CalendarDays className={iconStyle} /> },
+  { number: 3, title: 'Expert Inspection', desc: "Our mechanic inspects thoroughly and calls you afterward.", icon: <Wrench className={iconStyle} /> },
+  { number: 4, title: 'Get Your Report', desc: "A detailed digital report with insights lands in your inbox.", icon: <CheckCircle className={iconStyle} /> },
 ];
 
 const locations = ['Perth', 'Rockingham', 'Mandurah', 'Fremantle'];
@@ -40,9 +32,9 @@ const InspectionsPage = () => {
           <FadeInItem
             element="h1"
             direction="x"
-            className="text-4xl font-bold mb-4"
+            className="text-2xl md:text-4xl font-bold mb-4"
           >
-            Mobile Pre‑Purchase Car Inspections – Perth, WA
+            Pre-Purchase Car Inspections – Perth, WA
           </FadeInItem>
           <FadeInItem
             element="p"
@@ -75,7 +67,7 @@ const InspectionsPage = () => {
           >
             <SectionHeading text="How It Works" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
-              {steps.map((s) => (
+              {inspectionSteps.map((s) => (
                 <FadeInItem
                   key={s.number}
                   element="div"
@@ -83,7 +75,7 @@ const InspectionsPage = () => {
                   className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 text-center shadow-lg hover:shadow-2xl transition-all"
                 >
                   <div className="flex justify-center items-center mb-4">
-                    {BenefitIcons[s.number]}
+                    {s.icon}
                   </div>
                   <h3 className="text-lg font-semibold mb-2">{s.title}</h3>
                   <p className="text-sm text-zinc-400 leading-relaxed">{s.desc}</p>

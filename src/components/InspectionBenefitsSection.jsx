@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/carousel";
 import { FileText, Search, Leaf, Brain, Star, Wallet, DollarSign, CalendarClock } from "lucide-react";
 import SectionHeading from "@/components/common/SectionHeading";
-import FadeInItem from "../common/FadeInItem";
+import FadeInItem from "./common/FadeInItem";
 import Autoplay from "embla-carousel-autoplay"
 
 const iconStyles = "w-8 h-8 text-highlight-primary";

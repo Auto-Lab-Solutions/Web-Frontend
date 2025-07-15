@@ -2,7 +2,7 @@ import PageContainer from '../components/common/PageContainer';
 import QuotaForm from '../components/common/QuotaForm';
 import FadeInItem from '@/components/common/FadeInItem';
 import GoogleMap from '../components/GoogleMap';
-import { companyName, companyAddress, companyPhone, companyEmail } from '../metaData';
+import { companyAddress, companyLocalPhone, companyEmail } from '../metaData';
 
 const ContactUsPage = () => {
 
@@ -25,8 +25,8 @@ const ContactUsPage = () => {
           <FadeInItem element="div" direction="y" className="mt-6 space-y-2 text-lg">
             <p>
               📞 Call us:{" "}
-              <a href={`tel:${companyPhone}`} className="text-highlight-primary font-semibold underline">
-                {companyPhone}
+              <a href={`tel:${companyLocalPhone}`} className="text-highlight-primary font-semibold underline">
+                {companyLocalPhone}
               </a>
             </p>
             <p>
