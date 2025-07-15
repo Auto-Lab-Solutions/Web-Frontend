@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import SectionHeading from '@/components/common/SectionHeading';
 import FadeInItem from '@/components/common/FadeInItem';
 import GoogleMap from '../components/GoogleMap';
+import MechanicsSection from '@/components/common/MechanicsSection';
 import { companyName, whoWeAre, ourValues, aboutShort, ourMission, ourVision, locationDesc } from '../metaData';
 
 
@@ -44,8 +45,32 @@ const AboutUsPage = () => {
           ))}
         </section>
 
+        {/* Our Vision */}
+        <section className="bg-background-secondary text-white py-16 px-6 text-center">
+          <SectionHeading text="Our Vision" />
+          <FadeInItem
+            element="p"
+            direction="y"
+            className="max-w-3xl mx-auto text-lg text-zinc-300 leading-relaxed mt-4"
+          >
+            {ourVision}
+          </FadeInItem>
+        </section>
+
+        {/* Our Mission */}
+        <section className="bg-background-primary text-text-primary py-16 px-6 text-center">
+          <SectionHeading text="Our Mission" />
+          <FadeInItem
+            element="p"
+            direction="y"
+            className="max-w-3xl mx-auto text-lg text-text-secondary leading-relaxed mt-4"
+          >
+            {ourMission}
+          </FadeInItem>
+        </section>
+
         {/* What Sets Us Apart */}
-        <section className="bg-background-secondary text-white py-16 px-6">
+        <section className="bg-background-secondary text-white pt-16 pb-4 px-6">
           <motion.div
             className="max-w-5xl mx-auto bg-background-primary border border-border-primary rounded-2xl shadow-xl p-6 sm:p-12 pb-8"
             initial={{ opacity: 0, y: 40 }}
@@ -73,29 +98,8 @@ const AboutUsPage = () => {
           </motion.div>
         </section>
 
-        {/* Our Mission */}
-        <section className="bg-background-primary text-text-primary py-16 px-6 text-center">
-          <SectionHeading text="Our Mission" />
-          <FadeInItem
-            element="p"
-            direction="y"
-            className="max-w-3xl mx-auto text-lg text-text-secondary leading-relaxed mt-4"
-          >
-            {ourMission}
-          </FadeInItem>
-        </section>
-
-        {/* Our Vision */}
-        <section className="bg-background-secondary text-white py-16 px-6 text-center">
-          <SectionHeading text="Our Vision" />
-          <FadeInItem
-            element="p"
-            direction="y"
-            className="max-w-3xl mx-auto text-lg text-zinc-300 leading-relaxed mt-4"
-          >
-            {ourVision}
-          </FadeInItem>
-        </section>
+        {/* Mechanics Section */}
+        <MechanicsSection />
 
         {/* Google Map Section */}
         <section className="bg-background-primary py-16 px-6 text-center text-text-primary">

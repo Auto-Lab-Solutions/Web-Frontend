@@ -1,4 +1,4 @@
-import PageContainer from '../components/common/PageContainer';
+import PageContainer from '@/components/common/PageContainer';
 import { motion } from 'framer-motion';
 import {
   MapPin,
@@ -7,21 +7,77 @@ import {
   ClipboardList,
   CheckCircle,
 } from "lucide-react";
-import SectionHeading from "@/components/common/SectionHeading";
 import FadeInItem from "@/components/common/FadeInItem";
-import InspectionFeatures from '../components/home/InspectionFeatures';
-import InspectionBenefitsSection from '../components/InspectionBenefitsSection';
+import InspectionFeatures from '@/components/home/InspectionFeatures';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { MousePointerClick, Clock, ShieldCheck, BadgeCheck } from "lucide-react";
+import SectionHeading from "@/components/common/SectionHeading";
+import Autoplay from "embla-carousel-autoplay"
+import { companyName, coverageAreas } from '../metaData';
+import MechanicsSection from '@/components/common/MechanicsSection';
 
-const iconStyle = "w-8 h-8 text-highlight-primary";
+const iconStyles = "w-8 h-8 text-highlight-primary";
+
+const inspectionsDesc = [
+  `${companyName} delivers top-tier on-site car inspections across Perth.`,
+  "Our certified mechanics conduct thorough checks and provide reports you can trust, helping you make confident, informed decisions."
+]
 
 const inspectionSteps = [
-  { number: 1, title: 'Book Online', desc: "Select your inspection plan and submit our quick form.", icon: <ClipboardList className={iconStyle} /> },
-  { number: 2, title: 'We Schedule', desc: "We’ll arrange inspection time with the seller and notify you.", icon: <CalendarDays className={iconStyle} /> },
-  { number: 3, title: 'Expert Inspection', desc: "Our mechanic inspects thoroughly and calls you afterward.", icon: <Wrench className={iconStyle} /> },
-  { number: 4, title: 'Get Your Report', desc: "A detailed digital report with insights lands in your inbox.", icon: <CheckCircle className={iconStyle} /> },
+  {
+    number: 1,
+    title: 'Book Online Now',
+    desc: "Choose your inspection plan and complete our quick online form.",
+    icon: <ClipboardList className={iconStyles} />,
+  },
+  {
+    number: 2,
+    title: 'Schedule a Time',
+    desc: "We’ll arrange a convenient time that suits your availability.",
+    icon: <CalendarDays className={iconStyles} />,
+  },
+  {
+    number: 3,
+    title: 'On-Site Inspection',
+    desc: "Our expert mechanic performs a detailed inspection at the vehicle's location.",
+    icon: <Wrench className={iconStyles} />,
+  },
+  {
+    number: 4,
+    title: 'Detailed Report Sent',
+    desc: "You’ll receive a clear, comprehensive digital report with expert insights.",
+    icon: <CheckCircle className={iconStyles} />,
+  },
 ];
 
-const locations = ['Perth', 'Rockingham', 'Mandurah', 'Fremantle'];
+const inspectionBenefits = [
+  {
+    icon: <MousePointerClick className={iconStyles} />,
+    title: "Easy Online Booking",
+    description: "Just share the seller’s details — we’ll handle everything else for you.",
+  },
+  {
+    icon: <Clock className={iconStyles} />,
+    title: "Fast Turnaround",
+    description: "Get your digital report delivered promptly after the inspection is complete.",
+  },
+  {
+    icon: <ShieldCheck className={iconStyles} />,
+    title: "Independent & Unbiased",
+    description: "Our licensed mechanics work solely for you, not the seller.",
+  },
+  {
+    icon: <BadgeCheck className={iconStyles} />,
+    title: "Qualified Professionals",
+    description: "Fully certified, fully insured — our expert team ensures trusted results.",
+  },
+];
 
 const InspectionsPage = () => {
   return (
@@ -39,22 +95,71 @@ const InspectionsPage = () => {
           <FadeInItem
             element="p"
             direction="x"
-            className="text-xl opacity-90 max-w-sm sm:max-w-2xl mx-auto"
+            className="text-xl opacity-90 max-w-sm sm:max-w-3xl mx-auto"
           >
-            Carinspect offers the best onsite pre-purchase car inspections in Perth. Our certified mechanics conduct thorough checks and provide reports you can trust.
+            {inspectionsDesc.map((line, index) => (
+              <span key={index}>
+                {line}
+                {index < inspectionsDesc.length - 1 && <br />}
+              </span>
+            ))}
           </FadeInItem>
           <FadeInItem
             element="div"
             direction="y"
           >
-            <button className="mt-6 px-8 py-3 bg-button-primary text-text-tertiary font-semibold rounded-lg shadow hover:bg-highlight-primary transition">
+            <button className="mt-6 px-8 py-3 bg-button-primary text-text-tertiary font-semibold rounded-full shadow hover:bg-highlight-primary transition">
               Book Pre‑Purchase Inspection
             </button>
           </FadeInItem>
         </header>
 
         {/* Benefits Section */}
-        <InspectionBenefitsSection />
+        <section className="bg-background-primary pt-8 pb-16 px-4">
+          <SectionHeading text="Confidence in Every Purchase" />
+          
+          <Carousel
+              opts={{
+                  align: "center",
+                  loop: true,
+              }}
+              plugins={[
+                  Autoplay({
+                      delay: 4000,
+                  }),
+              ]}
+              className="w-full max-w-md sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-5xl mx-auto mt-4 overflow-hidden sm:overflow-visible"
+          >
+              <CarouselContent className="ml-1">
+                  {inspectionBenefits.map((reason, index) => (
+                  <CarouselItem
+                      key={index}
+                      className="md:basis-1/2 lg:basis-1/3 p-4"
+                  >
+                      <FadeInItem
+                          element="div"
+                          direction="y"
+                          scale={1.02}
+                          className="bg-card-primary rounded-xl px-2 py-6 sm:p-6 flex flex-col gap-3 shadow-md border border-border-primary"
+                      >
+                      <div className="flex items-center text-highlight-primary justify-center md:justify-start gap-2">
+                          {reason.icon}
+                          <h3 className="card-heading">{reason.title}</h3>
+                      </div>
+                      <div className="flex justify-center md:justify-start">
+                          <p className="card-description px-2 sm:px-0">{reason.description}</p>
+                      </div>
+                      </FadeInItem>
+                  </CarouselItem>
+                  ))}
+                  
+              </CarouselContent>
+              <div className="flex justify-between">
+                  <CarouselPrevious className="text-white border-border-primary" />
+                  <CarouselNext className="text-white border-border-primary" />
+              </div>
+          </Carousel>
+        </section>
 
         {/* How it works */}
         <section className="pt-16 pb-0 bg-background-secondary text-white px-4">
@@ -99,7 +204,7 @@ const InspectionsPage = () => {
             We operate across Perth and nearby suburbs:
           </FadeInItem>
           <div className="flex flex-wrap justify-center gap-4">
-            {locations.map(loc => (
+            {coverageAreas.map(loc => (
               <FadeInItem
                 key={loc}
                 element="div"
@@ -115,21 +220,7 @@ const InspectionsPage = () => {
         </section>
 
         {/* Mechanic Spotlight */}
-        <section className="bg-background-secondary py-16">
-          <FadeInItem
-            element="div"
-            direction="y"
-            className="container mx-auto px-6 md:flex items-center gap-12"
-          >
-            <img src="/images/mechanic-perth.jpg" alt="James – Perth Mechanic" className="w-40 h-40 rounded-full object-cover mx-auto md:mx-0 shadow-lg border-4 border-border-primary hover:border-highlight-primary transition" />
-            <div className="text-center md:text-left mt-6 md:mt-0">
-              <h3 className="text-2xl font-semibold text-text-primary">James – Perth</h3>
-              <p className="mt-4 text-text-secondary">
-                With over 10 years of hands-on experience, James ensures each inspection is done thoroughly and professionally.
-              </p>
-            </div>
-          </FadeInItem>
-        </section>
+        <MechanicsSection />
 
         {/* CTA */}
         <section className="bg-background-tertiary text-text-primary text-center py-20">
