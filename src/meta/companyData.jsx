@@ -9,6 +9,7 @@ const companyName = "Auto Lab Solutions";
 const companyPhone = "+61 451 237 048";
 const companyLocalPhone = "0451 237 048";
 const companyEmail = "autolabsolutions1@gmail.com";
+const companyDesc = "We deliver cutting-edge automotive inspection and repair solutions with state-of-the-art technology, expert service, and a commitment to safety and quality."
 
 const companyAddress = "70b Division St, Welshpool WA 6106, Australia";
 const locationDesc = "Proudly based in Southern River, our team travels across Perth to reach you—whether you're in Midland, Mandurah, Joondalup, or anywhere in between.";
@@ -18,7 +19,7 @@ const coverageAreas = ['Perth', 'Rockingham', 'Mandurah', 'Fremantle'];
 
 const aboutShort = "Making informed car buying decisions is crucial. That’s why we provide detailed insights and expert evaluations you can trust.";
 const ourMission = "Our mission is to provide thorough, transparent, and technology-backed inspections that empower you to make confident vehicle purchasing decisions. We aim to bring clarity and peace of mind to every customer, every time.";
-const ourVision = "Our vision is to be Perth’s most trusted mobile vehicle inspection service—known for precision, integrity, and customer-first service. We envision a future where every vehicle buyer feels informed, secure, and confident.";
+const ourVision = "Our vision is to be Perth’s most trusted car inspection service—known for precision, integrity, and customer-first service. We envision a future where every vehicle buyer feels informed, secure, and confident.";
 
 const whoWeAreDesc = [
     "Based in Southern River, we proudly serve Perth and surrounding suburbs with expert mobile automotive services. While our core focus is pre-purchase car inspections, we also provide mobile battery replacement, oil and filter changes, paint correction, and more.",
@@ -47,42 +48,42 @@ const whyChooseUsPoints = [
   {
     icon: <Brain className={iconStyles} />,
     title: "Expert Technicians",
-    description: "Our skilled professionals deliver top-notch service every time.",
+    description: "Our team consists of highly trained and experienced mechanics who are passionate about delivering top-notch service.",
   },
   {
     icon: <Search className={iconStyles} />,
     title: "In-Depth Inspections",
-    description: "Our skilled professionals deliver top-notch service every time.",
+    description: "We conduct thorough checks to uncover hidden issues, ensuring you know exactly what you’re buying.",
   },
   {
     icon: <FileText className={iconStyles} />,
     title: "Detailed Reports",
-    description: "Our skilled professionals deliver top-notch service every time.",
+    description: "Receive comprehensive, easy-to-understand reports that highlight key findings and recommendations.",
   },
   {
     icon: <Star className={iconStyles} />,
     title: "Trusted by Thousands",
-    description: "We’re trusted by a growing community of loyal customers.",
+    description: "Join our community of satisfied customers who trust us for their vehicle inspection needs.",
   },
   {
     icon: <Leaf className={iconStyles} />,
     title: "Eco-Friendly Practices",
-    description: "We care for the planet using sustainable materials and processes.",
+    description: "We prioritize sustainability by using eco-friendly products and practices in our inspections and services.",
   },
   {
     icon: <CalendarClock className={iconStyles} />,   
     title: "Flexible Scheduling",
-    description: "Reach out anytime — we’re always ready to help.",
+    description: "We work around your schedule, offering convenient booking options to fit your busy life.",
   },
   {
     icon: <DollarSign className={iconStyles} />,
     title: "Affordable Pricing",
-    description: "Transparent and competitive pricing with no hidden costs.",
+    description: "We offer competitive rates without compromising on quality, ensuring you get the best value for your investment.",
   },
   {
     icon: <Wallet className={iconStyles} />,
     title: "Flexible Pay Methods",
-    description: "We offer exceptional service that exceeds expectations.",
+    description: "We provide flexibility in payment options, either online or in-person, to suit your convenience.",
   }
 ];
 
@@ -134,6 +135,7 @@ export {
     companyPhone,
     companyLocalPhone,
     companyEmail,
+    companyDesc,
 
     companyAddress,
     locationDesc,

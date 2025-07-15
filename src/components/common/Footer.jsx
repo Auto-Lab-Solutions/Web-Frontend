@@ -12,6 +12,7 @@ import {
   Car
 } from "lucide-react";
 import FadeInItem from "../common/FadeInItem";
+import { companyName, companyAddress, companyEmail, companyLocalPhone, companyDesc } from "../../meta/companyData";
 
 const Footer = () => {
   return (
@@ -43,12 +44,10 @@ const Footer = () => {
             {/* Company Info */}
             <div>
               <h6 className="uppercase font-bold text-text-primary mb-4 flex items-center gap-2">
-                <CarFront size={22} className="text-highlight-primary" />Auto Lab Solutions
+                <CarFront size={22} className="text-highlight-primary" />{ companyName }
               </h6>
               <p className="text-base text-text-primary/90">
-                We deliver cutting-edge automotive inspection and repair solutions
-                with state-of-the-art technology, expert service, and a commitment
-                to safety and quality.
+                { companyDesc }
               </p>
             </div>
 
@@ -76,15 +75,25 @@ const Footer = () => {
                 <ul className="space-y-3 text-base">
                   <li className="flex items-start gap-2 text-text-primary/90">
                     <Home size={20} className="mt-0.5 text-highlight-primary" />
-                    70b Division St, Welshpool WA 6106, Australia
+                    { companyAddress }
                   </li>
                   <li className="flex items-center gap-2 text-text-primary/90">
                     <Mail size={20} className="text-highlight-primary" />
-                    info@example.com
+                    <a
+                      href={`mailto:${companyEmail}`}
+                      className="hover:text-highlight-primary transition"
+                    >
+                      { companyEmail }
+                    </a>
                   </li>
                   <li className="flex items-center gap-2 text-text-primary/90">
                     <Phone size={20} className="text-highlight-primary" />
-                    +61 451 237 048
+                    <a
+                      href={`tel:${companyLocalPhone}`}
+                      className="hover:text-highlight-primary transition"
+                    >
+                      { companyLocalPhone }
+                    </a>
                   </li>
                 </ul>
               </div>
