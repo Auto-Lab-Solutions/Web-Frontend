@@ -24,27 +24,40 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircleMore, SendHorizontal, Check, X } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
-import { getWsClient } from '@/functions/WsClient';
-import { RestClient } from '@/functions/RestClient';
+import { useRestClient } from '../contexts/restContext';
+import { useWebSocket } from '../contexts/WebSocketContext';
 import { UAParser } from 'ua-parser-js';
 import { ClipLoader, HashLoader, SyncLoader } from 'react-spinners';
 
 const LINE_CHAR_LIMIT = 32;
 
 export default function ChatBox() {
-  const wsClient = useRef(null);
-  const restClient = useRef(new RestClient());
-  const [messages, setMessages] = useState([]);
-  const [wsInitialized, setWsInitialized] = useState(false);
-  const [userData, setUserData] = useState({});
+  const { restClient, createRestClient } = useRestClient();
+  const { 
+    wsClient, 
+    wsInitialized, 
+    messages, 
+    setMessages, 
+    userData, 
+    showTyping, 
+    createWebSocket, 
+    updateUserData 
+  } = useWebSocket();
+  
   const [formData, setFormData] = useState({});
   const [text, setText] = useState('');
   const [editedMsgId, setEditedMsgId] = useState('');
   const [editting, setEditting] = useState(false);
   const [sending, setSending] = useState(false);
   const [msgsLoading, setMsgsLoading] = useState(true);
-  const [showTyping, setShowTyping] = useState(false);
   const messagesEndRef = useRef(null);
+
+  // Create RestClient on mount
+  useEffect(() => {
+    if (!restClient) {
+      createRestClient();
+    }
+  }, [restClient, createRestClient]);
 
   // Set user info on mount
   useEffect(() => {
@@ -54,25 +67,19 @@ export default function ChatBox() {
 
   // Update wsClient when userData changes
   useEffect(() => {
-    wsClient.current = getWsClient(
-      setWsInitialized,
-      wsClient.current,
-      userData,
-      messages,
-      setMessages,
-      restClient.current,
-      setShowTyping
-    );
+    if (restClient && userData.userId) {
+      createWebSocket(userData);
+    }
     // eslint-disable-next-line
-  }, [userData]);
+  }, [userData, restClient]);
 
   // Fetch messages when ws is initialized
   useEffect(() => {
     const userId = localStorage.getItem('userId');
     const userFormDataSubmitted = localStorage.getItem('userFormDataSubmitted');
-    if (wsInitialized && wsClient.current && userId) {
+    if (wsInitialized && wsClient && userId && restClient) {
       setMsgsLoading(true);
-      restClient.current.get('get-messages', { clientId: userId })
+      restClient.get('get-messages', { clientId: userId })
         .then((res) => {
           if (res.status === 200) {
             const messagesData = res.data.messages || [];
@@ -111,7 +118,7 @@ export default function ChatBox() {
   // Scroll to bottom and send "received" notifications
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    if (wsInitialized && wsClient.current) {
+    if (wsInitialized && wsClient && restClient) {
       messages.forEach(msg => {
         if (msg.type === 'received' && msg.received === false) {
           const notificationData = {
@@ -119,12 +126,12 @@ export default function ChatBox() {
             status: 'MESSAGE_RECEIVED',
             messageId: msg.messageId
           };
-          restClient.current.post('notify', notificationData).catch(console.error);
+          restClient.post('notify', notificationData).catch(console.error);
         }
       });
     }
     // eslint-disable-next-line
-  }, [messages, wsInitialized, sending, showTyping]);
+  }, [messages, wsInitialized, sending, showTyping, restClient]);
 
   // Send message when "sending" is true
   useEffect(() => {
@@ -151,13 +158,13 @@ export default function ChatBox() {
         if (result.device.model) userInfo.push(result.device.model);
       }
       const userDevice = userInfo.length > 0 ? userInfo.join(' ') : 'Desktop';
-      setUserData(prev => ({
-        ...prev,
+      const newUserData = {
         ...formData,
         userId,
         userLocation,
         userDevice,
-      }));
+      };
+      updateUserData(newUserData);
     } catch (error) {
       console.error("Failed to fetch user location:", error);
     }
@@ -167,14 +174,14 @@ export default function ChatBox() {
   const sendMessage = useCallback(async (msgText) => {
     const userId = localStorage.getItem('userId');
     const userFormDataSubmitted = localStorage.getItem('userFormDataSubmitted');
-    if (!wsInitialized || !wsClient.current || !userId) return;
+    if (!wsInitialized || !wsClient || !userId) return;
     if (!editting) {
       const messageData = {
         userId,
         messageId: uuidv4(),
         message: msgText
       };
-      restClient.current.post('send-message', messageData)
+      restClient.post('send-message', messageData)
         .then((res) => {
           if (res.status === 200) {
             setMessages(prev => {
@@ -214,7 +221,7 @@ export default function ChatBox() {
         status: 'MESSAGE_EDITED',
         newMessage: msgText
       };
-      restClient.current.post('notify', messageData)
+      restClient.post('notify', messageData)
         .then((res) => {
           if (res.status === 200) {
             setMessages(prev =>
@@ -233,13 +240,13 @@ export default function ChatBox() {
 
   // Delete message
   const handleMessageDelete = useCallback((messageId) => {
-    if (!wsInitialized || !wsClient.current) return;
+    if (!wsInitialized || !wsClient) return;
     const messageData = {
       userId: userData.userId,
       messageId,
       status: 'MESSAGE_DELETED'
     };
-    restClient.current.post('notify', messageData)
+    restClient.post('notify', messageData)
       .then((res) => {
         if (res.status === 200) {
           setMessages(prev => prev.filter(msg => msg.messageId !== messageId));

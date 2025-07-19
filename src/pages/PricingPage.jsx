@@ -2,7 +2,7 @@ import PageContainer from '../components/common/PageContainer';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { getServiceById, getPlanById } from "../meta/menu";
-import { useFormData } from '../components/FormDataContext';
+import { useFormData } from '../components/contexts/GlobalDataContext';
 import { Check } from 'lucide-react';
 
 const PricingPage = ({ serviceId }) => {

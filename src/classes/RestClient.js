@@ -1,9 +1,8 @@
 import axios from 'axios';
 
-const RestEndpoint = 'https://91maaqr173.execute-api.ap-southeast-2.amazonaws.com/production/';
 
 class RestClient {
-  constructor() {
+  constructor(RestEndpoint) {
     this.client = axios.create({
       baseURL: RestEndpoint,
       timeout: 10000,

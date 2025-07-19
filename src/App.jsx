@@ -14,7 +14,9 @@ import ContactUsPage from "./pages/ContactUsPage";
 import SlotsSelectionPage from "./pages/SlotsSelectionPage";
 import BookingFormPage from "./pages/BookingFormPage";
 import BookingConfirmationPage from "./pages/BookingConfirmationPage";
-import { FormDataProvider } from "./components/FormDataContext";
+import { GlobalDataProvider } from "./components/contexts/GlobalDataContext";
+import { RestProvider } from "./components/contexts/restContext";
+import { WebSocketProvider } from "./components/contexts/WebSocketContext";
 import { useEffect, useState } from "react";
 import { companyName } from "./meta/companyData";
 // import ChatBox from "./components/ChatBox";
@@ -71,44 +73,48 @@ export default function App() {
   
   return (
     <div>
-      <FormDataProvider>
-        <AnimatedRoutes />
-        {/* <header className="h-16 text-[15px] fixed inset-0 flex-center bg-white-50"> */}
-        <header
-          className={`h-15 text-[15px] fixed top-0 left-0 right-0 z-50 transition-all duration-300 pt-3 ${
-            scrolled
-              ? "bg-zinc-900/40 backdrop-blur-md shadow-md text-white"
-              : "bg-transparent text-white"
-          }`}
-        >
-          <nav className=" px-3.5 flex-center-between w-full max-w-7xl mx-auto">
-            <div className="flex-center gap-x-3 z-[999] relative">
-              <img src={Logo} alt="" className="size-8" />
-              <h3 className="text-lg font-semibold block md:hidden">{ companyName.split(" ").slice(0,2).join(" ") }</h3>
-              <h3 className="text-lg font-semibold hidden md:block">{ companyName }</h3>
-            </div>
-
-            <ul className="gap-x-1 hidden lg:flex lg:items-center">
-              {Menus.map((menu) => (
-                <DesktopMenu menu={menu} key={menu.name} />
-              ))}
-            </ul>
-            <div className="flex-center gap-x-5">
-              <button
-                aria-label="inspection-progress"
-                className="bg-white/5 relative px-3 py-1.5 shadow rounded-xl flex-center font-semibold hover:bg-highlight-primary hover:text-text-tertiary transition"
+      <GlobalDataProvider>
+        <RestProvider>
+          <WebSocketProvider>
+              <AnimatedRoutes />
+              {/* <header className="h-16 text-[15px] fixed inset-0 flex-center bg-white-50"> */}
+              <header
+                className={`h-15 text-[15px] fixed top-0 left-0 right-0 z-50 transition-all duration-300 pt-3 ${
+                  scrolled
+                    ? "bg-zinc-900/40 backdrop-blur-md shadow-md text-white"
+                    : "bg-transparent text-white"
+                }`}
               >
-                Check Status
-              </button>
-              <div className="lg:hidden">
-                <MobMenu Menus={Menus} />
-              </div>
-            </div>
-          </nav>
-        </header>
-        {/* <ChatBox /> */}
-        <Footer />
-      </FormDataProvider>
+                <nav className=" px-3.5 flex-center-between w-full max-w-7xl mx-auto">
+                  <div className="flex-center gap-x-3 z-[999] relative">
+                    <img src={Logo} alt="" className="size-8" />
+                    <h3 className="text-lg font-semibold block md:hidden">{ companyName.split(" ").slice(0,2).join(" ") }</h3>
+                    <h3 className="text-lg font-semibold hidden md:block">{ companyName }</h3>
+                  </div>
+
+                  <ul className="gap-x-1 hidden lg:flex lg:items-center">
+                    {Menus.map((menu) => (
+                      <DesktopMenu menu={menu} key={menu.name} />
+                    ))}
+                  </ul>
+                  <div className="flex-center gap-x-5">
+                    <button
+                      aria-label="inspection-progress"
+                      className="bg-white/5 relative px-3 py-1.5 shadow rounded-xl flex-center font-semibold hover:bg-highlight-primary hover:text-text-tertiary transition"
+                    >
+                      Check Status
+                    </button>
+                    <div className="lg:hidden">
+                      <MobMenu Menus={Menus} />
+                    </div>
+                  </div>
+                </nav>
+              </header>
+              {/* <ChatBox /> */}
+              <Footer />
+          </WebSocketProvider>
+        </RestProvider>
+      </GlobalDataProvider>
     </div>
   );
 }
