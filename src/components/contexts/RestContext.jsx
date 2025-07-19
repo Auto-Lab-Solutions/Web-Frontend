@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { RestClient } from '../../classes/RestClient';
 
 const REST_ENDPOINT = 'https://91maaqr173.execute-api.ap-southeast-2.amazonaws.com/production/';
@@ -19,6 +19,13 @@ export const RestProvider = ({ children }) => {
     console.log('Removing RestClient');
     setRestClient(null);
   }, []);
+
+  useEffect(() => {
+    createRestClient();
+    return () => {
+      clearRestClient();
+    };
+  }, []); // Remove dependencies to prevent infinite loop
 
   return (
     <RestContext.Provider

@@ -18,10 +18,12 @@ const WebSocketContext = createContext(undefined);
 export const WebSocketProvider = ({ children }) => {
   const { restClient } = useRestClient();
   const { userId, userData, messages, staffUserTyping, updateUserId,
-      updateUserData, updateMessages, updateStaffUserTyping,
+      updateMessages, updateStaffUserTyping,
       clearUserData, clearMessages, clearStaffUserTyping } = useGlobalData();
   const [wsClient, setWsClient] = useState(null);
-  const [wsInitialized, setWsInitialized] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const pingIntervalRef = useRef(null);
+  const initializationRef = useRef(false);
 
 
   // Refs to maintain current values in closures
@@ -32,6 +34,7 @@ export const WebSocketProvider = ({ children }) => {
       userData,
       messages,
       staffUserTyping,
+      isConnecting,
   });
 
   // Update refs when values change
@@ -43,21 +46,9 @@ export const WebSocketProvider = ({ children }) => {
           userData,
           messages,
           staffUserTyping,
+          isConnecting,
       };
-  }, [restClient, wsClient, userId, userData, messages, staffUserTyping]);
-
-  // --- WebSocket creation/cleanup ---
-  useEffect(() => {
-      const { userId, userData, restClient } = refs.current;
-      if (userId && userData && restClient) {
-          if (restClient) {
-              createWebSocket();
-          } else {
-              closeWebSocket();
-          }
-      }
-      return () => closeWebSocket();
-  }, [restClient, createWebSocket, closeWebSocket]);
+  }, [restClient, wsClient, userId, userData, messages, staffUserTyping, isConnecting]);
 
   // Handle notification events
   const handleNotification = useCallback((eventData) => {
@@ -82,7 +73,7 @@ export const WebSocketProvider = ({ children }) => {
           } else if (eventData.status === 'TYPING' && eventData.success) {
               if (!staffUserTyping) {
                   updateStaffUserTyping(true);
-                  updateMessages(
+                  updateMessages([
                       ...messages,
                       {
                           type: 'typing',
@@ -93,7 +84,7 @@ export const WebSocketProvider = ({ children }) => {
                           received: true,
                           viewed: true,
                       },
-                  );
+                  ]);
                   setTimeout(() => {
                       updateStaffUserTyping(false);
                       updateMessages(messages.filter(msg => msg.type !== 'typing'));
@@ -161,6 +152,28 @@ export const WebSocketProvider = ({ children }) => {
     }
   }, [restClient, messages, updateMessages]);
 
+  // Setup WebSocket ping
+  const setupWebSocketPing = useCallback(() => {
+    const { wsClient, userId, restClient } = refs.current;
+    if (!wsClient) return;
+    
+    // Clear existing ping interval
+    if (pingIntervalRef.current) {
+      clearInterval(pingIntervalRef.current);
+    }
+    
+    pingIntervalRef.current = setInterval(() => {
+      if (
+        wsClient.readyState === WebSocket.OPEN &&
+        userId &&
+        restClient
+      ) {
+        wsClient.send(JSON.stringify({ action: 'ping', userId }));
+        console.log('📬 Ping sent');
+      }
+    }, 30000);
+  }, []);
+
   // Handle connection events
   const handleConnection = useCallback((eventData) => {
     switch (eventData.subtype) {
@@ -170,21 +183,28 @@ export const WebSocketProvider = ({ children }) => {
           return;
         }
         console.log('📬 Connection initialized:', eventData);
-        setWsInitialized(true);
         updateUserId(eventData.userId);
         setTimeout(setupWebSocketPing, 2000);
     }
-  }, [updateUserId]);
+  }, [updateUserId, setupWebSocketPing]);
 
   const createWebSocket = useCallback((userData) => {
-    const wsClient = refs.current.wsClient;
+    const { wsClient, isConnecting } = refs.current;
+    
+    // Prevent multiple simultaneous connections
+    if (isConnecting || (wsClient && wsClient.readyState === WebSocket.CONNECTING)) {
+      console.log('WebSocket connection already in progress, skipping...');
+      return;
+    }
+    
     if (wsClient) {
         wsClient.close();
         refs.current.wsClient = null;
         setWsClient(null);
-        setWsInitialized(false);
     }
 
+    setIsConnecting(true);
+    
     const newWsClient = new ReconnectingWebSocket(webSocketEndpoint, [], {
       connectionTimeout: 1000,
       maxReconnectionDelay: 5000,
@@ -195,11 +215,23 @@ export const WebSocketProvider = ({ children }) => {
 
     newWsClient.onopen = () => {
         console.log('WebSocket connection established');
-        newWsClient.send(JSON.stringify({ action: 'init', userId: userData.userId, userData }));
+        setIsConnecting(false);
+        newWsClient.send(JSON.stringify({ action: 'init', userId: userData?.userId, userData }));
+        console.log('📬 Connection initialized:', { userId: userData?.userId, userData });
     };
 
     newWsClient.onerror = (error) => {
         console.error('WebSocket error:', error);
+        setIsConnecting(false);
+    };
+
+    newWsClient.onclose = (event) => {
+        console.log('WebSocket connection closed:', event.code, event.reason);
+        setIsConnecting(false);
+        // Reset initialization flag if connection was closed unexpectedly
+        if (event.code !== 1000) { // 1000 is normal closure
+          initializationRef.current = false;
+        }
     };
 
     newWsClient.onmessage = (event) => {
@@ -222,10 +254,22 @@ export const WebSocketProvider = ({ children }) => {
 
     refs.current.wsClient = newWsClient;
     setWsClient(newWsClient);
+    console.log('WebSocket client created:', newWsClient);
   }, [handleNotification, handleMessage, handleConnection]);
 
   // Close WebSocket connection
   const closeWebSocket = useCallback(() => {
+    console.log("closing web sockets");
+    
+    // Reset initialization flag
+    initializationRef.current = false;
+    
+    // Clear ping interval
+    if (pingIntervalRef.current) {
+      clearInterval(pingIntervalRef.current);
+      pingIntervalRef.current = null;
+    }
+    
     const wsClient = refs.current.wsClient;
     if (wsClient) {
       try {
@@ -235,10 +279,53 @@ export const WebSocketProvider = ({ children }) => {
       } finally {
         refs.current.wsClient = null;
         setWsClient(null);
-        setWsInitialized(false);
+        setIsConnecting(false);
       }
     }
   }, []);
+
+  // --- WebSocket creation/cleanup ---
+  useEffect(() => {
+      // Only create WebSocket if restClient exists and no active connection
+      if (restClient && !wsClient && !isConnecting && !initializationRef.current) {
+        console.log('Creating WebSocket connection...');
+        initializationRef.current = true;
+        createWebSocket(userData);
+      }
+      
+      // Cleanup function for StrictMode
+      return () => {
+        if (process.env.NODE_ENV === 'development') {
+          // In development, StrictMode might cause this cleanup to run
+          // We'll handle actual cleanup in the unmount effect
+          console.log('Development cleanup called, skipping...');
+        }
+      };
+  }, [restClient]); // Only depend on restClient to minimize re-renders
+  
+  // Separate effect for cleanup when restClient is removed
+  useEffect(() => {
+      if (!restClient && wsClient) {
+        console.log('Closing WebSocket connection due to missing restClient...');
+        initializationRef.current = false;
+        closeWebSocket();
+      }
+  }, [restClient, wsClient]);
+  
+  // Cleanup on component unmount
+  useEffect(() => {
+      return () => {
+        console.log('Component unmounting, cleaning up WebSocket...');
+        initializationRef.current = false;
+        if (pingIntervalRef.current) {
+          clearInterval(pingIntervalRef.current);
+        }
+        const currentWsClient = refs.current.wsClient;
+        if (currentWsClient) {
+          currentWsClient.close();
+        }
+      };
+  }, []); // Only run on mount/unmount
 
   // Reconnect WebSocket
   const reconnectWebSocket = useCallback(() => {
@@ -251,22 +338,6 @@ export const WebSocketProvider = ({ children }) => {
     }
   }, [createWebSocket, closeWebSocket]);
 
-  // Setup WebSocket ping
-  function setupWebSocketPing() {
-    const { wsClient, userId, restClient } = refs.current;
-    if (!wsClient) return;
-    const pingInterval = setInterval(() => {
-      if (
-        wsClient.readyState === WebSocket.OPEN &&
-        userId &&
-        restClient
-      ) {
-        wsClient.send(JSON.stringify({ action: 'ping', userId }));
-      }
-    }, 30000);
-    return () => clearInterval(pingInterval);
-  }
-
   return (
     <WebSocketContext.Provider value={{ reconnectWebSocket }}>
       {children}
@@ -274,10 +345,10 @@ export const WebSocketProvider = ({ children }) => {
   );
 };
 
-export const useWebSocket = () => {
+export function useWebSocket() {
   const context = useContext(WebSocketContext);
   if (!context) {
     throw new Error('useWebSocket must be used within a WebSocketProvider');
   }
   return context;
-};
+}
