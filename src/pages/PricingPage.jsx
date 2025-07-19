@@ -2,14 +2,14 @@ import PageContainer from '../components/common/PageContainer';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { getServiceById, getPlanById } from "../meta/menu";
-import { useFormData } from '../components/contexts/GlobalDataContext';
+import { useGlobalData } from '../components/contexts/GlobalDataContext';
 import { Check } from 'lucide-react';
 
 const PricingPage = ({ serviceId }) => {
   const navigate = useNavigate();
   const serviceName = getServiceById(serviceId)?.name || "Service";
   const plans = getServiceById(serviceId)?.plans || [];
-  const { updateFormData  } = useFormData();
+  const { updateAppointmentFormData } = useGlobalData();
   return (
     <PageContainer>
       <div className="py-16 bg-background-primary text-text-primary">
@@ -40,7 +40,7 @@ const PricingPage = ({ serviceId }) => {
                 className="mt-auto px-4 py-2 font-semibold rounded-lg
                 bg-button-primary text-text-tertiary hover:bg-highlight-primary transition"
                 onClick={() => {
-                  updateFormData({
+                  updateAppointmentFormData({
                     serviceId: serviceId,
                     planId: plan.id,
                   });

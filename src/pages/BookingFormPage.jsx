@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { useFormData } from '../components/contexts/GlobalDataContext'
+import { useGlobalData } from '../components/contexts/GlobalDataContext'
 import { useNavigate } from 'react-router-dom'
 import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 
 function BookingFormPage() {
   const navigate = useNavigate()
-  const { formData, getFormData, updateFormData } = useFormData()
+  const { appointmentFormData, updateAppointmentFormData } = useGlobalData()
   const [errors, setErrors] = useState({})
   const [isBuyer, setIsBuyer] = useState(true) // Toggle state
 
@@ -29,25 +29,23 @@ function BookingFormPage() {
   })
 
   useEffect(() => {
-    const prevFormData = getFormData()
-    updateFormData(prevFormData)
     setClientData({
-      isBuyer: prevFormData.isBuyer || true,
-      buyerName: prevFormData.buyerData?.name || "",
-      buyerEmail: prevFormData.buyerData?.email || "",
-      buyerPhoneNumber: prevFormData.buyerData?.phoneNumber || "",
-      carMake: prevFormData.carData?.make || "",
-      carModel: prevFormData.carData?.model || "",
-      carYear: prevFormData.carData?.year || "",
-      carLocation: prevFormData.carData?.location || "",
-      sellerName: prevFormData.sellerData?.name || "",
-      sellerEmail: prevFormData.sellerData?.email || "",
-      sellerPhoneNumber: prevFormData.sellerData?.phoneNumber || "",
-      notes: prevFormData.notes || "",
+      isBuyer: appointmentFormData.isBuyer || true,
+      buyerName: appointmentFormData.buyerData?.name || "",
+      buyerEmail: appointmentFormData.buyerData?.email || "",
+      buyerPhoneNumber: appointmentFormData.buyerData?.phoneNumber || "",
+      carMake: appointmentFormData.carData?.make || "",
+      carModel: appointmentFormData.carData?.model || "",
+      carYear: appointmentFormData.carData?.year || "",
+      carLocation: appointmentFormData.carData?.location || "",
+      sellerName: appointmentFormData.sellerData?.name || "",
+      sellerEmail: appointmentFormData.sellerData?.email || "",
+      sellerPhoneNumber: appointmentFormData.sellerData?.phoneNumber || "",
+      notes: appointmentFormData.notes || "",
     })
   }, [])
 
-  if (!formData.serviceId || !formData.planId) {
+  if (!appointmentFormData.serviceId || !appointmentFormData.planId) {
     navigate('/')
   }
 
@@ -79,8 +77,8 @@ function BookingFormPage() {
 
     if (Object.keys(newErrors).length > 0) return
 
-    updateFormData({
-      ...formData,
+    updateAppointmentFormData({
+      ...appointmentFormData,
       isBuyer,
       buyerData: {
         name: clientData.buyerName,

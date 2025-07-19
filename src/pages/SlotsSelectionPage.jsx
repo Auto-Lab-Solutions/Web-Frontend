@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useFormData } from '../components/contexts/GlobalDataContext';
+import { useGlobalData } from '../components/contexts/GlobalDataContext';
 import { useNavigate } from 'react-router-dom';
 import { format, set } from 'date-fns';
 import {
@@ -51,7 +51,7 @@ const timeSlots = generateTimeSlots();
 
 function SlotsSelectionPage() {
   const navigate = useNavigate();
-  const { formData, getFormData, updateFormData } = useFormData();
+  const { appointmentFormData, updateAppointmentFormData } = useGlobalData();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedSlots, setSelectedSlots] = useState([]);
   
@@ -69,9 +69,7 @@ function SlotsSelectionPage() {
   );
 
   useEffect(() => {
-    const prevFormData = getFormData();
-    updateFormData(prevFormData);
-    setSelectedSlots(prevFormData?.selectedSlots? prevFormData.selectedSlots.map(slot => ({
+    setSelectedSlots(appointmentFormData?.selectedSlots ? appointmentFormData.selectedSlots.map(slot => ({
       id: `${slot.date}_${slot.start}`,
       date: slot.date,
       start: slot.start,
@@ -79,7 +77,7 @@ function SlotsSelectionPage() {
     })) : []);
   }, []);
 
-  if (!formData.serviceId || !formData.planId) {
+  if (!appointmentFormData.serviceId || !appointmentFormData.planId) {
     navigate('/');
   }
 
@@ -134,8 +132,8 @@ function SlotsSelectionPage() {
       alert('Please select at least one time slot.');
       return;
     }
-    updateFormData({
-      ...formData,
+    updateAppointmentFormData({
+      ...appointmentFormData,
       selectedSlots: selectedSlots.map((s, index) => ({
         date: s.date,
         start: s.start,
