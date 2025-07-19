@@ -52,7 +52,7 @@ export const WebSocketProvider = ({ children }) => {
 
   // Handle notification events
   const handleNotification = useCallback((eventData) => {
-    const { restClient, userData, messages } = refs.current;
+    const { messages } = refs.current;
 
     switch (eventData.subtype) {
       case 'status':
@@ -122,6 +122,7 @@ export const WebSocketProvider = ({ children }) => {
 
   // Handle message events
   const handleMessage = useCallback(async (eventData) => {
+    const { restClient, messages } = refs.current;
     switch (eventData.subtype) {
         case 'send':
         if (eventData.success === true) {
@@ -189,7 +190,7 @@ export const WebSocketProvider = ({ children }) => {
   }, [updateUserId, setupWebSocketPing]);
 
   const createWebSocket = useCallback((userData) => {
-    const { wsClient, isConnecting } = refs.current;
+    const { wsClient } = refs.current;
     
     // Prevent multiple simultaneous connections
     if (isConnecting || (wsClient && wsClient.readyState === WebSocket.CONNECTING)) {
@@ -214,10 +215,11 @@ export const WebSocketProvider = ({ children }) => {
     });
 
     newWsClient.onopen = () => {
+        const { userId, userData } = refs.current;
         console.log('WebSocket connection established');
         setIsConnecting(false);
-        newWsClient.send(JSON.stringify({ action: 'init', userId: userData?.userId, userData }));
-        console.log('📬 Connection initialized:', { userId: userData?.userId, userData });
+        newWsClient.send(JSON.stringify({ action: 'init', userId: userId, userData }));
+        console.log('📬 Connection initialized:', { userId: userId, userData });
     };
 
     newWsClient.onerror = (error) => {
@@ -286,6 +288,7 @@ export const WebSocketProvider = ({ children }) => {
 
   // --- WebSocket creation/cleanup ---
   useEffect(() => {
+      const { wsClient, userData } = refs.current;
       // Only create WebSocket if restClient exists and no active connection
       if (restClient && !wsClient && !isConnecting && !initializationRef.current) {
         console.log('Creating WebSocket connection...');
@@ -305,6 +308,7 @@ export const WebSocketProvider = ({ children }) => {
   
   // Separate effect for cleanup when restClient is removed
   useEffect(() => {
+      const { wsClient, restClient } = refs.current;
       if (!restClient && wsClient) {
         console.log('Closing WebSocket connection due to missing restClient...');
         initializationRef.current = false;
