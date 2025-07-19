@@ -57,7 +57,7 @@ export const WebSocketProvider = ({ children }) => {
           }
       }
       return () => closeWebSocket();
-  }, [restClient]);
+  }, [restClient, createWebSocket, closeWebSocket]);
 
   // Handle notification events
   const handleNotification = useCallback((eventData) => {
@@ -127,7 +127,7 @@ export const WebSocketProvider = ({ children }) => {
           console.error('❗ Unknown notification type:', eventData.type);
           break;
     }
-  }, []);
+  }, [updateMessages, updateStaffUserTyping]);
 
   // Handle message events
   const handleMessage = useCallback(async (eventData) => {
@@ -159,7 +159,7 @@ export const WebSocketProvider = ({ children }) => {
         console.error('❗ Unknown message subtype:', eventData);
         break;
     }
-  }, []);
+  }, [restClient, messages, updateMessages]);
 
   // Handle connection events
   const handleConnection = useCallback((eventData) => {
@@ -174,7 +174,7 @@ export const WebSocketProvider = ({ children }) => {
         updateUserId(eventData.userId);
         setTimeout(setupWebSocketPing, 2000);
     }
-  }, []);
+  }, [updateUserId]);
 
   const createWebSocket = useCallback((userData) => {
     const wsClient = refs.current.wsClient;
@@ -222,7 +222,7 @@ export const WebSocketProvider = ({ children }) => {
 
     refs.current.wsClient = newWsClient;
     setWsClient(newWsClient);
-  }, []);
+  }, [handleNotification, handleMessage, handleConnection]);
 
   // Close WebSocket connection
   const closeWebSocket = useCallback(() => {
