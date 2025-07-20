@@ -67,6 +67,16 @@ function BookingFormPage() {
     setClientData((prev) => ({ ...prev, isBuyer: buyerStatus }))
   }
 
+  const isFormValid = () => {
+    if (isBuyer) {
+      return clientData.buyerName && clientData.buyerEmail && clientData.buyerPhoneNumber && 
+             clientData.carMake && clientData.carModel && clientData.carYear
+    } else {
+      return clientData.sellerName && clientData.sellerEmail && clientData.sellerPhoneNumber && 
+             clientData.carMake && clientData.carModel && clientData.carYear
+    }
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
     const newErrors = {}
@@ -319,16 +329,21 @@ function BookingFormPage() {
                 </div>
 
                 <motion.div
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
+                  whileHover={{ scale: isFormValid() ? 1.01 : 1 }}
+                  whileTap={{ scale: isFormValid() ? 0.99 : 1 }}
                   className="flex justify-center mt-0"
                 >
-                  <Button 
+                  <button
                     type="submit" 
-                    className="animated-button-primary px-7 sm:px-20"
+                    disabled={!isFormValid()}
+                    className={`px-7 sm:px-20 py-3 rounded-xl text-lg font-semibold transition-all duration-200 transform ${
+                      isFormValid()
+                        ? 'animated-button-primary'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`}
                   >
                     Continue to Slot Selection →
-                  </Button>
+                  </button>
                 </motion.div>
               </form>
             </CardContent>
@@ -345,7 +360,7 @@ function BookingFormPage() {
               <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-              Back to Booking Form
+              Back to Plan Selection
             </motion.button>
           </div>
         </motion.div>

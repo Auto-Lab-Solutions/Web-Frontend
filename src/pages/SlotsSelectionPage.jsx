@@ -169,14 +169,24 @@ function SlotsSelectionPage() {
         </div>
 
         {/* Calendar + Time Slots side by side */}
-        <div className="rounded-2xl shadow-xl border border-gray-100 overflow-hidden bg-background-tertiary">
+        <div className="rounded-2xl shadow-xl border border-border-secondary overflow-hidden bg-background-tertiary">
           <div className="flex flex-col lg:flex-row">
             {/* Calendar */}
-            <div className="lg:w-2/5 p-8 bg-card-primary border-r border-gray-100 flex flex-col">
+            <div className="lg:w-2/5 p-8 bg-card-primary border-r border-border-secondary flex flex-col">
               <div className="space-y-6">
                 <div className="text-center lg:text-left">
-                  <h3 className="text-xl font-semibold text-text-primary mb-1">Select a Date</h3>
-                  <p className="text-text-secondary">Choose your preferred appointment date</p>
+                  <div className="flex flex-col lg:flex-row items-center gap-4">
+                    <div className="w-10 h-10 blue-light-gradient rounded-lg flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold text-text-primary mb-1 sm:mb-0">Select a Date</h3>
+                      <p className="text-text-secondary">Choose your preferred appointment date</p>
+                    </div>
+                  </div>
+                  
                 </div>
                 <div className="flex justify-center">
                   <div className="rounded-2xl shadow-xl border-2 border-blue-100 bg-text-primary p-4 transition-all duration-200 hover:shadow-2xl hover:border-blue-300">
@@ -196,8 +206,17 @@ function SlotsSelectionPage() {
             <div className="lg:w-3/5 p-8">
               <div className="space-y-6">
                 <div className="text-center lg:text-left">
-                  <h3 className="text-xl font-semibold text-text-primary mb-1">Available Time Slots</h3>
-                  <p className="text-text-secondary">Select up to 4 time slots for your appointment</p>
+                  <div className="flex flex-col lg:flex-row items-center gap-4">
+                    <div className="w-10 h-10 green-light-gradient rounded-lg flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold text-text-primary mb-1 sm:mb-0">Available Time Slots</h3>
+                      <p className="text-text-secondary">Select up to 4 time slots for your appointment</p>
+                    </div>
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
                   {timeSlots.map((slot) => {
@@ -253,16 +272,25 @@ function SlotsSelectionPage() {
         </div>
 
         {/* Selected Slots */}
-        <div className="bg-background-tertiary rounded-2xl shadow-xl mt-4 border border-gray-100 p-8">
+        <div className="bg-background-tertiary rounded-2xl shadow-xl mt-4 border border-border-secondary p-8">
           <div className="space-y-6">
             <div className="text-center lg:text-left">
-              <h3 className="text-2xl font-semibold text-text-primary mb-1">Your Selected Slots</h3>
-              <p className="text-md text-text-secondary">
-                {selectedSlots.length === 0 
-                  ? "No slots selected yet. Choose your preferred time slots above."
-                  : `${selectedSlots.length} slot${selectedSlots.length > 1 ? 's' : ''} selected. Drag to reorder by priority.`
-                }
-              </p>
+              <div className="flex flex-col lg:flex-row items-center gap-4">
+                <div className="w-10 h-10 purple-light-gradient rounded-lg flex items-center justify-center">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-2xl font-semibold text-text-primary mb-1 sm:mb-0">Your Selected Slots</h3>
+                  <p className="text-md text-text-secondary">
+                    {selectedSlots.length === 0 
+                      ? "No slots selected yet. Choose your preferred time slots above."
+                      : `${selectedSlots.length} slot${selectedSlots.length > 1 ? 's' : ''} selected. Drag to reorder by priority.`
+                    }
+                  </p>
+                </div>
+              </div>
             </div>
             
             {selectedSlots.length === 0 ? (
@@ -296,7 +324,7 @@ function SlotsSelectionPage() {
         <div className="flex justify-center mt-8">
           <button
             disabled={selectedSlots.length === 0}
-            className={`relative px-20 rounded-xl text-lg font-semibold transition-all duration-200 transform ${
+            className={`relative px-12 py-3 rounded-xl text-lg font-semibold transition-all duration-200 transform ${
               selectedSlots.length > 0
                 ? 'animated-button-primary'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
