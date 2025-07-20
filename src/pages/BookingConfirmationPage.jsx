@@ -243,25 +243,31 @@ function BookingConfirmationPage() {
         )}
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
-          <button
-            onClick={handleBack}
-            className="px-8 py-4 rounded-xl text-lg font-semibold border-2 border-border-secondary text-text-secondary hover:border-border-tertiary hover:bg-card-primary/50 transition-all duration-200 transform hover:scale-105 backdrop-blur-sm"
-          >
-            <svg className="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to Slots
-          </button>
+        <div className="flex justify-center pt-8">
           <button
             onClick={handleConfirm}
-            className="relative px-8 py-4 rounded-xl text-lg font-semibold bg-gradient-to-r from-button-primary to-highlight-primary hover:from-highlight-primary hover:to-highlight-secondary text-text-tertiary shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 focus:ring-4 focus:ring-highlight-primary/30"
+            className="relative px-10 py-3 rounded-xl text-lg font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 focus:ring-4 focus:ring-blue-300"
           >
             <svg className="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             Confirm & Submit
           </button>
+        </div>
+          
+        {/* Back Button */}
+        <div className="flex justify-start mt-6">
+          <motion.button
+            onClick={handleBack}
+            className="flex items-center gap-2 px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm"
+            whileHover={{ x: -4 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Slots
+          </motion.button>
         </div>
       </div>
     </motion.div>

@@ -9,7 +9,6 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import FormField from "@/components/common/FormField"
 import FormSection from "@/components/common/FormSection"
 import { useMobileInputStyling } from "../hooks/useMobileOptimization"
-import { getPlansAndPricingUrl } from "../meta/menu"
 
 function BookingFormPage() {
   const navigate = useNavigate()
@@ -117,16 +116,15 @@ function BookingFormPage() {
 
   return (
     <TooltipProvider>
-      <div className="bg-background-primary text-text-primary min-h-screen px-4 pt-20 pb-10">
+      <div className="bg-background-primary text-text-primary min-h-screen px-4 py-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="max-w-6xl mx-auto"
         >
-
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2 bg-text-primary bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold mb-2 bg-text-primary bg-clip-text text-transparent">
               Vehicle & Contact Details
             </h1>
             <p className="text-text-secondary text-lg">
@@ -256,7 +254,7 @@ function BookingFormPage() {
                       onChange={handleChange}
                       error={errors.carMake}
                       required={true}
-                      tooltip="Car manufacturer (e.g., Toyota, Honda, BMW)"
+                      tooltip="Vehicle manufacturer (e.g., Toyota, Honda, BMW)"
                     />
                     <FormField
                       id="carModel"
@@ -277,18 +275,18 @@ function BookingFormPage() {
                       onChange={handleChange}
                       error={errors.carYear}
                       required={true}
-                      tooltip="Manufacturing year of the car"
+                      tooltip="Manufacturing year of the vehicle"
                       min="1900"
                       max={new Date().getFullYear() + 1}
                     />
                     <FormField
                       id="carLocation"
                       name="carLocation"
-                      label="Location"
+                      label="Current Location"
                       value={clientData.carLocation}
                       onChange={handleChange}
-                      tooltip="Where the Car is located for inspection scheduling"
-                      placeholder="Address, City or State"
+                      tooltip="Where the vehicle is located for inspection scheduling"
+                      placeholder="City, State or Address"
                     />
                   </div>
                 </FormSection>
@@ -307,7 +305,7 @@ function BookingFormPage() {
                       value={clientData.notes} 
                       onChange={handleChange} 
                       rows={4} 
-                      placeholder="Any specific concerns, requests, or information about the car..."
+                      placeholder="Any specific concerns, requests, or information about the vehicle..."
                       className="w-full rounded-lg border border-border-secondary px-4 py-3 text-base shadow-sm focus:outline-none focus:ring-2 focus:ring-border-tertiary/20 focus:border-border-tertiary resize-none transition-all duration-200 hover:border-border-tertiary/50 min-h-[2.75rem]" 
                     />
                   </div>
@@ -325,7 +323,7 @@ function BookingFormPage() {
                 >
                   <Button 
                     type="submit" 
-                    className="w-full bg-button-primary text-text-tertiary hover:bg-highlight-primary py-5 text-lg rounded-xl shadow-lg transition-all duration-300 transform hover:shadow-xl"
+                    className="w-full bg-button-primary text-text-tertiary hover:bg-highlight-primary py-4 font-bold rounded-xl shadow-lg transition-all duration-300 transform hover:shadow-xl"
                   >
                     Continue to Slot Selection →
                   </Button>
@@ -333,22 +331,6 @@ function BookingFormPage() {
               </form>
             </CardContent>
           </Card>
-
-          {/* Back Button */}
-          <div className="flex justify-start mt-6">
-            <motion.button
-              onClick={() => navigate(`${getPlansAndPricingUrl(appointmentFormData.serviceId)}`)}
-              className="flex items-center gap-2 px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm"
-              whileHover={{ x: -4 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Back to Pricing
-            </motion.button>
-          </div>
-
         </motion.div>
       </div>
     </TooltipProvider>
