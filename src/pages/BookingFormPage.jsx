@@ -138,7 +138,7 @@ function BookingFormPage() {
               <Button
                 type="button"
                 onClick={() => handleToggleChange(true)}
-                className={`px-8 py-3 rounded-2xl transition-all duration-300 font-semibold
+                className={`px-6 py-2 rounded-2xl transition-all duration-300 font-semibold
                   ${
                     isBuyer
                       ? "bg-highlight-primary text-text-tertiary shadow-lg transform scale-105 ml-1"
@@ -150,7 +150,7 @@ function BookingFormPage() {
               <Button
                 type="button"
                 onClick={() => handleToggleChange(false)}
-                className={`px-8 py-3 rounded-2xl transition-all duration-300 font-semibold
+                className={`px-6 py-2 rounded-2xl transition-all duration-300 font-semibold
                   ${
                     !isBuyer
                       ? "bg-highlight-primary text-text-tertiary shadow-lg transform scale-105 mr-1"

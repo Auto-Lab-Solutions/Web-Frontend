@@ -23,32 +23,35 @@ const FormField = ({
         <Label htmlFor={id} className="text-text-primary font-medium text-base">
           {label} {required && <span className="text-red-500">*</span>}
         </Label>
+      </div>
+      <div className="relative">
+        <Input 
+          id={id}
+          name={name}
+          type={type}
+          value={value}
+          onChange={onChange}
+          className={cn(
+            "transition-all duration-200 focus:ring-2 focus:ring-border-tertiary/20",
+            error ? "border-red-500 focus:border-red-500" : "border-border-secondary hover:border-border-tertiary/50 focus:border-border-tertiary",
+            tooltip ? "pr-10" : "",
+            className
+          )}
+          {...props}
+        />
         {tooltip && (
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className="w-4 h-4 rounded-full bg-border-primary text-white text-xs flex items-center justify-center cursor-help hover:bg-border-secondary transition-colors">
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 rounded-full bg-border-primary text-white text-xs flex items-center justify-center cursor-help hover:bg-border-secondary transition-colors">
                 ?
               </div>
             </TooltipTrigger>
-            <TooltipContent side="top" className="max-w-xs">
+            <TooltipContent side="left" sideOffset={8} className="max-w-xs">
               <p>{tooltip}</p>
             </TooltipContent>
           </Tooltip>
         )}
       </div>
-      <Input 
-        id={id}
-        name={name}
-        type={type}
-        value={value}
-        onChange={onChange}
-        className={cn(
-          "transition-all duration-200 focus:ring-2 focus:ring-border-tertiary/20",
-          error ? "border-red-500 focus:border-red-500" : "border-border-secondary hover:border-border-tertiary/50 focus:border-border-tertiary",
-          className
-        )}
-        {...props}
-      />
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
     </div>
   )
