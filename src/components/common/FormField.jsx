@@ -43,7 +43,7 @@ const FormField = ({
         value={value}
         onChange={onChange}
         className={cn(
-          "transition-all duration-200 focus:ring-2 focus:ring-border-tertiary/20",
+          "transition-all duration-200 focus:ring-2 focus:ring-border-tertiary/20 text-sm",
           error ? "border-red-500 focus:border-red-500" : "border-border-secondary hover:border-border-tertiary/50 focus:border-border-tertiary",
           className
         )}
