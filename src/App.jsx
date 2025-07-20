@@ -75,7 +75,7 @@ export default function App() {
     <div>
       <GlobalDataProvider>
         <RestProvider>
-          <WebSocketProvider>
+          {/* <WebSocketProvider> */}
               <AnimatedRoutes />
               {/* <header className="h-16 text-[15px] fixed inset-0 flex-center bg-white-50"> */}
               <header
@@ -112,7 +112,7 @@ export default function App() {
               </header>
               {/* <ChatBox /> */}
               <Footer />
-          </WebSocketProvider>
+          {/* </WebSocketProvider> */}
         </RestProvider>
       </GlobalDataProvider>
     </div>

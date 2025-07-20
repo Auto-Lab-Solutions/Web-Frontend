@@ -1,3 +1,4 @@
+import { se } from "date-fns/locale/se";
 import { ShoppingCart } from "lucide-react";
 import { Settings } from "lucide-react";
 import { Book } from "lucide-react";
@@ -169,3 +170,7 @@ export const getPlanById = (serviceId, planId) => {
 export const getMenuByName = (name) => {
   return Menus.find((menu) => menu.name === name);
 };
+
+export const getPlansAndPricingUrl = (serviceId) => {
+  return `${Menus.find(menu => menu.name === "Plans & Pricing").path}${getServiceById(serviceId).subpath}`;
+}

@@ -18,6 +18,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Calendar } from '@/components/ui/calendar';
+import { motion } from 'framer-motion';
 
 const generateTimeSlots = () => {
   const slots = [];
@@ -145,110 +146,195 @@ function SlotsSelectionPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto py-10 px-4 space-y-10 text-black">
-      <h2 className="text-3xl font-bold text-center">Book Your Time Slots</h2>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen w-full mx-auto bg-background-primary py-20 px-3 sm:px-12"
+    >
 
-      {/* Calendar + Time Slots side by side */}
-      <div className="flex flex-col md:flex-row md:space-x-6 items-start">
-        {/* Calendar */}
-        <div className="flex flex-col items-center md:items-start w-full mb-4 md:w-1/3">
-          <span className="font-medium block mb-4 text-gray-100">Select a Date</span>
-          <Calendar
-            mode="single"
-            selected={selectedDate}
-            onSelect={setSelectedDate}
-            className="rounded-md border shadow"
-          />
-        </div>
-
-        {/* Time Slots - no scroll, just wrap */}
-        <div className="md:w-2/3">
-          <div className="flex flex-col items-center md:items-start w-full mb-4">
-            <span className="font-medium block text-gray-100">Available Time Slots</span>
-          </div>
-          <div className="flex flex-wrap gap-4">
-            {timeSlots.map((slot) => {
-              const dateStr = format(selectedDate, 'yyyy-MM-dd');
-              const isSelected = selectedSlots.find(
-                (s) => s.date === dateStr && s.start === slot.start
-              );
-
-              const overlapping = isOverlapping({
-                date: dateStr,
-                start: slot.start,
-                end: slot.end,
-              });
-
-              return (
-                <button
-                  key={slot.start}
-                  onClick={() => handleSelect(slot)}
-                  disabled={isSelected || overlapping}
-                  className={`rounded-lg px-4 py-2 text-sm border transition select-none ${
-                    isSelected
-                      ? 'bg-green-500 text-white border-green-600'
-                      : overlapping
-                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed border-gray-300'
-                      : 'hover:bg-blue-100 bg-white text-black border-blue-400'
-                  }`}
-                  title={
-                    isSelected
-                      ? 'Slot selected'
-                      : overlapping
-                      ? 'Overlapping slot - not available'
-                      : 'Click to select this slot'
-                  }
-                >
-                  {slot.start} - {slot.end}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Selected Slots */}
-      <div>
-        <h3 className="font-medium mb-3 text-gray-100 text-center md:text-left mt-6 md:mt-0 mb-4 md:mb-6">Your Selected Slots</h3>
-        {selectedSlots.length === 0 ? (
-          <p className="text-gray-500 text-center">
-            No slots selected yet. Please select a date and choose your time slots.
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold mb-2 bg-text-primary bg-clip-text text-transparent">
+            Book Your Time Slots
+          </h1>
+          <p className="text-text-secondary text-lg hidden sm:block">
+            Select your preferred date and time slots for the appointment.
           </p>
-        ) : (
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDnd}>
-            <SortableContext
-              items={selectedSlots.map((s) => s.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              <ul className="space-y-3">
-                {selectedSlots.map((slot) => (
-                  <SortableSlot key={slot.id} slot={slot} onRemove={handleRemove} />
-                ))}
-              </ul>
-            </SortableContext>
-          </DndContext>
-        )}
-      </div>
+          <p className="text-text-secondary text-lg hidden sm:block">
+            You can choose up to 4 slots and reorder them by priority.
+          </p>
+          <p className="text-text-secondary text-lg sm:hidden">
+            Select your preferred date and time slots for the appointment. You can choose up to 4 slots and reorder them by priority.
+          </p>
+        </div>
 
-      {/* Next button */}
-      <div className="flex justify-center mt-6">
-        <button
-          disabled={selectedSlots.length === 0}
-          className={`px-6 py-3 rounded-lg text-white font-semibold transition ${
-            selectedSlots.length > 0
-              ? 'bg-blue-600 hover:bg-blue-700'
-              : 'bg-gray-400 cursor-not-allowed'
-          }`}
-          onClick={handleNext}
-        >
-          Continue to Confirmation
-        </button>
-      </div>
-    </div>
+        {/* Calendar + Time Slots side by side */}
+        <div className="rounded-2xl shadow-xl border border-gray-100 overflow-hidden bg-background-tertiary">
+          <div className="flex flex-col lg:flex-row">
+            {/* Calendar */}
+            <div className="lg:w-2/5 p-8 bg-card-primary border-r border-gray-100 flex flex-col">
+              <div className="space-y-6">
+                <div className="text-center lg:text-left">
+                  <h3 className="text-xl font-semibold text-text-primary mb-1">Select a Date</h3>
+                  <p className="text-text-secondary">Choose your preferred appointment date</p>
+                </div>
+                <div className="flex justify-center">
+                  <div className="rounded-2xl shadow-xl border-2 border-blue-100 bg-text-primary p-4 transition-all duration-200 hover:shadow-2xl hover:border-blue-300">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={setSelectedDate}
+                      className="rounded-xl border-0 bg-transparent text-text-tertiary"
+                      captionLayout="dropdown-buttons"
+                      showOutsideDays
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* Time Slots */}
+            <div className="lg:w-3/5 p-8">
+              <div className="space-y-6">
+                <div className="text-center lg:text-left">
+                  <h3 className="text-xl font-semibold text-text-primary mb-1">Available Time Slots</h3>
+                  <p className="text-text-secondary">Select up to 4 time slots for your appointment</p>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
+                  {timeSlots.map((slot) => {
+                    const dateStr = format(selectedDate, 'yyyy-MM-dd');
+                    const isSelected = selectedSlots.find(
+                      (s) => s.date === dateStr && s.start === slot.start
+                    );
+
+                    const overlapping = isOverlapping({
+                      date: dateStr,
+                      start: slot.start,
+                      end: slot.end,
+                    });
+
+                    return (
+                      <button
+                        key={slot.start}
+                        onClick={() => handleSelect(slot)}
+                        disabled={isSelected || overlapping}
+                        className={`relative rounded-xl px-2 py-3 text-md font-medium border-2 transition-all duration-200 transform hover:scale-105 select-none ${
+                          isSelected
+                            ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white border-green-400 shadow-lg shadow-green-200'
+                            : overlapping
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200'
+                            : 'hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 bg-white text-gray-700 border-gray-200 hover:border-blue-300 hover:shadow-md'
+                        }`}
+                        title={
+                          isSelected
+                            ? 'Slot selected'
+                            : overlapping
+                            ? 'Overlapping slot - not available'
+                            : 'Click to select this slot'
+                        }
+                      >
+                        <div className="text-center">
+                          <div className="font-semibold">{slot.start}</div>
+                          <div className="text-xs opacity-75">to {slot.end}</div>
+                        </div>
+                        {isSelected && (
+                          <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
+                            <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Selected Slots */}
+        <div className="bg-background-tertiary rounded-2xl shadow-xl mt-4 border border-gray-100 p-8">
+          <div className="space-y-6">
+            <div className="text-center lg:text-left">
+              <h3 className="text-2xl font-semibold text-text-primary mb-1">Your Selected Slots</h3>
+              <p className="text-md text-text-secondary">
+                {selectedSlots.length === 0 
+                  ? "No slots selected yet. Choose your preferred time slots above."
+                  : `${selectedSlots.length} slot${selectedSlots.length > 1 ? 's' : ''} selected. Drag to reorder by priority.`
+                }
+              </p>
+            </div>
+            
+            {selectedSlots.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-border-tertiary flex items-center justify-center">
+                  <svg className="w-12 h-12 text-text-tertiary/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <p className="text-lg text-text-secondary/80 mb-2">No time slots selected</p>
+                <p className="text-md text-text-secondary">Select a date and choose your preferred time slots to get started</p>
+              </div>
+            ) : (
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDnd}>
+                <SortableContext
+                  items={selectedSlots.map((s) => s.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div className="space-y-3">
+                    {selectedSlots.map((slot, index) => (
+                      <SortableSlot key={slot.id} slot={slot} index={index} onRemove={handleRemove} />
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
+            )}
+          </div>
+        </div>
+
+        {/* Next button */}
+        <div className="flex justify-center pt-8">
+          <button
+            disabled={selectedSlots.length === 0}
+            className={`relative px-10 py-3 rounded-xl text-lg font-semibold transition-all duration-200 transform ${
+              selectedSlots.length > 0
+                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl hover:scale-105 focus:ring-4 focus:ring-blue-300'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+            onClick={handleNext}
+          >
+            {selectedSlots.length > 0 && (
+              <span className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+                {selectedSlots.length}
+              </span>
+            )}
+            Continue to Confirmation
+            <svg className="w-5 h-5 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </button>
+        </div>
+          
+        {/* Back Button */}
+        <div className="flex justify-start mt-6">
+          <motion.button
+            onClick={() => navigate('/booking-form')}
+            className="flex items-center gap-2 px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm"
+            whileHover={{ x: -4 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Booking Form
+          </motion.button>
+        </div>
+
+    </motion.div>
   );
 }
 
-function SortableSlot({ slot, onRemove }) {
+function SortableSlot({ slot, index, onRemove }) {
   const {
     attributes,
     listeners,
@@ -264,23 +350,36 @@ function SortableSlot({ slot, onRemove }) {
     opacity: isDragging ? 0.5 : 1,
   };
 
+  const priorityColors = [
+    'bg-gradient-to-r from-blue-500 to-blue-600',
+    'bg-gradient-to-r from-green-500 to-green-600', 
+    'bg-gradient-to-r from-orange-500 to-orange-600',
+    'bg-gradient-to-r from-purple-500 to-purple-600'
+  ];
+
   return (
-    <li
+    <div
       ref={setNodeRef}
       style={style}
       {...attributes}
-      className="bg-white text-black px-4 py-3 rounded-lg border flex items-center shadow"
+      className={`group relative bg-gradient-to-r from-gray-50 to-white border-2 border-gray-200 rounded-xl p-4 flex items-center shadow-md hover:shadow-lg transition-all duration-200 ${
+        isDragging ? 'shadow-2xl scale-105 border-blue-300' : ''
+      }`}
     >
-      {/* Bigger drag handle */}
+      {/* Priority Badge */}
+      <div className={`absolute -top-3 -left-3 w-8 h-8 ${priorityColors[index] || priorityColors[0]} text-white text-sm font-bold rounded-full flex items-center justify-center shadow-lg`}>
+        {index + 1}
+      </div>
+
+      {/* Drag Handle */}
       <div
         {...listeners}
-        className="cursor-grab w-10 h-10 flex items-center justify-center mr-4 rounded hover:bg-gray-100 touch-none"
+        className="cursor-grab active:cursor-grabbing w-12 h-12 flex items-center justify-center mr-4 rounded-lg hover:bg-gray-100 transition-colors touch-none group-hover:bg-gray-100"
         title="Drag to reorder"
       >
-        {/* Drag icon */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5 text-gray-400"
+          className="h-6 w-6 text-gray-400 group-hover:text-gray-600"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -294,20 +393,31 @@ function SortableSlot({ slot, onRemove }) {
         </svg>
       </div>
 
-      {/* Slot content */}
-      <span className="flex-1">{slot.date} | {slot.start} - {slot.end}</span>
+      {/* Slot Content */}
+      <div className="flex-1 mr-4">
+        <div className="font-semibold text-gray-800 text-lg">{slot.date}</div>
+        <div className="text-sm text-gray-600 flex items-center mt-1">
+          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {slot.start} - {slot.end}
+        </div>
+      </div>
 
-      {/* Remove button */}
+      {/* Remove Button */}
       <button
         onClick={(e) => {
           e.stopPropagation();
           onRemove(slot.id);
         }}
-        className="text-sm text-red-500 hover:underline"
+        className="w-10 h-10 rounded-full bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-600 flex items-center justify-center transition-colors group"
+        title="Remove this slot"
       >
-        Remove
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
       </button>
-    </li>
+    </div>
   );
 }
 
