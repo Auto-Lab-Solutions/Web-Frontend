@@ -8,12 +8,16 @@ import { Label } from "@/components/ui/label"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import FormField from "@/components/common/FormField"
 import FormSection from "@/components/common/FormSection"
+import { useMobileInputStyling } from "../hooks/useMobileOptimization"
 
 function BookingFormPage() {
   const navigate = useNavigate()
   const { appointmentFormData, updateAppointmentFormData } = useGlobalData()
   const [errors, setErrors] = useState({})
   const [isBuyer, setIsBuyer] = useState(true) // Toggle state
+
+  // Apply mobile input optimizations
+  useMobileInputStyling();
 
   const [clientData, setClientData] = useState({
     isBuyer: true,
@@ -134,7 +138,7 @@ function BookingFormPage() {
               <Button
                 type="button"
                 onClick={() => handleToggleChange(true)}
-                className={`px-8 py-3 rounded-2xl transition-all duration-300 font-medium
+                className={`px-8 py-3 rounded-2xl transition-all duration-300 font-semibold
                   ${
                     isBuyer
                       ? "bg-highlight-primary text-text-tertiary shadow-lg transform scale-105 ml-1"
@@ -146,7 +150,7 @@ function BookingFormPage() {
               <Button
                 type="button"
                 onClick={() => handleToggleChange(false)}
-                className={`px-8 py-3 rounded-2xl transition-all duration-300 font-medium
+                className={`px-8 py-3 rounded-2xl transition-all duration-300 font-semibold
                   ${
                     !isBuyer
                       ? "bg-highlight-primary text-text-tertiary shadow-lg transform scale-105 mr-1"
@@ -291,7 +295,7 @@ function BookingFormPage() {
                 <FormSection title="Additional Information">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <Label htmlFor="notes" className="text-text-primary font-medium">
+                      <Label htmlFor="notes" className="text-text-primary font-medium text-base">
                         Special Notes or Requests
                       </Label>
                     </div>
@@ -302,10 +306,16 @@ function BookingFormPage() {
                       onChange={handleChange} 
                       rows={4} 
                       placeholder="Any specific concerns, requests, or information about the vehicle..."
-                      className="w-full rounded-lg border border-border-secondary px-4 py-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-border-tertiary/20 focus:border-border-tertiary resize-none transition-all duration-200 hover:border-border-tertiary/50" 
+                      className="w-full rounded-lg border border-border-secondary px-4 py-3 text-base shadow-sm focus:outline-none focus:ring-2 focus:ring-border-tertiary/20 focus:border-border-tertiary resize-none transition-all duration-200 hover:border-border-tertiary/50 min-h-[2.75rem]" 
                     />
                   </div>
                 </FormSection>
+
+                <div>
+                  <p>
+                    <span className="text-red-500">*</span> Required Fields
+                  </p>
+                </div>
 
                 <motion.div
                   whileHover={{ scale: 1.01 }}

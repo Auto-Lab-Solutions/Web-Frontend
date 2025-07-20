@@ -26,6 +26,22 @@ body {
     padding: 0;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   }
+  
+  /* Mobile-specific styles to prevent zoom on input focus */
+  @media screen and (max-width: 767px) {
+    input, textarea, select {
+      font-size: 16px !important;
+      transform-origin: left top;
+      /* Prevent zoom but maintain accessibility */
+    }
+    
+    /* Ensure form inputs don't cause layout shifts */
+    input:focus, textarea:focus, select:focus {
+      transform: none;
+      zoom: 1;
+    }
+  }
+  
   /* .chatbox-toggle-button {
     position: fixed;
     bottom: 4%;

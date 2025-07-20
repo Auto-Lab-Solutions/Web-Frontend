@@ -20,7 +20,7 @@ const FormField = ({
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
-        <Label htmlFor={id} className="text-text-primary font-medium">
+        <Label htmlFor={id} className="text-text-primary font-medium text-base">
           {label} {required && <span className="text-red-500">*</span>}
         </Label>
         {tooltip && (
@@ -43,7 +43,7 @@ const FormField = ({
         value={value}
         onChange={onChange}
         className={cn(
-          "transition-all duration-200 focus:ring-2 focus:ring-border-tertiary/20 text-sm",
+          "transition-all duration-200 focus:ring-2 focus:ring-border-tertiary/20",
           error ? "border-red-500 focus:border-red-500" : "border-border-secondary hover:border-border-tertiary/50 focus:border-border-tertiary",
           className
         )}
