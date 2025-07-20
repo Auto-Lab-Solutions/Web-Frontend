@@ -131,6 +131,10 @@ body {
     @apply bg-gradient-to-r from-purple-700/20 to-purple-800/20 text-purple-400 border border-purple-600/40
   }
 
+  .animated-button-primary {
+    @apply bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 focus:ring-4 focus:ring-blue-300 text-lg text-text-primary py-6 rounded-xl font-semibold;
+  }
+
   .section-heading {
     @apply text-text-primary font-bold text-2xl md:text-3xl lg:text-4xl text-center pt-8;
   }

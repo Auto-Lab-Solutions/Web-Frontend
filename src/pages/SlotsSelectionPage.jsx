@@ -293,12 +293,12 @@ function SlotsSelectionPage() {
         </div>
 
         {/* Next button */}
-        <div className="flex justify-center pt-8">
+        <div className="flex justify-center mt-8">
           <button
             disabled={selectedSlots.length === 0}
-            className={`relative px-10 py-3 rounded-xl text-lg font-semibold transition-all duration-200 transform ${
+            className={`relative px-20 rounded-xl text-lg font-semibold transition-all duration-200 transform ${
               selectedSlots.length > 0
-                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl hover:scale-105 focus:ring-4 focus:ring-blue-300'
+                ? 'animated-button-primary'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
             onClick={handleNext}

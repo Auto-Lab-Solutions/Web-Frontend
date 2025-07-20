@@ -9,6 +9,7 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import FormField from "@/components/common/FormField"
 import FormSection from "@/components/common/FormSection"
 import { useMobileInputStyling } from "../hooks/useMobileOptimization"
+import { getPlansAndPricingUrl } from "@/meta/menu"
 
 function BookingFormPage() {
   const navigate = useNavigate()
@@ -311,7 +312,7 @@ function BookingFormPage() {
                   </div>
                 </FormSection>
 
-                <div>
+                <div className="my-6 sm:my-0">
                   <p>
                     <span className="text-red-500">*</span> Required Fields
                   </p>
@@ -320,10 +321,11 @@ function BookingFormPage() {
                 <motion.div
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.99 }}
+                  className="flex justify-center mt-0"
                 >
                   <Button 
                     type="submit" 
-                    className="w-full bg-button-primary text-text-tertiary hover:bg-highlight-primary py-4 font-bold rounded-xl shadow-lg transition-all duration-300 transform hover:shadow-xl"
+                    className="animated-button-primary px-7 sm:px-20"
                   >
                     Continue to Slot Selection →
                   </Button>
@@ -331,6 +333,21 @@ function BookingFormPage() {
               </form>
             </CardContent>
           </Card>
+
+          {/* Back Button */}
+          <div className="flex justify-start mt-6">
+            <motion.button
+              onClick={() => navigate(getPlansAndPricingUrl(appointmentFormData.serviceId))}
+              className="flex items-center gap-2 px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm"
+              whileHover={{ x: -4 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Booking Form
+            </motion.button>
+          </div>
         </motion.div>
       </div>
     </TooltipProvider>
