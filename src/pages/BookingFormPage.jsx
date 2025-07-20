@@ -3,9 +3,11 @@ import { useGlobalData } from '../components/contexts/GlobalDataContext'
 import { useNavigate } from 'react-router-dom'
 import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { TooltipProvider } from "@/components/ui/tooltip"
+import FormField from "@/components/common/FormField"
+import FormSection from "@/components/common/FormSection"
 
 function BookingFormPage() {
   const navigate = useNavigate()
@@ -43,7 +45,8 @@ function BookingFormPage() {
       sellerPhoneNumber: appointmentFormData.sellerData?.phoneNumber || "",
       notes: appointmentFormData.notes || "",
     })
-  }, [])
+    setIsBuyer(appointmentFormData.isBuyer || true)
+  }, [appointmentFormData])
 
   if (!appointmentFormData.serviceId || !appointmentFormData.planId) {
     navigate('/')
@@ -52,6 +55,11 @@ function BookingFormPage() {
   const handleChange = (e) => {
     const { name, value } = e.target
     setClientData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleToggleChange = (buyerStatus) => {
+    setIsBuyer(buyerStatus)
+    setClientData((prev) => ({ ...prev, isBuyer: buyerStatus }))
   }
 
   const handleSubmit = (e) => {
@@ -103,121 +111,219 @@ function BookingFormPage() {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen px-4 py-12">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-5xl mx-auto"
-      >
-        <h1 className="text-3xl font-bold text-center mb-8">Vehicle & Contact Details</h1>
+    <TooltipProvider>
+      <div className="bg-background-primary text-text-primary min-h-screen px-4 py-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-6xl mx-auto"
+        >
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold mb-2 bg-text-primary bg-clip-text text-transparent">
+              Vehicle & Contact Details
+            </h1>
+            <p className="text-text-secondary text-lg">
+              Please provide your information and vehicle details for the inspection
+            </p>
+          </div>
 
-        {/* TOGGLE BUTTON */}
-        <div className="flex justify-center mb-6 space-x-2">
-          <Button
-            type="button"
-            variant={isBuyer ? "default" : "outline"}
-            onClick={() => setIsBuyer(true)}
-            className="rounded-l-lg px-6"
-          >
-            I'm the Buyer
-          </Button>
-          <Button
-            type="button"
-            variant={!isBuyer ? "default" : "outline"}
-            onClick={() => setIsBuyer(false)}
-            className="rounded-r-lg px-6"
-          >
-            I'm the Seller
-          </Button>
-        </div>
+          {/* TOGGLE BUTTON */}
+          <div className="flex justify-center mb-8">
+            <div className="bg-card-primary rounded-3xl p-1 border border-border-primary shadow-lg">
+              <Button
+                type="button"
+                onClick={() => handleToggleChange(true)}
+                className={`px-8 py-3 rounded-2xl transition-all duration-300 font-medium
+                  ${
+                    isBuyer
+                      ? "bg-highlight-primary text-text-tertiary shadow-lg transform scale-105 ml-1"
+                      : "bg-transparent text-text-secondary hover:bg-gray-800/50 hover:text-text-primary"
+                  }`}
+              >
+                I'm the Buyer
+              </Button>
+              <Button
+                type="button"
+                onClick={() => handleToggleChange(false)}
+                className={`px-8 py-3 rounded-2xl transition-all duration-300 font-medium
+                  ${
+                    !isBuyer
+                      ? "bg-highlight-primary text-text-tertiary shadow-lg transform scale-105 mr-1"
+                      : "bg-transparent text-text-secondary hover:bg-gray-800/50 hover:text-text-primary"
+                  }`}
+              >
+                I'm the Seller
+              </Button>
+            </div>
+          </div>
 
-        <Card>
-          <CardContent className="space-y-10 p-6">
-            <form onSubmit={handleSubmit} className="space-y-10">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Buyer Info */}
-                <div className="space-y-4">
-                  <h2 className="text-xl font-semibold text-gray-800">Buyer Information</h2>
-                  <div className="space-y-2">
-                    <Label htmlFor="buyerName">Name {isBuyer && <span className="text-red-500">*</span>}</Label>
-                    <Input id="buyerName" name="buyerName" value={clientData.buyerName} onChange={handleChange} className={errors.buyerName ? "border-red-500" : ""} />
-                    {errors.buyerName && <p className="text-red-500 text-sm">{errors.buyerName}</p>}
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="buyerEmail">Email {isBuyer && <span className="text-red-500">*</span>}</Label>
-                    <Input id="buyerEmail" name="buyerEmail" type="email" value={clientData.buyerEmail} onChange={handleChange} className={errors.buyerEmail ? "border-red-500" : ""} />
-                    {errors.buyerEmail && <p className="text-red-500 text-sm">{errors.buyerEmail}</p>}
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="buyerPhoneNumber">Phone Number {isBuyer && <span className="text-red-500">*</span>}</Label>
-                    <Input id="buyerPhoneNumber" name="buyerPhoneNumber" type="tel" value={clientData.buyerPhoneNumber} onChange={handleChange} className={errors.buyerPhoneNumber ? "border-red-500" : ""} />
-                    {errors.buyerPhoneNumber && <p className="text-red-500 text-sm">{errors.buyerPhoneNumber}</p>}
-                  </div>
+          <Card className="bg-card-primary border border-border-primary shadow-xl backdrop-blur-sm">
+            <CardContent className="p-8">
+              <form onSubmit={handleSubmit} className="space-y-12">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                  {/* Buyer Info */}
+                  <FormSection title="Buyer Information">
+                    <div className="grid gap-6">
+                      <FormField
+                        id="buyerName"
+                        name="buyerName"
+                        label="Full Name"
+                        value={clientData.buyerName}
+                        onChange={handleChange}
+                        error={errors.buyerName}
+                        required={isBuyer}
+                        tooltip={isBuyer ? "Enter your first and last name" : "Enter the buyer's first and last name"}
+                      />
+                      <FormField
+                        id="buyerEmail"
+                        name="buyerEmail"
+                        label="Email Address"
+                        type="email"
+                        value={clientData.buyerEmail}
+                        onChange={handleChange}
+                        error={errors.buyerEmail}
+                        required={isBuyer}
+                        tooltip={isBuyer ? "Enter your email address" : "Enter the buyer's email address"}
+                      />
+                      <FormField
+                        id="buyerPhoneNumber"
+                        name="buyerPhoneNumber"
+                        label="Phone Number"
+                        type="tel"
+                        value={clientData.buyerPhoneNumber}
+                        onChange={handleChange}
+                        error={errors.buyerPhoneNumber}
+                        required={isBuyer}
+                        tooltip={isBuyer ? "Enter your phone number" : "Enter the buyer's phone number"}
+                      />
+                    </div>
+                  </FormSection>
+
+                  {/* Seller Info */}
+                  <FormSection title="Seller Information">
+                    <div className="grid gap-6">
+                      <FormField
+                        id="sellerName"
+                        name="sellerName"
+                        label="Full Name"
+                        value={clientData.sellerName}
+                        onChange={handleChange}
+                        error={errors.sellerName}
+                        required={!isBuyer}
+                        tooltip={!isBuyer ? "Enter your first and last name" : "Enter the seller's first and last name"}
+                      />
+                      <FormField
+                        id="sellerEmail"
+                        name="sellerEmail"
+                        label="Email Address"
+                        type="email"
+                        value={clientData.sellerEmail}
+                        onChange={handleChange}
+                        error={errors.sellerEmail}
+                        required={!isBuyer}
+                        tooltip={!isBuyer ? "Enter your email address" : "Enter the seller's email address"}
+                      />
+                      <FormField
+                        id="sellerPhoneNumber"
+                        name="sellerPhoneNumber"
+                        label="Phone Number"
+                        type="tel"
+                        value={clientData.sellerPhoneNumber}
+                        onChange={handleChange}
+                        error={errors.sellerPhoneNumber}
+                        required={!isBuyer}
+                        tooltip={!isBuyer ? "Enter your phone number" : "Enter the seller's phone number"}
+                      />
+                    </div>
+                  </FormSection>
                 </div>
 
-                {/* Seller Info */}
-                <div className="space-y-4">
-                  <h2 className="text-xl font-semibold text-gray-800">Seller Information</h2>
-                  <div className="space-y-2">
-                    <Label htmlFor="sellerName">Name {!isBuyer && <span className="text-red-500">*</span>}</Label>
-                    <Input id="sellerName" name="sellerName" value={clientData.sellerName} onChange={handleChange} className={errors.sellerName ? "border-red-500" : ""} />
-                    {errors.sellerName && <p className="text-red-500 text-sm">{errors.sellerName}</p>}
+                {/* Car Info */}
+                <FormSection title="Vehicle Information">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      id="carMake"
+                      name="carMake"
+                      label="Make"
+                      value={clientData.carMake}
+                      onChange={handleChange}
+                      error={errors.carMake}
+                      required={true}
+                      tooltip="Vehicle manufacturer (e.g., Toyota, Honda, BMW)"
+                    />
+                    <FormField
+                      id="carModel"
+                      name="carModel"
+                      label="Model"
+                      value={clientData.carModel}
+                      onChange={handleChange}
+                      error={errors.carModel}
+                      required={true}
+                      tooltip="Specific model name (e.g., Camry, Civic, 3 Series)"
+                    />
+                    <FormField
+                      id="carYear"
+                      name="carYear"
+                      label="Year"
+                      type="number"
+                      value={clientData.carYear}
+                      onChange={handleChange}
+                      error={errors.carYear}
+                      required={true}
+                      tooltip="Manufacturing year of the vehicle"
+                      min="1900"
+                      max={new Date().getFullYear() + 1}
+                    />
+                    <FormField
+                      id="carLocation"
+                      name="carLocation"
+                      label="Current Location"
+                      value={clientData.carLocation}
+                      onChange={handleChange}
+                      tooltip="Where the vehicle is located for inspection scheduling"
+                      placeholder="City, State or Address"
+                    />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="sellerEmail">Email {!isBuyer && <span className="text-red-500">*</span>}</Label>
-                    <Input id="sellerEmail" name="sellerEmail" type="email" value={clientData.sellerEmail} onChange={handleChange} className={errors.sellerEmail ? "border-red-500" : ""} />
-                    {errors.sellerEmail && <p className="text-red-500 text-sm">{errors.sellerEmail}</p>}
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="sellerPhoneNumber">Phone Number {!isBuyer && <span className="text-red-500">*</span>}</Label>
-                    <Input id="sellerPhoneNumber" name="sellerPhoneNumber" type="tel" value={clientData.sellerPhoneNumber} onChange={handleChange} className={errors.sellerPhoneNumber ? "border-red-500" : ""} />
-                    {errors.sellerPhoneNumber && <p className="text-red-500 text-sm">{errors.sellerPhoneNumber}</p>}
-                  </div>
-                </div>
-              </div>
+                </FormSection>
 
-              {/* Car Info */}
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-gray-800">Car Information</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Notes */}
+                <FormSection title="Additional Information">
                   <div className="space-y-2">
-                    <Label htmlFor="carMake">Make <span className="text-red-500">*</span></Label>
-                    <Input id="carMake" name="carMake" value={clientData.carMake} onChange={handleChange} className={errors.carMake ? "border-red-500" : ""} />
-                    {errors.carMake && <p className="text-red-500 text-sm">{errors.carMake}</p>}
+                    <div className="flex items-center gap-2">
+                      <Label htmlFor="notes" className="text-text-primary font-medium">
+                        Special Notes or Requests
+                      </Label>
+                    </div>
+                    <textarea 
+                      id="notes" 
+                      name="notes" 
+                      value={clientData.notes} 
+                      onChange={handleChange} 
+                      rows={4} 
+                      placeholder="Any specific concerns, requests, or information about the vehicle..."
+                      className="w-full rounded-lg border border-border-secondary px-4 py-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-border-tertiary/20 focus:border-border-tertiary resize-none transition-all duration-200 hover:border-border-tertiary/50" 
+                    />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="carModel">Model <span className="text-red-500">*</span></Label>
-                    <Input id="carModel" name="carModel" value={clientData.carModel} onChange={handleChange} className={errors.carModel ? "border-red-500" : ""} />
-                    {errors.carModel && <p className="text-red-500 text-sm">{errors.carModel}</p>}
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="carYear">Year <span className="text-red-500">*</span></Label>
-                    <Input id="carYear" name="carYear" type="number" value={clientData.carYear} onChange={handleChange} className={errors.carYear ? "border-red-500" : ""} />
-                    {errors.carYear && <p className="text-red-500 text-sm">{errors.carYear}</p>}
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="carLocation">Location</Label>
-                    <Input id="carLocation" name="carLocation" value={clientData.carLocation} onChange={handleChange} />
-                  </div>
-                </div>
-              </div>
+                </FormSection>
 
-              {/* Notes */}
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-gray-800">Additional Notes</h2>
-                <div className="space-y-2">
-                  <Label htmlFor="notes">Notes</Label>
-                  <textarea id="notes" name="notes" value={clientData.notes} onChange={handleChange} rows={5} className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 resize-none" />
-                </div>
-              </div>
-
-              <Button type="submit" className="w-full">Go to Slot Selection</Button>
-            </form>
-          </CardContent>
-        </Card>
-      </motion.div>
-    </div>
+                <motion.div
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                >
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-button-primary text-text-tertiary hover:bg-highlight-primary py-4 font-bold rounded-xl shadow-lg transition-all duration-300 transform hover:shadow-xl"
+                  >
+                    Continue to Slot Selection →
+                  </Button>
+                </motion.div>
+              </form>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    </TooltipProvider>
   )
 }
 

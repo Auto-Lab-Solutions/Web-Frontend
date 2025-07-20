@@ -9,7 +9,20 @@ const PricingPage = ({ serviceId }) => {
   const navigate = useNavigate();
   const serviceName = getServiceById(serviceId)?.name || "Service";
   const plans = getServiceById(serviceId)?.plans || [];
-  const { updateAppointmentFormData } = useGlobalData();
+  const { appointmentFormData ,updateAppointmentFormData } = useGlobalData();
+
+  const handlePlanSelect = (planId) => {
+    if (serviceId === appointmentFormData?.serviceId && planId === appointmentFormData?.planId) {
+      navigate('/booking-form');
+      return;
+    }
+    updateAppointmentFormData({
+      serviceId: serviceId,
+      planId: planId,
+    });
+    navigate('/booking-form');
+  };
+
   return (
     <PageContainer>
       <div className="py-16 bg-background-primary text-text-primary">
@@ -39,13 +52,7 @@ const PricingPage = ({ serviceId }) => {
               <button
                 className="mt-auto px-4 py-2 font-semibold rounded-lg
                 bg-button-primary text-text-tertiary hover:bg-highlight-primary transition"
-                onClick={() => {
-                  updateAppointmentFormData({
-                    serviceId: serviceId,
-                    planId: plan.id,
-                  });
-                  navigate('/booking-form');
-                }}
+                onClick={() => handlePlanSelect(plan.id)}
               >
                 Select
               </button>
