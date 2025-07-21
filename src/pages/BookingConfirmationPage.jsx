@@ -43,22 +43,23 @@ function BookingConfirmationPage() {
         <div className="bg-card-primary rounded-2xl shadow-xl border border-border-primary overflow-hidden backdrop-blur-sm">
           <div className="bg-gradient-to-r from-background-primary/20 to-background-secondary/20 p-8 border-b border-border-secondary">
             <div className="text-center space-y-4">
-              <div className="w-16 h-16 mx-auto green-light-gradient rounded-full flex items-center justify-center">
+              <div className="w-14 h-14 mx-auto bg-highlight-primary rounded-full flex items-center justify-center">
                 <svg className="w-8 h-8 text-text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
               </div>
               <h2 className="text-2xl font-bold text-text-primary">Booking Summary</h2>
               <div className="space-y-2">
                 <div className="inline-flex items-center gap-2 green-dark-gradient px-4 py-2 rounded-full text-sm font-medium">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 9.172V5L8 4z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                   {getServiceById(appointmentFormData?.serviceId)?.name}
                 </div>
                 <div className="inline-flex items-center gap-2 blue-dark-gradient px-4 py-2 rounded-full text-sm font-medium ml-2">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v6a2 2 0 002 2h2m0 0h8a2 2 0 002-2V7a2 2 0 00-2-2h-6m0 0V3a2 2 0 00-2-2H9a2 2 0 00-2 2v2z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
                   {getPlanById(appointmentFormData?.serviceId, appointmentFormData?.planId)?.name}
                 </div>
@@ -84,7 +85,7 @@ function BookingConfirmationPage() {
                 ];
 
                 return (
-                  <div key={index} className="relative bg-gradient-to-r from-card-secondary/50 to-card-primary border-2 border-border-secondary rounded-xl p-4 flex items-center shadow-md backdrop-blur-sm">
+                  <div key={index} className="relative dark-gradient-primary border-2 border-border-primary rounded-xl p-4 flex items-center shadow-md backdrop-blur-sm">
                     {/* Priority Badge */}
                     <div className={`w-8 h-8 ${priorityColors[index] || priorityColors[0]} text-white text-sm font-bold rounded-full flex items-center justify-center shadow-lg mr-4`}>
                       {index + 1}
@@ -127,7 +128,7 @@ function BookingConfirmationPage() {
               {(appointmentFormData?.buyerData?.name || appointmentFormData?.buyerData?.email || appointmentFormData?.buyerData?.phoneNumber) && (
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 blue-light-gradient rounded-full flex items-center justify-center">
                       <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
@@ -161,7 +162,7 @@ function BookingConfirmationPage() {
               {(appointmentFormData?.sellerData?.name || appointmentFormData?.sellerData?.email || appointmentFormData?.sellerData?.phoneNumber) && (
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 green-light-gradient rounded-full flex items-center justify-center">
                       <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
@@ -197,29 +198,28 @@ function BookingConfirmationPage() {
         {/* Vehicle Information */}
         <div className="bg-card-primary rounded-2xl shadow-xl border border-border-primary p-8 backdrop-blur-sm">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-r from-highlight-primary to-highlight-secondary rounded-full flex items-center justify-center">
-              <svg className="w-6 h-6 text-text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 9.172V5L8 4z" />
-              </svg>
-            </div>
+            <svg className="w-7 h-7 text-highlight-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 17l4 4 4-4m-4-5v9m-8-9l4-4 4 4M4 3h16a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 9a2 2 0 100-4 2 2 0 000 4zm10 0a2 2 0 100-4 2 2 0 000 4z" />
+            </svg>
             <h3 className="text-2xl font-semibold text-text-primary">Vehicle Information</h3>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="blue-dark-gradient rounded-xl p-4 border border-blue-500/30 backdrop-blur-sm">
-              <div className="text-sm text-blue-400 font-medium mb-1">Make</div>
+            <div className="dark-gradient-primary rounded-xl p-4 border border-border-primary backdrop-blur-sm">
+              <div className="text-sm text-text-primary font-medium mb-1">Make</div>
               <div className="text-lg font-semibold text-text-primary">{appointmentFormData?.carData?.make}</div>
             </div>
-            <div className="green-dark-gradient rounded-xl p-4 border border-green-500/30 backdrop-blur-sm">
-              <div className="text-sm text-green-400 font-medium mb-1">Model</div>
+            <div className="dark-gradient-primary rounded-xl p-4 border border-border-primary backdrop-blur-sm">
+              <div className="text-sm text-text-primary font-medium mb-1">Model</div>
               <div className="text-lg font-semibold text-text-primary">{appointmentFormData?.carData?.model}</div>
             </div>
-            <div className="orange-dark-gradient rounded-xl p-4 border border-orange-500/30 backdrop-blur-sm">
-              <div className="text-sm text-orange-400 font-medium mb-1">Year</div>
+            <div className="dark-gradient-primary rounded-xl p-4 border border-border-primary backdrop-blur-sm">
+              <div className="text-sm text-text-primary font-medium mb-1">Year</div>
               <div className="text-lg font-semibold text-text-primary">{appointmentFormData?.carData?.year}</div>
             </div>
-            <div className="purple-dark-gradient rounded-xl p-4 border border-purple-500/30 backdrop-blur-sm">
-              <div className="text-sm text-purple-400 font-medium mb-1">Location</div>
+            <div className="dark-gradient-primary rounded-xl p-4 border border-border-primary backdrop-blur-sm">
+              <div className="text-sm text-text-primary font-medium mb-1">Location</div>
               <div className="text-lg font-semibold text-text-primary">{appointmentFormData?.carData?.location || 'Not specified'}</div>
             </div>
           </div>
@@ -243,10 +243,10 @@ function BookingConfirmationPage() {
         )}
 
         {/* Action Buttons */}
-        <div className="flex justify-center pt-8">
+        <div className="flex justify-center pt-2">
           <button
             onClick={handleConfirm}
-            className="relative px-10 py-3 rounded-xl text-text-primary text-lg font-semibold animated-button-primary"
+            className="relative px-20 py-3 rounded-xl text-text-primary text-lg font-semibold animated-button-primary"
           >
             <svg className="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -266,7 +266,7 @@ function BookingConfirmationPage() {
             <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Back to Slots
+            Back to Slot Selection
           </motion.button>
         </div>
       </div>
