@@ -1,6 +1,8 @@
-import React, { useEffect} from "react";
+import React, { useEffect, useState } from "react";
 import { useGlobalData } from "../components/contexts/GlobalDataContext";
+import { useRestClient } from "../components/contexts/RestContext";
 import { getServiceById, getPlanById } from "../meta/menu";
+import { formatAppointmentForSubmission, validateAppointmentData, handleAppointmentError } from "../utils/appointmentUtils";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -47,14 +49,62 @@ const SectionHeader = ({ icon, title, size = "text-2xl" }) => (
 );
 
 function BookingConfirmationPage() {
-  const { appointmentFormData, clearFormData } = useGlobalData();
+  const { userId, appointmentFormData, clearFormData } = useGlobalData();
+  const { restClient } = useRestClient();
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
-  const handleConfirm = () => {
-    // Submit to backend or next step
-    console.log("Confirmed data:", appointmentFormData);
-    navigate("/appointments");
-    clearFormData();
+  if (!appointmentFormData || !appointmentFormData?.serviceId || !appointmentFormData?.planId || !appointmentFormData?.selectedSlots?.length) {
+    navigate('/');
+  }
+
+  const handleConfirm = async () => {
+    if (!restClient) {
+      setSubmitError("Network connection not available. Please try again.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      // Validate appointment data before submission
+      const validation = validateAppointmentData(appointmentFormData);
+      if (!validation.isValid) {
+        throw new Error(validation.errors.join(', '));
+      }
+      
+      // Format appointment data for backend
+      const requestBody = formatAppointmentForSubmission(appointmentFormData, userId);
+      console.log("Submitting appointment data:", requestBody);
+
+      // Call the backend API
+      const response = await restClient.post('appointments/create', requestBody);
+
+      if (response.data && response.data.success) {
+        console.log("Appointment created successfully:", response.data);
+        setIsSuccess(true);
+        
+        // Show custom success alert
+        setShowAlert(true);
+        
+        // Show success state for 3 seconds before navigating
+        setTimeout(() => {
+          navigate("/appointments");
+          clearFormData();
+        }, 3000);
+      } else {
+        throw new Error(response.data?.message || "Failed to create appointment");
+      }
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+      setSubmitError(handleAppointmentError(error));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleBack = () => {
@@ -78,6 +128,102 @@ function BookingConfirmationPage() {
             Please review your appointment details below and confirm to complete your booking.
           </p>
         </div>
+
+        {/* Custom Success Alert Modal */}
+        {showAlert && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowAlert(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              transition={{ type: "spring", damping: 20, stiffness: 300 }}
+              className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl shadow-2xl border border-green-200 dark:border-green-700 p-8 max-w-md w-full mx-4 backdrop-blur-lg"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Success Icon */}
+              <div className="flex justify-center mb-6">
+                <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+                  <motion.svg
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.2, type: "spring", damping: 15 }}
+                    className="w-10 h-10 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </motion.svg>
+                </div>
+              </div>
+
+              {/* Alert Content */}
+              <div className="text-center space-y-4">
+                <motion.h3
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-2xl font-bold text-green-800 dark:text-green-200"
+                >
+                  🎉 Success!
+                </motion.h3>
+                
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="text-green-700 dark:text-green-300 text-lg font-medium"
+                >
+                  Your appointment has been created successfully!
+                </motion.p>
+                
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className="text-green-600 dark:text-green-400 text-sm"
+                >
+                  You will be redirected to your appointments page shortly.
+                </motion.p>
+
+                {/* Progress bar */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.6 }}
+                  className="mt-6"
+                >
+                  <div className="bg-green-200 dark:bg-green-800 rounded-full h-2 overflow-hidden">
+                    <motion.div
+                      initial={{ width: "0%" }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: 3, ease: "linear", delay: 0.7 }}
+                      className="h-full bg-gradient-to-r from-green-500 to-emerald-600 rounded-full"
+                    />
+                  </div>
+                  <p className="text-xs text-green-600 dark:text-green-400 mt-2">
+                    Redirecting automatically...
+                  </p>
+                </motion.div>
+
+                {/* Close button */}
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.8 }}
+                  onClick={() => setShowAlert(false)}
+                  className="mt-4 px-6 py-2 bg-gradient-to-r from-green-600 to-emerald-700 text-white rounded-lg hover:from-green-700 hover:to-emerald-800 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                >
+                  Close
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
 
         {/* Service Summary Card */}
         <div className="bg-card-primary rounded-2xl shadow-xl border border-border-primary overflow-hidden backdrop-blur-sm">
@@ -119,7 +265,7 @@ function BookingConfirmationPage() {
               size="text-xl"
             />
             <div className="grid gap-3">
-              {appointmentFormData.selectedSlots.map((slot, index) => {
+              {appointmentFormData?.selectedSlots?.map((slot, index) => {
                 const priorityColors = [
                   'blue-light-gradient',
                   'green-light-gradient',
@@ -227,16 +373,76 @@ function BookingConfirmationPage() {
           </div>
         )}
 
+        {/* Success Message */}
+        {isSuccess && (
+          <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 backdrop-blur-sm">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <div>
+                <h4 className="font-semibold text-green-400 mb-1">Appointment Created Successfully!</h4>
+                <p className="text-green-300 text-sm">Redirecting to your appointments...</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Error Message */}
+        {submitError && !isSuccess && (
+          <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 backdrop-blur-sm">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
+              <div>
+                <h4 className="font-semibold text-red-400 mb-1">Error Creating Appointment</h4>
+                <p className="text-red-300 text-sm">{submitError}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Action Buttons */}
         <div className="flex justify-center pt-2">
           <button
             onClick={handleConfirm}
-            className="relative px-20 py-3 rounded-xl text-text-primary text-lg font-semibold animated-button-primary"
+            disabled={isSubmitting || isSuccess}
+            className={`relative px-20 py-3 rounded-xl text-text-primary text-lg font-semibold transition-all duration-200 ${
+              isSuccess
+                ? 'bg-green-600 cursor-default'
+                : isSubmitting 
+                ? 'opacity-70 cursor-not-allowed bg-gray-600' 
+                : 'animated-button-primary hover:scale-105'
+            }`}
           >
-            <svg className="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Confirm & Submit
+            {isSuccess ? (
+              <>
+                <svg className="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Appointment Created!
+              </>
+            ) : isSubmitting ? (
+              <>
+                <svg className="w-5 h-5 mr-2 inline animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Creating Appointment...
+              </>
+            ) : (
+              <>
+                <svg className="w-5 h-5 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Confirm & Submit
+              </>
+            )}
           </button>
         </div>
           
@@ -244,11 +450,18 @@ function BookingConfirmationPage() {
         <div className="flex justify-start mt-6">
           <motion.button
             onClick={handleBack}
-            className="flex items-center gap-2 px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm"
-            whileHover={{ x: -4 }}
-            whileTap={{ scale: 0.95 }}
+            disabled={isSubmitting || isSuccess}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 group backdrop-blur-sm ${
+              isSubmitting || isSuccess
+                ? 'opacity-50 cursor-not-allowed text-text-secondary' 
+                : 'text-text-secondary hover:text-text-primary hover:bg-card-primary/50'
+            }`}
+            whileHover={isSubmitting || isSuccess ? {} : { x: -4 }}
+            whileTap={isSubmitting || isSuccess ? {} : { scale: 0.95 }}
           >
-            <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className={`w-5 h-5 transition-transform duration-200 ${
+              isSubmitting || isSuccess ? '' : 'group-hover:-translate-x-1'
+            }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             Back to Slot Selection

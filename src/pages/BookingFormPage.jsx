@@ -53,7 +53,7 @@ function BookingFormPage() {
     setIsBuyer(appointmentFormData.isBuyer || true)
   }, [appointmentFormData])
 
-  if (!appointmentFormData.serviceId || !appointmentFormData.planId) {
+  if (!appointmentFormData || !appointmentFormData?.serviceId || !appointmentFormData?.planId) {
     navigate('/')
   }
 

@@ -4,7 +4,7 @@ import DesktopMenu from "./components/common/DesktopMenu";
 import MobMenu from "./components/common/MobMenu";
 import Footer from './components/common/Footer';
 import { AnimatePresence } from 'framer-motion';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import HomePage from "./pages/HomePage";
 import InspectionsPage from "./pages/InspectionsPage";
 import PricingPage from "./pages/PricingPage";
@@ -14,8 +14,10 @@ import ContactUsPage from "./pages/ContactUsPage";
 import SlotsSelectionPage from "./pages/SlotsSelectionPage";
 import BookingFormPage from "./pages/BookingFormPage";
 import BookingConfirmationPage from "./pages/BookingConfirmationPage";
+import AppointmentsPage from "./pages/AppointmentsPage";
+import AppointmentPage from "./pages/AppointmentPage";
 import { GlobalDataProvider } from "./components/contexts/GlobalDataContext";
-import { RestProvider } from "./components/contexts/restContext";
+import { RestProvider } from "./components/contexts/RestContext";
 import { WebSocketProvider } from "./components/contexts/WebSocketContext";
 import { useEffect, useState } from "react";
 import { companyName } from "./meta/companyData";
@@ -52,6 +54,8 @@ function AnimatedRoutes() {
         <Route path="booking-form" element={<BookingFormPage />} />
         <Route path="slot-selection" element={<SlotsSelectionPage />} />
         <Route path="booking-confirmation" element={<BookingConfirmationPage />} />
+        <Route path="appointments" element={<AppointmentsPage />} />
+        <Route path="appointment/:referenceNumber" element={<AppointmentPage />} />
         {/* Catch-all route for 404 */}
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
@@ -61,6 +65,7 @@ function AnimatedRoutes() {
 
 export default function App() {
   const [scrolled, setScrolled] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => {
@@ -100,6 +105,7 @@ export default function App() {
                   <div className="flex-center gap-x-5">
                     <button
                       aria-label="inspection-progress"
+                      onClick={() => navigate('/appointments')}
                       className="bg-white/5 relative px-3 py-1.5 shadow rounded-xl flex-center font-semibold hover:bg-highlight-primary hover:text-text-tertiary transition"
                     >
                       Check Status

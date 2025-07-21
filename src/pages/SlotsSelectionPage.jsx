@@ -78,7 +78,7 @@ function SlotsSelectionPage() {
     })) : []);
   }, []);
 
-  if (!appointmentFormData.serviceId || !appointmentFormData.planId) {
+  if (!appointmentFormData || !appointmentFormData?.serviceId || !appointmentFormData?.planId) {
     navigate('/');
   }
 
