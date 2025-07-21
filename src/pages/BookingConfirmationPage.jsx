@@ -6,6 +6,46 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
+// Reusable components
+const InfoItem = ({ label, value, labelWidth = "w-16" }) => (
+  <div className="flex items-center gap-3">
+    <span className={`text-text-secondary font-medium ${labelWidth}`}>{label}:</span>
+    <span className="text-text-primary font-semibold">{value}</span>
+  </div>
+);
+
+const ContactSection = ({ title, data, gradientClass }) => (
+  <div className="space-y-4">
+    <div className="flex items-center gap-3 mb-4">
+      <div className={`w-10 h-10 ${gradientClass} rounded-full flex items-center justify-center`}>
+        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+      </div>
+      <h4 className="text-xl font-semibold text-text-primary">{title}</h4>
+    </div>
+    <div className="space-y-3 pl-13">
+      {data?.name && <InfoItem label="Name" value={data.name} />}
+      {data?.email && <InfoItem label="Email" value={data.email} />}
+      {data?.phoneNumber && <InfoItem label="Phone" value={data.phoneNumber} />}
+    </div>
+  </div>
+);
+
+const VehicleInfoCard = ({ label, value }) => (
+  <div className="dark-gradient-primary rounded-xl p-4 border border-border-primary backdrop-blur-sm">
+    <div className="text-sm text-text-primary font-medium mb-1">{label}</div>
+    <div className="text-lg font-semibold text-text-primary">{value}</div>
+  </div>
+);
+
+const SectionHeader = ({ icon, title, size = "text-2xl" }) => (
+  <div className="flex items-center gap-3 mb-6">
+    {icon}
+    <h3 className={`${size} font-semibold text-text-primary`}>{title}</h3>
+  </div>
+);
+
 function BookingConfirmationPage() {
   const { appointmentFormData, clearFormData } = useGlobalData();
   const navigate = useNavigate();
@@ -69,12 +109,15 @@ function BookingConfirmationPage() {
 
           {/* Selected Time Slots */}
           <div className="p-8">
-            <h3 className="text-xl font-semibold text-text-primary mb-6 flex items-center gap-2">
-              <svg className="w-7 h-7 text-highlight-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              Selected Time Slots
-            </h3>
+            <SectionHeader 
+              icon={
+                <svg className="w-7 h-7 text-highlight-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              }
+              title="Selected Time Slots"
+              size="text-xl"
+            />
             <div className="grid gap-3">
               {appointmentFormData.selectedSlots.map((slot, index) => {
                 const priorityColors = [
@@ -111,12 +154,14 @@ function BookingConfirmationPage() {
         {((appointmentFormData?.buyerData?.name || appointmentFormData?.buyerData?.email || appointmentFormData?.buyerData?.phoneNumber) ||
           (appointmentFormData?.sellerData?.name || appointmentFormData?.sellerData?.email || appointmentFormData?.sellerData?.phoneNumber)) && (
           <div className="bg-card-primary rounded-2xl shadow-xl border border-border-primary p-8 backdrop-blur-sm">
-            <h3 className="text-2xl font-semibold text-text-primary mb-8 flex items-center gap-2">
-              <svg className="w-6 h-6 text-highlight-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              Contact Information
-            </h3>
+            <SectionHeader 
+              icon={
+                <svg className="w-6 h-6 text-highlight-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              }
+              title="Contact Information"
+            />
             
             <div className={`grid gap-8 ${
               (appointmentFormData?.buyerData?.name || appointmentFormData?.buyerData?.email || appointmentFormData?.buyerData?.phoneNumber) &&
@@ -126,70 +171,20 @@ function BookingConfirmationPage() {
             }`}>
               {/* Buyer Information */}
               {(appointmentFormData?.buyerData?.name || appointmentFormData?.buyerData?.email || appointmentFormData?.buyerData?.phoneNumber) && (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 blue-light-gradient rounded-full flex items-center justify-center">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
-                    </div>
-                    <h4 className="text-xl font-semibold text-text-primary">Buyer Information</h4>
-                  </div>
-                  <div className="space-y-3 pl-13">
-                    {appointmentFormData?.buyerData?.name && (
-                      <div className="flex items-center gap-3">
-                        <span className="text-text-secondary font-medium w-16">Name:</span>
-                        <span className="text-text-primary font-semibold">{appointmentFormData.buyerData.name}</span>
-                      </div>
-                    )}
-                    {appointmentFormData?.buyerData?.email && (
-                      <div className="flex items-center gap-3">
-                        <span className="text-text-secondary font-medium w-16">Email:</span>
-                        <span className="text-text-primary">{appointmentFormData.buyerData.email}</span>
-                      </div>
-                    )}
-                    {appointmentFormData?.buyerData?.phoneNumber && (
-                      <div className="flex items-center gap-3">
-                        <span className="text-text-secondary font-medium w-16">Phone:</span>
-                        <span className="text-text-primary">{appointmentFormData.buyerData.phoneNumber}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <ContactSection 
+                  title="Buyer Information"
+                  data={appointmentFormData.buyerData}
+                  gradientClass="blue-light-gradient"
+                />
               )}
 
               {/* Seller Information */}
               {(appointmentFormData?.sellerData?.name || appointmentFormData?.sellerData?.email || appointmentFormData?.sellerData?.phoneNumber) && (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 green-light-gradient rounded-full flex items-center justify-center">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
-                    </div>
-                    <h4 className="text-xl font-semibold text-text-primary">Seller Information</h4>
-                  </div>
-                  <div className="space-y-3 pl-13">
-                    {appointmentFormData?.sellerData?.name && (
-                      <div className="flex items-center gap-3">
-                        <span className="text-text-secondary font-medium w-16">Name:</span>
-                        <span className="text-text-primary font-semibold">{appointmentFormData.sellerData.name}</span>
-                      </div>
-                    )}
-                    {appointmentFormData?.sellerData?.email && (
-                      <div className="flex items-center gap-3">
-                        <span className="text-text-secondary font-medium w-16">Email:</span>
-                        <span className="text-text-primary">{appointmentFormData.sellerData.email}</span>
-                      </div>
-                    )}
-                    {appointmentFormData?.sellerData?.phoneNumber && (
-                      <div className="flex items-center gap-3">
-                        <span className="text-text-secondary font-medium w-16">Phone:</span>
-                        <span className="text-text-primary">{appointmentFormData.sellerData.phoneNumber}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <ContactSection 
+                  title="Seller Information"
+                  data={appointmentFormData.sellerData}
+                  gradientClass="green-light-gradient"
+                />
               )}
             </div>
           </div>
@@ -197,31 +192,21 @@ function BookingConfirmationPage() {
 
         {/* Vehicle Information */}
         <div className="bg-card-primary rounded-2xl shadow-xl border border-border-primary p-8 backdrop-blur-sm">
-          <div className="flex items-center gap-3 mb-6">
-            <svg className="w-7 h-7 text-highlight-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 17l4 4 4-4m-4-5v9m-8-9l4-4 4 4M4 3h16a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 9a2 2 0 100-4 2 2 0 000 4zm10 0a2 2 0 100-4 2 2 0 000 4z" />
-            </svg>
-            <h3 className="text-2xl font-semibold text-text-primary">Vehicle Information</h3>
-          </div>
+          <SectionHeader 
+            icon={
+              <svg className="w-7 h-7 text-highlight-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 17l4 4 4-4m-4-5v9m-8-9l4-4 4 4M4 3h16a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 9a2 2 0 100-4 2 2 0 000 4zm10 0a2 2 0 100-4 2 2 0 000 4z" />
+              </svg>
+            }
+            title="Vehicle Information"
+          />
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="dark-gradient-primary rounded-xl p-4 border border-border-primary backdrop-blur-sm">
-              <div className="text-sm text-text-primary font-medium mb-1">Make</div>
-              <div className="text-lg font-semibold text-text-primary">{appointmentFormData?.carData?.make}</div>
-            </div>
-            <div className="dark-gradient-primary rounded-xl p-4 border border-border-primary backdrop-blur-sm">
-              <div className="text-sm text-text-primary font-medium mb-1">Model</div>
-              <div className="text-lg font-semibold text-text-primary">{appointmentFormData?.carData?.model}</div>
-            </div>
-            <div className="dark-gradient-primary rounded-xl p-4 border border-border-primary backdrop-blur-sm">
-              <div className="text-sm text-text-primary font-medium mb-1">Year</div>
-              <div className="text-lg font-semibold text-text-primary">{appointmentFormData?.carData?.year}</div>
-            </div>
-            <div className="dark-gradient-primary rounded-xl p-4 border border-border-primary backdrop-blur-sm">
-              <div className="text-sm text-text-primary font-medium mb-1">Location</div>
-              <div className="text-lg font-semibold text-text-primary">{appointmentFormData?.carData?.location || 'Not specified'}</div>
-            </div>
+            <VehicleInfoCard label="Make" value={appointmentFormData?.carData?.make} />
+            <VehicleInfoCard label="Model" value={appointmentFormData?.carData?.model} />
+            <VehicleInfoCard label="Year" value={appointmentFormData?.carData?.year} />
+            <VehicleInfoCard label="Location" value={appointmentFormData?.carData?.location || 'Not specified'} />
           </div>
         </div>
 
