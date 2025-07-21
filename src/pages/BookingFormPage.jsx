@@ -77,6 +77,11 @@ function BookingFormPage() {
     }
   }
 
+  const validatePhoneNumber = (phone) => {
+    const phoneRegex = /^[+]?[0-9\s\-()]*$/
+    return phoneRegex.test(phone)
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
     const newErrors = {}
@@ -84,11 +89,19 @@ function BookingFormPage() {
     if (isBuyer) {
       if (!clientData.buyerName) newErrors.buyerName = "Name is required"
       if (!clientData.buyerEmail) newErrors.buyerEmail = "Email is required"
-      if (!clientData.buyerPhoneNumber) newErrors.buyerPhoneNumber = "Phone number is required"
+      if (!clientData.buyerPhoneNumber) {
+        newErrors.buyerPhoneNumber = "Phone number is required"
+      } else if (!validatePhoneNumber(clientData.buyerPhoneNumber)) {
+        newErrors.buyerPhoneNumber = "Phone number can only contain numbers, +, spaces, hyphens, and parentheses"
+      }
     } else {
       if (!clientData.sellerName) newErrors.sellerName = "Name is required"
       if (!clientData.sellerEmail) newErrors.sellerEmail = "Email is required"
-      if (!clientData.sellerPhoneNumber) newErrors.sellerPhoneNumber = "Phone number is required"
+      if (!clientData.sellerPhoneNumber) {
+        newErrors.sellerPhoneNumber = "Phone number is required"
+      } else if (!validatePhoneNumber(clientData.sellerPhoneNumber)) {
+        newErrors.sellerPhoneNumber = "Phone number can only contain numbers, +, spaces, hyphens, and parentheses"
+      }
     }
 
     // Car fields (always required)
