@@ -16,6 +16,13 @@ import BookingFormPage from "./pages/BookingFormPage";
 import BookingConfirmationPage from "./pages/BookingConfirmationPage";
 import AppointmentsPage from "./pages/AppointmentsPage";
 import AppointmentPage from "./pages/AppointmentPage";
+import OrderFormPage from "./pages/OrderFormPage";
+import OrderConfirmationPage from "./pages/OrderConfirmationPage";
+import OrdersPage from "./pages/OrdersPage";
+import OrderPage from "./pages/OrderPage";
+import StatusPage from "./pages/StatusPage";
+import CategorySelectionPage from "./pages/CategorySelectionPage";
+import ItemSelectionPage from "./pages/ItemSelectionPage";
 import { GlobalDataProvider } from "./components/contexts/GlobalDataContext";
 import { RestProvider } from "./components/contexts/RestContext";
 import { WebSocketProvider } from "./components/contexts/WebSocketContext";
@@ -36,7 +43,11 @@ function AnimatedRoutes() {
             <Route
               key={service.name}
               path={`${getMenuByName("Plans & Pricing").path}${service.subpath}`}
-              element={<PricingPage serviceId={service.id} />}
+              element={
+                service.name === "Accessories" 
+                  ? <CategorySelectionPage />
+                  : <PricingPage serviceId={service.id} />
+              }
             />
           ))
         }
@@ -56,6 +67,13 @@ function AnimatedRoutes() {
         <Route path="booking-confirmation" element={<BookingConfirmationPage />} />
         <Route path="appointments" element={<AppointmentsPage />} />
         <Route path="appointment/:referenceNumber" element={<AppointmentPage />} />
+        <Route path="order-form" element={<OrderFormPage />} />
+        <Route path="order-confirmation" element={<OrderConfirmationPage />} />
+        <Route path="orders" element={<OrdersPage />} />
+        <Route path="order/:referenceNumber" element={<OrderPage />} />
+        <Route path="status" element={<StatusPage />} />
+        <Route path="accessories/categories" element={<CategorySelectionPage />} />
+        <Route path="accessories/items" element={<ItemSelectionPage />} />
         {/* Catch-all route for 404 */}
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
@@ -105,7 +123,7 @@ export default function App() {
                   <div className="flex-center gap-x-5">
                     <button
                       aria-label="inspection-progress"
-                      onClick={() => navigate('/appointments')}
+                      onClick={() => navigate('/status')}
                       className="bg-white/5 relative px-3 py-1.5 shadow rounded-xl flex-center font-semibold hover:bg-highlight-primary hover:text-text-tertiary transition"
                     >
                       Check Status

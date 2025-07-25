@@ -402,3 +402,6 @@ FodyWeavers.xsd
 
 # build files
 dist/
+
+# external
+external/

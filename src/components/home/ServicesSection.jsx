@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { services } from "@/meta/menu";
+import { useNavigate } from "react-router-dom";
+import { services, getMenuByName } from "@/meta/menu";
 import SectionHeading from "@/components/common/SectionHeading";
 import FadeInItem from "../common/FadeInItem";
 
@@ -18,12 +19,23 @@ const ServicesSection = () => {
 };
 
 const ServiceCard = ({ service }) => {
+  const navigate = useNavigate();
+
+  const handleServiceClick = () => {
+    const pricingPath = getMenuByName("Plans & Pricing").path;
+    navigate(`${pricingPath}${service.subpath}`);
+  };
+
   return (
-    // <div className="group relative w-full max-w-[90vw] sm:max-w-[320px] md:max-w-[400px] aspect-[3/2] overflow-hidden bg-neutral-200 rounded-xl shadow-lg hover:scale-[1.03] transition-transform">
-  <FadeInItem
-    element="div" direction="y" 
-    className="group relative w-full max-w-[90vw] sm:max-w-[320px] md:max-w-[400px] aspect-[3/2] overflow-hidden bg-neutral-200 rounded-xl shadow-lg hover:scale-[1.03] transition-transform"
-  >
+    <FadeInItem
+      element="div" 
+      direction="y" 
+      className="group relative w-full max-w-[90vw] sm:max-w-[320px] md:max-w-[400px] aspect-[3/2] overflow-hidden bg-neutral-200 rounded-xl shadow-lg hover:scale-[1.03] transition-transform cursor-pointer"
+    >
+      <div
+        onClick={handleServiceClick}
+        className="absolute inset-0 z-20 cursor-pointer"
+      />
       <div
         style={{
           backgroundImage: `url(${service.imgLocation + "/1.webp"})`,
@@ -34,7 +46,7 @@ const ServiceCard = ({ service }) => {
       />
       <div className="absolute inset-0 bg-black/50 z-0" />
       <motion.div
-        className="absolute inset-0 z-10 grid place-content-center"
+        className="absolute inset-0 z-10 grid place-content-center pointer-events-none"
         whileHover={{ scale: 1.05 }}
         transition={{ type: "spring", stiffness: 300 }}
       >

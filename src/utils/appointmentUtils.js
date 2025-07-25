@@ -138,3 +138,68 @@ export const handleAppointmentError = (error) => {
 
   return error.message || 'An unexpected error occurred. Please try again.';
 };
+
+/**
+ * Formats appointment status for display color
+ * @param {string} status - Appointment status from backend
+ * @returns {string} CSS classes for status color
+ */
+export const getStatusColor = (status) => {
+  switch (status?.toLowerCase()) {
+    case 'pending':
+    case 'created':
+      return 'bg-yellow-500';
+    case 'scheduled':
+    case 'confirmed':
+      return 'bg-blue-500';
+    case 'completed':
+      return 'bg-green-500';
+    case 'cancelled':
+      return 'bg-red-500';
+    default:
+      return 'bg-gray-500';
+  }
+};
+
+/**
+ * Formats appointment status for display text
+ * @param {string} status - Appointment status from backend
+ * @returns {string} Human-readable status text
+ */
+export const getStatusText = (status) => {
+  switch (status?.toLowerCase()) {
+    case 'pending':
+    case 'created':
+      return 'Pending';
+    case 'scheduled':
+      return 'Scheduled';
+    case 'confirmed':
+      return 'Confirmed';
+    case 'completed':
+      return 'Completed';
+    case 'cancelled':
+      return 'Cancelled';
+    default:
+      return status || 'Unknown';
+  }
+};
+
+/**
+ * Formats date for display
+ * @param {string|Date} date - Date to format
+ * @returns {string} Formatted date string
+ */
+export const formatDate = (date) => {
+  if (!date) return '';
+  
+  try {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return dateObj.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  } catch (error) {
+    return date.toString();
+  }
+};
