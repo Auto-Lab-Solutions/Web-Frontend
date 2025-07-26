@@ -177,13 +177,6 @@ const OrderConfirmationPage = () => {
                       <div className="pt-3 border-t border-border-secondary">
                         <InfoItem label="Total Amount" value={`$${totalAmount.toFixed(2)}`} highlight={true} />
                       </div>
-                      
-                      {orderFormData.scheduledDate && (
-                        <InfoItem 
-                          label="Preferred Date" 
-                          value={new Date(orderFormData.scheduledDate).toLocaleDateString()} 
-                        />
-                      )}
                     </div>
                   </InfoSection>
                 </CardContent>
@@ -199,9 +192,6 @@ const OrderConfirmationPage = () => {
                       <InfoItem label="Name" value={orderFormData.customerData?.name || 'N/A'} />
                       <InfoItem label="Email" value={orderFormData.customerData?.email || 'N/A'} />
                       <InfoItem label="Phone" value={orderFormData.customerData?.phoneNumber || 'N/A'} />
-                      {orderFormData.customerData?.address && (
-                        <InfoItem label="Address" value={orderFormData.customerData.address} />
-                      )}
                     </div>
                   </InfoSection>
                 </CardContent>
@@ -216,17 +206,27 @@ const OrderConfirmationPage = () => {
                     <div className="space-y-3">
                       <InfoItem label="Make" value={orderFormData.carData?.make || 'N/A'} />
                       <InfoItem label="Model" value={orderFormData.carData?.model || 'N/A'} />
-                      {orderFormData.carData?.year && (
-                        <InfoItem label="Year" value={orderFormData.carData.year} />
-                      )}
-                      {orderFormData.carData?.location && (
-                        <InfoItem label="Location" value={orderFormData.carData.location} />
-                      )}
+                      <InfoItem label="Year" value={orderFormData.carData?.year || 'N/A'} />
                     </div>
                   </InfoSection>
                 </CardContent>
               </Card>
             </FadeInItem>
+
+            {/* Delivery Information */}
+            {orderFormData.deliveryLocation && (
+              <FadeInItem element="div" direction="x">
+                <Card className="bg-card-primary border border-border-primary shadow-xl backdrop-blur-sm h-full">
+                  <CardContent className="p-6">
+                    <InfoSection title="Delivery Information" icon={<Package className="w-5 h-5 text-text-tertiary" />}>
+                      <div className="space-y-3">
+                        <InfoItem label="Delivery Location" value={orderFormData.deliveryLocation} />
+                      </div>
+                    </InfoSection>
+                  </CardContent>
+                </Card>
+              </FadeInItem>
+            )}
 
             {/* Additional Notes */}
             {orderFormData.notes && (

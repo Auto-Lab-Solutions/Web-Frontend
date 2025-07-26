@@ -26,13 +26,11 @@ const OrderFormPage = () => {
     customerName: '',
     customerEmail: '',
     customerPhone: '',
-    customerAddress: '',
     carMake: '',
     carModel: '',
     carYear: '',
-    carLocation: '',
-    notes: '',
-    scheduledDate: ''
+    deliveryLocation: '',
+    notes: ''
   });
 
   // Get selected items from the global context
@@ -45,15 +43,42 @@ const OrderFormPage = () => {
       customerName: orderFormData.customerData?.name || '',
       customerEmail: orderFormData.customerData?.email || '',
       customerPhone: orderFormData.customerData?.phoneNumber || '',
-      customerAddress: orderFormData.customerData?.address || '',
       carMake: orderFormData.carData?.make || '',
       carModel: orderFormData.carData?.model || '',
       carYear: orderFormData.carData?.year || '',
-      carLocation: orderFormData.carData?.location || '',
-      notes: orderFormData.notes || '',
-      scheduledDate: orderFormData.scheduledDate || ''
+      deliveryLocation: orderFormData.deliveryLocation || '',
+      notes: orderFormData.notes || ''
     });
   }, [orderFormData]);
+
+  // Validation helper functions to match backend
+  const validateEmail = (email) => {
+    if (!email || typeof email !== 'string') return false;
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
+  };
+
+  const validatePhoneNumber = (phone) => {
+    if (!phone || typeof phone !== 'string') return false;
+    // Remove spaces, dashes, and parentheses for validation
+    const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+    // Allow international format starting with + or domestic format
+    const phonePattern = /^(\+\d{1,3})?\d{7,15}$/;
+    return phonePattern.test(cleanPhone);
+  };
+
+  const validateYear = (year) => {
+    try {
+      const yearInt = parseInt(year);
+      const currentYear = new Date().getFullYear();
+      if (isNaN(yearInt) || yearInt < 1900 || yearInt > currentYear + 1) {
+        return { isValid: false, message: `Year must be between 1900 and ${currentYear + 1}` };
+      }
+      return { isValid: true, message: "" };
+    } catch (error) {
+      return { isValid: false, message: "Year must be a valid number" };
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,6 +87,32 @@ const OrderFormPage = () => {
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
+    }
+
+    // Real-time validation for specific fields
+    if (name === 'customerEmail' && value) {
+      if (!validateEmail(value)) {
+        setErrors((prev) => ({ ...prev, customerEmail: 'Please enter a valid email address' }));
+      } else {
+        setErrors((prev) => ({ ...prev, customerEmail: '' }));
+      }
+    }
+
+    if (name === 'customerPhone' && value) {
+      if (!validatePhoneNumber(value)) {
+        setErrors((prev) => ({ ...prev, customerPhone: 'Please enter a valid phone number (7-15 digits, optional +country code)' }));
+      } else {
+        setErrors((prev) => ({ ...prev, customerPhone: '' }));
+      }
+    }
+
+    if (name === 'carYear' && value) {
+      const yearValidation = validateYear(value);
+      if (!yearValidation.isValid) {
+        setErrors((prev) => ({ ...prev, carYear: yearValidation.message }));
+      } else {
+        setErrors((prev) => ({ ...prev, carYear: '' }));
+      }
     }
   };
 
@@ -75,7 +126,7 @@ const OrderFormPage = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     
     const newErrors = {};
     
@@ -83,23 +134,31 @@ const OrderFormPage = () => {
     if (!selectedItems || selectedItems.length === 0) {
       newErrors.items = "No items selected. Please go back and select items.";
     }
-    if (!orderData.customerName) newErrors.customerName = "Name is required";
-    if (!orderData.customerEmail) newErrors.customerEmail = "Email is required";
-    if (!orderData.customerPhone) newErrors.customerPhone = "Phone number is required";
-    if (!orderData.carMake) newErrors.carMake = "Car make is required";
-    if (!orderData.carModel) newErrors.carModel = "Car model is required";
-    
-    // Email validation
-    if (orderData.customerEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(orderData.customerEmail)) {
-      newErrors.customerEmail = "Invalid email format";
+    if (!orderData.customerName || !orderData.customerName.trim()) {
+      newErrors.customerName = "Name is required";
     }
-    
-    // Year validation
-    if (orderData.carYear) {
-      const year = parseInt(orderData.carYear);
-      const currentYear = new Date().getFullYear();
-      if (year < 1900 || year > currentYear + 1) {
-        newErrors.carYear = `Year must be between 1900 and ${currentYear + 1}`;
+    if (!orderData.customerEmail || !orderData.customerEmail.trim()) {
+      newErrors.customerEmail = "Email is required";
+    } else if (!validateEmail(orderData.customerEmail)) {
+      newErrors.customerEmail = "Please enter a valid email address";
+    }
+    if (!orderData.customerPhone || !orderData.customerPhone.trim()) {
+      newErrors.customerPhone = "Phone number is required";
+    } else if (!validatePhoneNumber(orderData.customerPhone)) {
+      newErrors.customerPhone = "Please enter a valid phone number (7-15 digits, optional +country code)";
+    }
+    if (!orderData.carMake || !orderData.carMake.trim()) {
+      newErrors.carMake = "Car make is required";
+    }
+    if (!orderData.carModel || !orderData.carModel.trim()) {
+      newErrors.carModel = "Car model is required";
+    }
+    if (!orderData.carYear || !orderData.carYear.trim()) {
+      newErrors.carYear = "Car year is required";
+    } else {
+      const yearValidation = validateYear(orderData.carYear);
+      if (!yearValidation.isValid) {
+        newErrors.carYear = yearValidation.message;
       }
     }
 
@@ -111,19 +170,17 @@ const OrderFormPage = () => {
     updateOrderFormData({
       ...orderFormData, // Keep existing items data
       customerData: {
-        name: orderData.customerName,
-        email: orderData.customerEmail,
-        phoneNumber: orderData.customerPhone,
-        address: orderData.customerAddress
+        name: orderData.customerName.trim(),
+        email: orderData.customerEmail.trim(),
+        phoneNumber: orderData.customerPhone.trim()
       },
       carData: {
-        make: orderData.carMake,
-        model: orderData.carModel,
-        year: orderData.carYear,
-        location: orderData.carLocation
+        make: orderData.carMake.trim(),
+        model: orderData.carModel.trim(),
+        year: orderData.carYear.trim()
       },
-      notes: orderData.notes,
-      scheduledDate: orderData.scheduledDate
+      deliveryLocation: orderData.deliveryLocation.trim(),
+      notes: orderData.notes.trim()
     });
 
     navigate('/order-confirmation');
@@ -212,20 +269,6 @@ const OrderFormPage = () => {
                       <p className="text-red-500 text-sm mt-2">{errors.items}</p>
                     )}
                   </div>
-
-                  {/* Scheduled Date */}
-                  <div className="mt-6">
-                    <FormField
-                      id="scheduledDate"
-                      name="scheduledDate"
-                      label="Preferred Delivery Date (Optional)"
-                      type="date"
-                      value={orderData.scheduledDate}
-                      onChange={handleChange}
-                      tooltip="When would you like this order to be delivered?"
-                      min={new Date().toISOString().split('T')[0]}
-                    />
-                  </div>
                 </FormSection>
 
                 {/* Customer Information Section */}
@@ -263,14 +306,6 @@ const OrderFormPage = () => {
                       required={true}
                       tooltip="Enter your phone number"
                     />
-                    <FormField
-                      id="customerAddress"
-                      name="customerAddress"
-                      label="Address (Optional)"
-                      value={orderData.customerAddress}
-                      onChange={handleChange}
-                      tooltip="Enter your delivery address"
-                    />
                   </div>
                 </FormSection>
 
@@ -300,24 +335,30 @@ const OrderFormPage = () => {
                     <FormField
                       id="carYear"
                       name="carYear"
-                      label="Year (Optional)"
+                      label="Year"
                       type="number"
                       value={orderData.carYear}
                       onChange={handleChange}
                       error={errors.carYear}
+                      required={true}
                       tooltip="Manufacturing year of the vehicle"
                       min="1900"
                       max={new Date().getFullYear() + 1}
                     />
-                    <FormField
-                      id="carLocation"
-                      name="carLocation"
-                      label="Vehicle Location (Optional)"
-                      value={orderData.carLocation}
-                      onChange={handleChange}
-                      tooltip="Where the vehicle is located for service delivery"
-                    />
                   </div>
+                </FormSection>
+
+                {/* Delivery Information Section */}
+                <FormSection title="Delivery Information" icon={<Package className="w-5 h-5" />}>
+                  <FormField
+                    id="deliveryLocation"
+                    name="deliveryLocation"
+                    label="Delivery Location (Optional)"
+                    value={orderData.deliveryLocation}
+                    onChange={handleChange}
+                    tooltip="Where would you like the items delivered? (e.g., Home, Office, Workshop address)"
+                    placeholder="Enter delivery address or location..."
+                  />
                 </FormSection>
 
                 {/* Additional Notes */}
@@ -354,8 +395,9 @@ const OrderFormPage = () => {
                     whileTap={{ scale: 0.98 }}
                   >
                     <Button
-                      type="submit"
+                      type="button"
                       className="w-full h-12 text-base font-semibold animated-button-primary"
+                      onClick={handleSubmit}
                     >
                       <ShoppingCart className="w-5 h-5 mr-2" />
                       Review Order

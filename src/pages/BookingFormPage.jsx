@@ -20,6 +20,35 @@ function BookingFormPage() {
   // Apply mobile input optimizations
   useMobileInputStyling();
 
+  // Validation helper functions to match backend
+  const validateEmail = (email) => {
+    if (!email || typeof email !== 'string') return false;
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
+  };
+
+  const validatePhoneNumber = (phone) => {
+    if (!phone || typeof phone !== 'string') return false;
+    // Remove spaces, dashes, and parentheses for validation
+    const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+    // Allow international format starting with + or domestic format
+    const phonePattern = /^(\+\d{1,3})?\d{7,15}$/;
+    return phonePattern.test(cleanPhone);
+  };
+
+  const validateYear = (year) => {
+    try {
+      const yearInt = parseInt(year);
+      const currentYear = new Date().getFullYear();
+      if (isNaN(yearInt) || yearInt < 1900 || yearInt > currentYear + 1) {
+        return { isValid: false, message: `Year must be between 1900 and ${currentYear + 1}` };
+      }
+      return { isValid: true, message: "" };
+    } catch (error) {
+      return { isValid: false, message: "Year must be a valid number" };
+    }
+  };
+
   const [clientData, setClientData] = useState({
     isBuyer: true,
     buyerName: "",
@@ -60,6 +89,37 @@ function BookingFormPage() {
   const handleChange = (e) => {
     const { name, value } = e.target
     setClientData((prev) => ({ ...prev, [name]: value }))
+    
+    // Clear errors when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: '' }))
+    }
+    
+    // Real-time validation for specific fields
+    if ((name === 'buyerEmail' || name === 'sellerEmail') && value) {
+      if (!validateEmail(value)) {
+        setErrors((prev) => ({ ...prev, [name]: 'Please enter a valid email address' }))
+      } else {
+        setErrors((prev) => ({ ...prev, [name]: '' }))
+      }
+    }
+
+    if ((name === 'buyerPhoneNumber' || name === 'sellerPhoneNumber') && value) {
+      if (!validatePhoneNumber(value)) {
+        setErrors((prev) => ({ ...prev, [name]: 'Please enter a valid phone number (7-15 digits, optional +country code)' }))
+      } else {
+        setErrors((prev) => ({ ...prev, [name]: '' }))
+      }
+    }
+
+    if (name === 'carYear' && value) {
+      const yearValidation = validateYear(value)
+      if (!yearValidation.isValid) {
+        setErrors((prev) => ({ ...prev, carYear: yearValidation.message }))
+      } else {
+        setErrors((prev) => ({ ...prev, carYear: '' }))
+      }
+    }
   }
 
   const handleToggleChange = (buyerStatus) => {
@@ -68,18 +128,21 @@ function BookingFormPage() {
   }
 
   const isFormValid = () => {
-    if (isBuyer) {
-      return clientData.buyerName && clientData.buyerEmail && clientData.buyerPhoneNumber && 
-             clientData.carMake && clientData.carModel && clientData.carYear
-    } else {
-      return clientData.sellerName && clientData.sellerEmail && clientData.sellerPhoneNumber && 
-             clientData.carMake && clientData.carModel && clientData.carYear
+    // Helper function to validate year
+    const isValidYear = (year) => {
+      if (!year) return false
+      const yearNum = parseInt(year)
+      const currentYear = new Date().getFullYear()
+      return !isNaN(yearNum) && yearNum >= 1900 && yearNum <= currentYear + 1
     }
-  }
 
-  const validatePhoneNumber = (phone) => {
-    const phoneRegex = /^[+]?[0-9\s\-()]*$/
-    return phoneRegex.test(phone)
+    const hasValidCarData = clientData.carMake && clientData.carModel && isValidYear(clientData.carYear)
+
+    if (isBuyer) {
+      return clientData.buyerName && clientData.buyerEmail && clientData.buyerPhoneNumber && hasValidCarData
+    } else {
+      return clientData.sellerName && clientData.sellerEmail && clientData.sellerPhoneNumber && hasValidCarData
+    }
   }
 
   const handleSubmit = (e) => {
@@ -87,27 +150,50 @@ function BookingFormPage() {
     const newErrors = {}
 
     if (isBuyer) {
-      if (!clientData.buyerName) newErrors.buyerName = "Name is required"
-      if (!clientData.buyerEmail) newErrors.buyerEmail = "Email is required"
-      if (!clientData.buyerPhoneNumber) {
+      if (!clientData.buyerName || !clientData.buyerName.trim()) {
+        newErrors.buyerName = "Name is required"
+      }
+      if (!clientData.buyerEmail || !clientData.buyerEmail.trim()) {
+        newErrors.buyerEmail = "Email is required"
+      } else if (!validateEmail(clientData.buyerEmail)) {
+        newErrors.buyerEmail = "Please enter a valid email address"
+      }
+      if (!clientData.buyerPhoneNumber || !clientData.buyerPhoneNumber.trim()) {
         newErrors.buyerPhoneNumber = "Phone number is required"
       } else if (!validatePhoneNumber(clientData.buyerPhoneNumber)) {
-        newErrors.buyerPhoneNumber = "Phone number can only contain numbers, +, spaces, hyphens, and parentheses"
+        newErrors.buyerPhoneNumber = "Please enter a valid phone number (7-15 digits, optional +country code)"
       }
     } else {
-      if (!clientData.sellerName) newErrors.sellerName = "Name is required"
-      if (!clientData.sellerEmail) newErrors.sellerEmail = "Email is required"
-      if (!clientData.sellerPhoneNumber) {
+      if (!clientData.sellerName || !clientData.sellerName.trim()) {
+        newErrors.sellerName = "Name is required"
+      }
+      if (!clientData.sellerEmail || !clientData.sellerEmail.trim()) {
+        newErrors.sellerEmail = "Email is required"
+      } else if (!validateEmail(clientData.sellerEmail)) {
+        newErrors.sellerEmail = "Please enter a valid email address"
+      }
+      if (!clientData.sellerPhoneNumber || !clientData.sellerPhoneNumber.trim()) {
         newErrors.sellerPhoneNumber = "Phone number is required"
       } else if (!validatePhoneNumber(clientData.sellerPhoneNumber)) {
-        newErrors.sellerPhoneNumber = "Phone number can only contain numbers, +, spaces, hyphens, and parentheses"
+        newErrors.sellerPhoneNumber = "Please enter a valid phone number (7-15 digits, optional +country code)"
       }
     }
 
     // Car fields (always required)
-    if (!clientData.carMake) newErrors.carMake = "Make is required"
-    if (!clientData.carModel) newErrors.carModel = "Model is required"
-    if (!clientData.carYear) newErrors.carYear = "Year is required"
+    if (!clientData.carMake || !clientData.carMake.trim()) {
+      newErrors.carMake = "Make is required"
+    }
+    if (!clientData.carModel || !clientData.carModel.trim()) {
+      newErrors.carModel = "Model is required"
+    }
+    if (!clientData.carYear || !clientData.carYear.trim()) {
+      newErrors.carYear = "Year is required"
+    } else {
+      const yearValidation = validateYear(clientData.carYear)
+      if (!yearValidation.isValid) {
+        newErrors.carYear = yearValidation.message
+      }
+    }
 
     setErrors(newErrors)
 
@@ -117,22 +203,22 @@ function BookingFormPage() {
       ...appointmentFormData,
       isBuyer,
       buyerData: {
-        name: clientData.buyerName,
-        email: clientData.buyerEmail,
-        phoneNumber: clientData.buyerPhoneNumber,
+        name: clientData.buyerName.trim(),
+        email: clientData.buyerEmail.trim(),
+        phoneNumber: clientData.buyerPhoneNumber.trim(),
       },
       carData: {
-        make: clientData.carMake,
-        model: clientData.carModel,
-        year: clientData.carYear,
-        location: clientData.carLocation,
+        make: clientData.carMake.trim(),
+        model: clientData.carModel.trim(),
+        year: clientData.carYear.trim(),
+        location: clientData.carLocation.trim(),
       },
       sellerData: {
-        name: clientData.sellerName,
-        email: clientData.sellerEmail,
-        phoneNumber: clientData.sellerPhoneNumber,
+        name: clientData.sellerName.trim(),
+        email: clientData.sellerEmail.trim(),
+        phoneNumber: clientData.sellerPhoneNumber.trim(),
       },
-      notes: clientData.notes,
+      notes: clientData.notes.trim(),
     })
 
     navigate('/slot-selection')

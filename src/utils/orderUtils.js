@@ -67,7 +67,7 @@ const removeEmptyFields = (obj) => {
  * @returns {Object} Formatted order data for backend
  */
 export const formatOrderForSubmission = (orderFormData, userId) => {
-  const { items, customerData, carData, notes } = orderFormData;
+  const { items, customerData, carData, deliveryLocation, notes } = orderFormData;
   
   return {
     userId,
@@ -79,6 +79,7 @@ export const formatOrderForSubmission = (orderFormData, userId) => {
       })),
       customerData: removeEmptyFields(customerData || {}),
       carData: removeEmptyFields(carData || {}),
+      deliveryLocation: deliveryLocation || '',
       notes: notes || ''
     }
   };
@@ -138,7 +139,9 @@ export const validateOrderData = (orderData) => {
   if (!carData.model) {
     errors.push('Car model is required');
   }
-  if (carData.year) {
+  if (!carData.year) {
+    errors.push('Car year is required');
+  } else {
     const year = parseInt(carData.year);
     const currentYear = new Date().getFullYear();
     if (isNaN(year) || year < 1900 || year > currentYear + 1) {
