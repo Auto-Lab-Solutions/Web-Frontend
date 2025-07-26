@@ -66,7 +66,7 @@ const OrderConfirmationPage = () => {
         
         // Show success state for 3 seconds before navigating
         setTimeout(() => {
-          navigate("/orders");
+          navigate("/status");
           clearFormData();
         }, 3000);
       } else {
@@ -121,7 +121,7 @@ const OrderConfirmationPage = () => {
             </FadeInItem>
             <FadeInItem element="p" direction="y" className="text-xl text-text-secondary">
               {isSuccess 
-                ? "Thank you for your order. You will be redirected to your orders page shortly."
+                ? "Thank you for your order. You will be redirected to your status page shortly."
                 : "Please review your order details before confirming"
               }
             </FadeInItem>

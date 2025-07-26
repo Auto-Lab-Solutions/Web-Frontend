@@ -203,3 +203,54 @@ export const formatDate = (date) => {
     return date.toString();
   }
 };
+
+/**
+ * Formats payment status for display color
+ * @param {string} paymentStatus - Payment status from backend
+ * @returns {string} CSS classes for payment status color
+ */
+export const getPaymentStatusColor = (paymentStatus) => {
+  switch (paymentStatus?.toLowerCase()) {
+    case 'paid':
+    case 'completed':
+      return 'bg-green-500';
+    case 'pending':
+    case 'processing':
+      return 'bg-yellow-500';
+    case 'failed':
+    case 'declined':
+      return 'bg-red-500';
+    case 'refunded':
+      return 'bg-blue-500';
+    case 'cancelled':
+      return 'bg-gray-500';
+    default:
+      return 'bg-yellow-500'; // Default to pending
+  }
+};
+
+/**
+ * Formats payment status for display text
+ * @param {string} paymentStatus - Payment status from backend
+ * @returns {string} Human-readable payment status text
+ */
+export const getPaymentStatusText = (paymentStatus) => {
+  switch (paymentStatus?.toLowerCase()) {
+    case 'paid':
+    case 'completed':
+      return 'Paid';
+    case 'pending':
+      return 'Payment Pending';
+    case 'processing':
+      return 'Processing';
+    case 'failed':
+    case 'declined':
+      return 'Payment Failed';
+    case 'refunded':
+      return 'Refunded';
+    case 'cancelled':
+      return 'Cancelled';
+    default:
+      return 'Payment Pending'; // Default to pending
+  }
+};

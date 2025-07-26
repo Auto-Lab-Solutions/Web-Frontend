@@ -9,8 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { Search, Calendar, Package, Clock, Car, Settings } from 'lucide-react';
-import { getStatusColor, getStatusText } from '../utils/appointmentUtils';
+import { Search, Calendar, Package, Clock, Car, Settings, Banknote, CreditCard } from 'lucide-react';
+import { getStatusColor, getStatusText, getPaymentStatusColor, getPaymentStatusText } from '../utils/appointmentUtils';
 import { getOrderStatusInfo, calculateOrderTotal } from '../utils/orderUtils';
 import { formatDate } from '../utils/appointmentUtils';
 import { getServiceById, getPlanById, getCategoryById, getItemById } from '../meta/menu';
@@ -69,48 +69,79 @@ const StatusPage = () => {
     const plan = getPlanById(appointment.serviceId, appointment.planId);
 
     const handleCardClick = () => {
-      navigate(`/appointments/${appointment.appointmentId}`);
+      navigate(`/appointment/${appointment.appointmentId}`);
     };
     
     return (
       <Card 
-        className="bg-card-primary border border-border-primary hover:shadow-lg transition-shadow cursor-pointer"
+        className="bg-card-primary border border-border-primary hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer group overflow-hidden"
         onClick={handleCardClick}
       >
         <CardHeader>
-          <div className="space-y-2">
-            <CardTitle className="text-lg font-semibold text-text-primary">
-              {service?.name || 'Service'}
-            </CardTitle>
-            <Badge className={`${getStatusColor(appointment.status)} text-white w-fit`}>
-              {getStatusText(appointment.status)}
-            </Badge>
+          <div className="space-y-3">
+            <div className="flex items-start justify-between">
+              <CardTitle className="text-xl font-bold text-text-primary group-hover:text-primary transition-colors">
+                {service?.name || 'Service'}
+              </CardTitle>
+              <div className="flex flex-col items-end space-y-2">
+                <Badge className={`${getStatusColor(appointment.status)} text-white text-xs px-2 py-1 rounded-full font-medium`}>
+                  {getStatusText(appointment.status)}
+                </Badge>
+                {appointment.status?.toLowerCase() !== 'pending' && appointment.status?.toLowerCase() !== 'cancelled' && (
+                  <Badge className={`${getPaymentStatusColor(appointment.paymentStatus)} text-white text-xs px-2 py-1 rounded-full font-medium flex items-center space-x-1`}>
+                    <CreditCard className="w-3 h-3" />
+                    <span>{getPaymentStatusText(appointment.paymentStatus)}</span>
+                  </Badge>
+                )}
+              </div>
+            </div>
+            
+            {/* Plan section with enhanced styling */}
+            <div className="flex items-center space-x-2 bg-background-secondary/50 rounded-lg px-3 py-2">
+              <Settings className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-text-primary">{plan?.name || 'Plan'}</span>
+            </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="flex items-center space-x-2 text-sm text-text-secondary mb-3">
-            <Settings className="w-4 h-4 text-text-secondary" />
-            <span>{plan?.name || 'Plan'}</span>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+        
+        <CardContent className="space-y-4 pt-0">
+          {/* Appointment details grid */}
+          <div className="space-y-3">
             {appointment.scheduledDate && (
-              <div className="flex items-center space-x-2">
-                <Calendar className="w-4 h-4 text-text-secondary" />
-                <span className="text-text-secondary">
+              <div className="flex items-center space-x-3 p-2 rounded-lg bg-background-secondary/30">
+                <Calendar className="w-4 h-4 text-primary flex-shrink-0" />
+                <span className="text-sm text-text-secondary font-medium">
                   {formatDate(appointment.scheduledDate)}
                 </span>
               </div>
             )}
+            
             {appointment.scheduledTimeSlot && (
-              <div className="flex items-center space-x-2">
-                <Clock className="w-4 h-4 text-text-secondary" />
-                <span className="text-text-secondary">{appointment.scheduledTimeSlot?.start} - {appointment.scheduledTimeSlot?.end}</span>
+              <div className="flex items-center space-x-3 p-2 rounded-lg bg-background-secondary/30">
+                <Clock className="w-4 h-4 text-primary flex-shrink-0" />
+                <span className="text-sm text-text-secondary font-medium">
+                  {appointment.scheduledTimeSlot?.start} - {appointment.scheduledTimeSlot?.end}
+                </span>
               </div>
             )}
-            <div className="flex items-center space-x-2">
-              <Car className="w-4 h-4 text-text-secondary" />
-              <span className="text-text-secondary">
-                {appointment.carMake} {appointment.carModel} {appointment.carYear}
+            
+            <div className="flex items-center space-x-3 p-2 rounded-lg bg-background-secondary/30">
+              <Car className="w-4 h-4 text-primary flex-shrink-0" />
+              <span className="text-sm text-text-secondary font-medium">
+                {appointment.carMake} {appointment.carModel} ({appointment.carYear})
+              </span>
+            </div>
+          </div>
+          
+          {/* Price section with enhanced styling */}
+          <div className="border-t border-border-secondary pt-3 mt-4">
+            <div className="flex items-center justify-between bg-primary/5 rounded-lg px-3 py-2">
+              <div className="flex items-center space-x-2">
+                <Banknote className="w-4 h-4 text-primary" />
+                <span className="text-sm text-text-secondary">Total Price</span>
+              </div>
+              <span className="text-lg font-bold text-primary">
+                ${plan?.price || 0}
               </span>
             </div>
           </div>
@@ -121,6 +152,10 @@ const StatusPage = () => {
 
   const OrderCard = ({ order }) => {
     const statusInfo = getOrderStatusInfo(order.status);
+    
+    const handleCardClick = () => {
+      navigate(`/order/${order.orderId}`);
+    };
     
     // Get category and item names for the first item (assuming single item orders for now)
     const firstItem = order.items?.[0];
@@ -139,7 +174,10 @@ const StatusPage = () => {
     }
     
     return (
-      <Card className="bg-card-primary border border-border-primary hover:shadow-lg transition-shadow">
+      <Card 
+        className="bg-card-primary border border-border-primary hover:shadow-lg transition-shadow cursor-pointer"
+        onClick={handleCardClick}
+      >
         <CardHeader className="pb-3">
           <div className="space-y-2">
             <CardTitle className="text-lg font-semibold text-text-primary">
@@ -256,7 +294,7 @@ const StatusPage = () => {
                   <p className="text-text-secondary mb-6">
                     {searchTerm ? 'No appointments match your search.' : 'You have no appointments yet.'}
                   </p>
-                  <Button onClick={() => navigate('/pricing')}>
+                  <Button onClick={() => navigate('/pricing/pre-purchase-inspection')}>
                     Book Inspection
                   </Button>
                 </CardContent>

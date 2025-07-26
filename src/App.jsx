@@ -14,11 +14,9 @@ import ContactUsPage from "./pages/ContactUsPage";
 import SlotsSelectionPage from "./pages/SlotsSelectionPage";
 import BookingFormPage from "./pages/BookingFormPage";
 import BookingConfirmationPage from "./pages/BookingConfirmationPage";
-import AppointmentsPage from "./pages/AppointmentsPage";
 import AppointmentPage from "./pages/AppointmentPage";
 import OrderFormPage from "./pages/OrderFormPage";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage";
-import OrdersPage from "./pages/OrdersPage";
 import OrderPage from "./pages/OrderPage";
 import StatusPage from "./pages/StatusPage";
 import CategorySelectionPage from "./pages/CategorySelectionPage";
@@ -65,11 +63,9 @@ function AnimatedRoutes() {
         <Route path="booking-form" element={<BookingFormPage />} />
         <Route path="slot-selection" element={<SlotsSelectionPage />} />
         <Route path="booking-confirmation" element={<BookingConfirmationPage />} />
-        <Route path="appointments" element={<AppointmentsPage />} />
         <Route path="appointment/:referenceNumber" element={<AppointmentPage />} />
         <Route path="order-form" element={<OrderFormPage />} />
         <Route path="order-confirmation" element={<OrderConfirmationPage />} />
-        <Route path="orders" element={<OrdersPage />} />
         <Route path="order/:referenceNumber" element={<OrderPage />} />
         <Route path="status" element={<StatusPage />} />
         <Route path="accessories/categories" element={<CategorySelectionPage />} />

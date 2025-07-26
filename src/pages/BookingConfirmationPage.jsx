@@ -93,7 +93,7 @@ function BookingConfirmationPage() {
         
         // Show success state for 3 seconds before navigating
         setTimeout(() => {
-          navigate("/appointments");
+          navigate("/status");
           clearFormData();
         }, 3000);
       } else {
@@ -187,7 +187,7 @@ function BookingConfirmationPage() {
                   transition={{ delay: 0.5 }}
                   className="text-green-600 dark:text-green-400 text-sm"
                 >
-                  You will be redirected to your appointments page shortly.
+                  You will be redirected to your status page shortly.
                 </motion.p>
 
                 {/* Progress bar */}
@@ -384,7 +384,7 @@ function BookingConfirmationPage() {
               </div>
               <div>
                 <h4 className="font-semibold text-green-400 mb-1">Appointment Created Successfully!</h4>
-                <p className="text-green-300 text-sm">Redirecting to your appointments...</p>
+                <p className="text-green-300 text-sm">Redirecting to your status page...</p>
               </div>
             </div>
           </div>

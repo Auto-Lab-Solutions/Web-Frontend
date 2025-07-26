@@ -151,11 +151,11 @@ const AppointmentPage = () => {
               <h1 className="text-3xl sm:text-4xl font-bold mb-4 mt-8">Appointment Not Found</h1>
               <p className="text-xl text-text-secondary mb-8">{error}</p>
               <Button
-                onClick={() => navigate('/appointments')}
+                onClick={() => navigate('/status')}
                 className="animated-button-primary"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Appointments
+                Back to Status
               </Button>
             </div>
           </section>
@@ -176,12 +176,12 @@ const AppointmentPage = () => {
           <div className="max-w-4xl mx-auto">
             <FadeInItem element="div" direction="y" className="mb-6">
               <Button
-                onClick={() => navigate('/appointments')}
+                onClick={() => navigate('/status')}
                 variant="outline"
                 className="mb-4 border-border-secondary text-text-secondary hover:border-highlight-primary hover:text-highlight-primary"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Appointments
+                Back to Status
               </Button>
             </FadeInItem>
             

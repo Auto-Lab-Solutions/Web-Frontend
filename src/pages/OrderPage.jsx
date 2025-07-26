@@ -19,7 +19,7 @@ import {
   Truck,
   DollarSign
 } from 'lucide-react';
-import { getCategoryById, getItemById } from '../meta/orders';
+import { getCategoryById, getItemById } from '../meta/menu';
 import { getOrderStatusInfo } from '../utils/orderUtils';
 
 const OrderPage = () => {
@@ -129,11 +129,11 @@ const OrderPage = () => {
             <p className="text-text-secondary mb-6">{error}</p>
             <div className="flex gap-4 justify-center">
               <Button
-                onClick={() => navigate('/orders')}
+                onClick={() => navigate('/status')}
                 variant="outline"
                 className="border-border-secondary text-text-secondary hover:border-highlight-primary hover:text-highlight-primary"
               >
-                Back to Orders
+                Back to Status
               </Button>
               <Button
                 onClick={() => navigate('/order-form')}
@@ -348,13 +348,13 @@ const OrderPage = () => {
         <section className="bg-background-primary py-8 px-6">
           <div className="max-w-4xl mx-auto">
             <motion.button
-              onClick={() => navigate('/orders')}
+              onClick={() => navigate('/status')}
               className="flex items-center gap-2 px-6 py-3 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group"
               whileHover={{ x: -4 }}
               whileTap={{ scale: 0.95 }}
             >
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" />
-              Back to Orders
+              Back to Status
             </motion.button>
           </div>
         </section>
