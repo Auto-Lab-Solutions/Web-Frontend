@@ -82,7 +82,7 @@ function BookingConfirmationPage() {
       console.log("Submitting appointment data:", requestBody);
 
       // Call the backend API
-      const response = await restClient.post('appointments/create', requestBody);
+      const response = await restClient.post('appointments', requestBody);
 
       if (response.data && response.data.success) {
         console.log("Appointment created successfully:", response.data);

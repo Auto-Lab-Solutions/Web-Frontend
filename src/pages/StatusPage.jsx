@@ -1,19 +1,24 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { useRestClient } from '../components/contexts/RestContext';
+import { useGlobalData } from '../components/contexts/GlobalDataContext';
 import PageContainer from '../components/common/PageContainer';
 import FadeInItem from '../components/common/FadeInItem';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { Search, Calendar, Package, Clock, MapPin, Phone, Mail, Car } from 'lucide-react';
+import { Search, Calendar, Package, Clock, Car, Settings } from 'lucide-react';
 import { getStatusColor, getStatusText } from '../utils/appointmentUtils';
 import { getOrderStatusInfo, calculateOrderTotal } from '../utils/orderUtils';
 import { formatDate } from '../utils/appointmentUtils';
+import { getServiceById, getPlanById, getCategoryById, getItemById } from '../meta/menu';
 
 const StatusPage = () => {
   const { restClient } = useRestClient();
+  const { userId } = useGlobalData();
+  const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,22 +26,24 @@ const StatusPage = () => {
   const [activeTab, setActiveTab] = useState('appointments');
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (userId && restClient) {
+      fetchData();
+    }
+  }, [userId, restClient]);
 
   const fetchData = async () => {
     setLoading(true);
     try {
       // Fetch appointments
-      const appointmentsResponse = await restClient.get('/api/get-appointments');
-      if (appointmentsResponse?.appointments) {
-        setAppointments(appointmentsResponse.appointments);
+      const appointmentsResponse = await restClient.get('/appointments', { userId })
+      if (appointmentsResponse?.data?.appointments) {
+        setAppointments(appointmentsResponse.data.appointments);
       }
 
       // Fetch orders
-      const ordersResponse = await restClient.get('/api/get-orders');
-      if (ordersResponse?.orders) {
-        setOrders(ordersResponse.orders);
+      const ordersResponse = await restClient.get('/orders', { userId });
+      if (ordersResponse?.data?.orders) {
+        setOrders(ordersResponse.data.orders);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -46,73 +53,102 @@ const StatusPage = () => {
   };
 
   const filteredAppointments = appointments.filter(appointment =>
-    appointment.referenceNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    appointment.customerData?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    appointment.customerData?.email?.toLowerCase().includes(searchTerm.toLowerCase())
+    appointment.buyerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    appointment.buyerEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    appointment.sellerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    appointment.sellerEmail?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const filteredOrders = orders.filter(order =>
-    order.referenceNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     order.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     order.customerEmail?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const AppointmentCard = ({ appointment }) => (
-    <Card className="bg-card-primary border border-border-primary hover:shadow-lg transition-shadow">
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold text-text-primary">
-            #{appointment.referenceNumber}
-          </CardTitle>
-          <Badge className={`${getStatusColor(appointment.status)} text-white`}>
-            {getStatusText(appointment.status)}
-          </Badge>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-          <div className="flex items-center space-x-2">
-            <Calendar className="w-4 h-4 text-text-secondary" />
-            <span className="text-text-secondary">
-              {formatDate(appointment.appointmentDate)}
-            </span>
+  const AppointmentCard = ({ appointment }) => {
+    const service = getServiceById(appointment.serviceId);
+    const plan = getPlanById(appointment.serviceId, appointment.planId);
+
+    const handleCardClick = () => {
+      navigate(`/appointments/${appointment.appointmentId}`);
+    };
+    
+    return (
+      <Card 
+        className="bg-card-primary border border-border-primary hover:shadow-lg transition-shadow cursor-pointer"
+        onClick={handleCardClick}
+      >
+        <CardHeader>
+          <div className="space-y-2">
+            <CardTitle className="text-lg font-semibold text-text-primary">
+              {service?.name || 'Service'}
+            </CardTitle>
+            <Badge className={`${getStatusColor(appointment.status)} text-white w-fit`}>
+              {getStatusText(appointment.status)}
+            </Badge>
           </div>
-          <div className="flex items-center space-x-2">
-            <Clock className="w-4 h-4 text-text-secondary" />
-            <span className="text-text-secondary">{appointment.timeSlot}</span>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-center space-x-2 text-sm text-text-secondary mb-3">
+            <Settings className="w-4 h-4 text-text-secondary" />
+            <span>{plan?.name || 'Plan'}</span>
           </div>
-          <div className="flex items-center space-x-2">
-            <Car className="w-4 h-4 text-text-secondary" />
-            <span className="text-text-secondary">
-              {appointment.carData?.make} {appointment.carData?.model} ({appointment.carData?.year})
-            </span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+            {appointment.scheduledDate && (
+              <div className="flex items-center space-x-2">
+                <Calendar className="w-4 h-4 text-text-secondary" />
+                <span className="text-text-secondary">
+                  {formatDate(appointment.scheduledDate)}
+                </span>
+              </div>
+            )}
+            {appointment.scheduledTimeSlot && (
+              <div className="flex items-center space-x-2">
+                <Clock className="w-4 h-4 text-text-secondary" />
+                <span className="text-text-secondary">{appointment.scheduledTimeSlot?.start} - {appointment.scheduledTimeSlot?.end}</span>
+              </div>
+            )}
+            <div className="flex items-center space-x-2">
+              <Car className="w-4 h-4 text-text-secondary" />
+              <span className="text-text-secondary">
+                {appointment.carMake} {appointment.carModel} {appointment.carYear}
+              </span>
+            </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <MapPin className="w-4 h-4 text-text-secondary" />
-            <span className="text-text-secondary">{appointment.carData?.location}</span>
-          </div>
-        </div>
-        <div className="border-t pt-3">
-          <div className="flex items-center space-x-2 text-sm">
-            <Mail className="w-4 h-4 text-text-secondary" />
-            <span className="text-text-secondary">{appointment.customerData?.name}</span>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
+        </CardContent>
+      </Card>
+    );
+  };
 
   const OrderCard = ({ order }) => {
     const statusInfo = getOrderStatusInfo(order.status);
     
+    // Get category and item names for the first item (assuming single item orders for now)
+    const firstItem = order.items?.[0];
+    let categoryName = 'Category';
+    let itemName = 'Item';
+    
+    if (firstItem) {
+      const category = getCategoryById(firstItem.categoryId);
+      const item = getItemById(firstItem.categoryId, firstItem.itemId);
+      if (category) {
+        categoryName = category.name;
+      }
+      if (item) {
+        itemName = item.name;
+      }
+    }
+    
     return (
       <Card className="bg-card-primary border border-border-primary hover:shadow-lg transition-shadow">
         <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
+          <div className="space-y-2">
             <CardTitle className="text-lg font-semibold text-text-primary">
-              #{order.referenceNumber}
+              {categoryName}
             </CardTitle>
-            <Badge className={`${statusInfo.bg} ${statusInfo.color}`}>
+            <div className="text-sm text-text-secondary">
+              {itemName}
+            </div>
+            <Badge className={`${statusInfo.bg} ${statusInfo.color} w-fit`}>
               {statusInfo.text}
             </Badge>
           </div>
@@ -120,33 +156,28 @@ const StatusPage = () => {
         <CardContent className="space-y-3">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
             <div className="flex items-center space-x-2">
-              <Package className="w-4 h-4 text-text-secondary" />
               <span className="text-text-secondary">
                 {order.items?.length || 0} item(s)
               </span>
             </div>
-            <div className="flex items-center space-x-2">
-              <Calendar className="w-4 h-4 text-text-secondary" />
-              <span className="text-text-secondary">
-                {order.scheduledDate ? formatDate(order.scheduledDate) : 'Not scheduled'}
-              </span>
-            </div>
+            {order.scheduledDate && (
+              <div className="flex items-center space-x-2">
+                <Calendar className="w-4 h-4 text-text-secondary" />
+                <span className="text-text-secondary">
+                  {formatDate(order.scheduledDate)}
+                </span>
+              </div>
+            )}
             <div className="flex items-center space-x-2">
               <Car className="w-4 h-4 text-text-secondary" />
               <span className="text-text-secondary">
-                {order.carMake} {order.carModel} ({order.carYear})
+                {order.carMake} {order.carModel} {order.carYear}
               </span>
             </div>
             <div className="flex items-center space-x-2">
               <span className="text-text-secondary font-semibold">
-                Total: ${(order.totalAmount || 0).toFixed(2)}
+                Total: ${(order.totalPrice || 0).toFixed(2)}
               </span>
-            </div>
-          </div>
-          <div className="border-t pt-3">
-            <div className="flex items-center space-x-2 text-sm">
-              <Mail className="w-4 h-4 text-text-secondary" />
-              <span className="text-text-secondary">{order.customerName}</span>
             </div>
           </div>
         </CardContent>
@@ -179,7 +210,7 @@ const StatusPage = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-text-secondary" />
                 <Input
-                  placeholder="Search by reference number, name, or email..."
+                  placeholder="Search by name or email..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10 bg-background-secondary border-border-secondary"
@@ -225,7 +256,7 @@ const StatusPage = () => {
                   <p className="text-text-secondary mb-6">
                     {searchTerm ? 'No appointments match your search.' : 'You have no appointments yet.'}
                   </p>
-                  <Button onClick={() => window.location.href = '/pricing'}>
+                  <Button onClick={() => navigate('/pricing')}>
                     Book Inspection
                   </Button>
                 </CardContent>
@@ -233,7 +264,7 @@ const StatusPage = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredAppointments.map((appointment) => (
-                  <AppointmentCard key={appointment.referenceNumber} appointment={appointment} />
+                  <AppointmentCard key={appointment.appointmentId} appointment={appointment} />
                 ))}
               </div>
             )
@@ -251,7 +282,7 @@ const StatusPage = () => {
                   <p className="text-text-secondary mb-6">
                     {searchTerm ? 'No orders match your search.' : 'You have no orders yet.'}
                   </p>
-                  <Button onClick={() => window.location.href = '/pricing/accessories'}>
+                  <Button onClick={() => navigate('/pricing/accessories')}>
                     Order Accessories
                   </Button>
                 </CardContent>
@@ -259,7 +290,7 @@ const StatusPage = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredOrders.map((order) => (
-                  <OrderCard key={order.referenceNumber} order={order} />
+                  <OrderCard key={order.orderId} order={order} />
                 ))}
               </div>
             )
