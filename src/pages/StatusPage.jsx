@@ -175,46 +175,75 @@ const StatusPage = () => {
     
     return (
       <Card 
-        className="bg-card-primary border border-border-primary hover:shadow-lg transition-shadow cursor-pointer"
+        className="bg-card-primary border border-border-primary hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer group overflow-hidden"
         onClick={handleCardClick}
       >
-        <CardHeader className="pb-3">
-          <div className="space-y-2">
-            <CardTitle className="text-lg font-semibold text-text-primary">
-              {categoryName}
-            </CardTitle>
-            <div className="text-sm text-text-secondary">
-              {itemName}
+        <CardHeader>
+          <div className="space-y-3">
+            <div className="flex items-start justify-between">
+              <CardTitle className="text-xl font-bold text-text-primary group-hover:text-primary transition-colors">
+                {categoryName}
+              </CardTitle>
+              <div className="flex flex-col items-end space-y-2">
+                <Badge className={`${statusInfo.bg} ${statusInfo.color} text-white text-xs px-2 py-1 rounded-full font-medium`}>
+                  {statusInfo.text}
+                </Badge>
+              </div>
             </div>
-            <Badge className={`${statusInfo.bg} ${statusInfo.color} w-fit`}>
-              {statusInfo.text}
-            </Badge>
+            
+            {/* Item section with enhanced styling */}
+            <div className="flex items-center space-x-2 bg-background-secondary/50 rounded-lg px-3 py-2">
+              <Package className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-text-primary">{itemName}</span>
+            </div>
           </div>
         </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-            <div className="flex items-center space-x-2">
-              <span className="text-text-secondary">
-                {order.items?.length || 0} item(s)
+        
+        <CardContent className="space-y-4 pt-0">
+          {/* Order details grid */}
+          <div className="space-y-3">
+            <div className="flex items-center space-x-3 p-2 rounded-lg bg-background-secondary/30">
+              <Package className="w-4 h-4 text-primary flex-shrink-0" />
+              <span className="text-sm text-text-secondary font-medium">
+                {order.items?.length || 0} item{(order.items?.length || 0) !== 1 ? 's' : ''}
               </span>
             </div>
+            
             {order.scheduledDate && (
-              <div className="flex items-center space-x-2">
-                <Calendar className="w-4 h-4 text-text-secondary" />
-                <span className="text-text-secondary">
+              <div className="flex items-center space-x-3 p-2 rounded-lg bg-background-secondary/30">
+                <Calendar className="w-4 h-4 text-primary flex-shrink-0" />
+                <span className="text-sm text-text-secondary font-medium">
                   {formatDate(order.scheduledDate)}
                 </span>
               </div>
             )}
-            <div className="flex items-center space-x-2">
-              <Car className="w-4 h-4 text-text-secondary" />
-              <span className="text-text-secondary">
-                {order.carMake} {order.carModel} {order.carYear}
+            
+            {order.scheduledTimeSlot && (
+              <div className="flex items-center space-x-3 p-2 rounded-lg bg-background-secondary/30">
+                <Clock className="w-4 h-4 text-primary flex-shrink-0" />
+                <span className="text-sm text-text-secondary font-medium">
+                  {order.scheduledTimeSlot?.start} - {order.scheduledTimeSlot?.end}
+                </span>
+              </div>
+            )}
+            
+            <div className="flex items-center space-x-3 p-2 rounded-lg bg-background-secondary/30">
+              <Car className="w-4 h-4 text-primary flex-shrink-0" />
+              <span className="text-sm text-text-secondary font-medium">
+                {order.carMake} {order.carModel} ({order.carYear})
               </span>
             </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-text-secondary font-semibold">
-                Total: ${(order.totalPrice || 0).toFixed(2)}
+          </div>
+          
+          {/* Price section with enhanced styling */}
+          <div className="border-t border-border-secondary pt-3 mt-4">
+            <div className="flex items-center justify-between bg-primary/5 rounded-lg px-3 py-2">
+              <div className="flex items-center space-x-2">
+                <Banknote className="w-4 h-4 text-primary" />
+                <span className="text-sm text-text-secondary">Total Price</span>
+              </div>
+              <span className="text-lg font-bold text-primary">
+                ${(order.totalPrice || 0).toFixed(2)}
               </span>
             </div>
           </div>
