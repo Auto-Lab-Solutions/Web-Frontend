@@ -52,17 +52,75 @@ const StatusPage = () => {
     }
   };
 
-  const filteredAppointments = appointments.filter(appointment =>
-    appointment.buyerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    appointment.buyerEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    appointment.sellerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    appointment.sellerEmail?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredAppointments = appointments.filter(appointment => {
+    const searchLower = searchTerm.toLowerCase();
+    const service = getServiceById(appointment.serviceId);
+    const plan = getPlanById(appointment.serviceId, appointment.planId);
+    
+    return (
+      // Personal information
+      appointment.buyerName?.toLowerCase().includes(searchLower) ||
+      appointment.buyerEmail?.toLowerCase().includes(searchLower) ||
+      appointment.sellerName?.toLowerCase().includes(searchLower) ||
+      appointment.sellerEmail?.toLowerCase().includes(searchLower) ||
+      appointment.customerName?.toLowerCase().includes(searchLower) ||
+      appointment.customerEmail?.toLowerCase().includes(searchLower) ||
+      
+      // Service and plan information
+      service?.name?.toLowerCase().includes(searchLower) ||
+      plan?.name?.toLowerCase().includes(searchLower) ||
+      
+      // Car information
+      appointment.carMake?.toLowerCase().includes(searchLower) ||
+      appointment.carModel?.toLowerCase().includes(searchLower) ||
+      appointment.carYear?.toString().includes(searchLower) ||
+      
+      // Status information
+      appointment.status?.toLowerCase().includes(searchLower) ||
+      appointment.paymentStatus?.toLowerCase().includes(searchLower) ||
+      getStatusText(appointment.status)?.toLowerCase().includes(searchLower) ||
+      getPaymentStatusText(appointment.paymentStatus)?.toLowerCase().includes(searchLower) ||
+      
+      // Appointment ID
+      appointment.appointmentId?.toLowerCase().includes(searchLower)
+    );
+  });
 
-  const filteredOrders = orders.filter(order =>
-    order.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    order.customerEmail?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredOrders = orders.filter(order => {
+    const searchLower = searchTerm.toLowerCase();
+    
+    // Get category and item information for all items in the order
+    const itemMatches = order.items?.some(item => {
+      const category = getCategoryById(item.categoryId);
+      const itemData = getItemById(item.categoryId, item.itemId);
+      
+      return (
+        category?.name?.toLowerCase().includes(searchLower) ||
+        itemData?.name?.toLowerCase().includes(searchLower)
+      );
+    }) || false;
+    
+    return (
+      // Personal information
+      order.customerName?.toLowerCase().includes(searchLower) ||
+      order.customerEmail?.toLowerCase().includes(searchLower) ||
+      order.buyerName?.toLowerCase().includes(searchLower) ||
+      order.buyerEmail?.toLowerCase().includes(searchLower) ||
+      
+      // Car information
+      order.carMake?.toLowerCase().includes(searchLower) ||
+      order.carModel?.toLowerCase().includes(searchLower) ||
+      order.carYear?.toString().includes(searchLower) ||
+      
+      // Order information
+      order.orderId?.toLowerCase().includes(searchLower) ||
+      order.status?.toLowerCase().includes(searchLower) ||
+      getOrderStatusInfo(order.status)?.text?.toLowerCase().includes(searchLower) ||
+      
+      // Item matches
+      itemMatches
+    );
+  });
 
   const AppointmentCard = ({ appointment }) => {
     const service = getServiceById(appointment.serviceId);
@@ -267,7 +325,7 @@ const StatusPage = () => {
               Check Status
             </FadeInItem>
             <FadeInItem element="p" direction="y" className="text-xl text-text-secondary">
-              Track your appointments and orders in one place
+              Track your appointments and orders
             </FadeInItem>
           </div>
 
@@ -277,7 +335,7 @@ const StatusPage = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-text-secondary" />
                 <Input
-                  placeholder="Search by name or email..."
+                  placeholder="Search by name, email, service, car, or status..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10 bg-background-secondary border-border-secondary"
