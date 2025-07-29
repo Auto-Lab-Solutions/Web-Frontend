@@ -1,0 +1,68 @@
+name: Deploy to Development Environment
+
+on:
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
+    types: [closed]
+
+env:
+  AWS_REGION: ap-southeast-2
+  ENVIRONMENT: development
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  S3_BUCKET_NAME: ${{ vars.S3_BUCKET_NAME }}
+  CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
+  API_GATEWAY_BASE_URL: ${{ vars.API_GATEWAY_BASE_URL }}
+  WEB_SOCKET_BASE_URL: ${{ vars.WEB_SOCKET_BASE_URL }}
+
+jobs:
+  deploy:
+    name: Deploy to Development Environment
+    runs-on: ubuntu-latest
+    environment: development
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build React app
+        run: npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy to S3
+        run: |
+          aws s3 sync dist/ s3://$S3_BUCKET_NAME --delete --region $AWS_REGION
+      
+      - name: Create env file
+        run: |
+          echo "VITE_API_GATEWAY_BASE_URL=$API_GATEWAY_BASE_URL" > .env
+          echo "VITE_WEB_SOCKET_BASE_URL=$WEB_SOCKET_BASE_URL" >> .env
+          echo "VITE_ENVIRONMENT=$ENVIRONMENT" >> .env
+          cat .env
+      
+      - name: Upload env file to S3
+        run: |
+          aws s3 cp .env s3://$S3_BUCKET_NAME/.env --region $AWS_REGION
+          echo "Environment file uploaded to S3"
+      
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*" --region $AWS_REGION
+          echo "CloudFront cache invalidated"

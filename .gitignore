@@ -449,3 +449,6 @@ dist/
 
 # external
 external/
+
+# environment variables
+.env

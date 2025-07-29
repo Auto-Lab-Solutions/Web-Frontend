@@ -1,8 +1,7 @@
-
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { RestClient } from '../../classes/RestClient';
 
-const BASE_URL = 'http://localhost:3000/api'; // Default to local API if not set
+const REST_ENDPOINT = import.meta.env.VITE_API_GATEWAY_BASE_URL;
 
 const RestContext = createContext(undefined);
 
@@ -10,8 +9,8 @@ export const RestProvider = ({ children }) => {
   const [restClient, setRestClient] = useState(null);
 
   const createRestClient = useCallback(() => {
-    console.log('Creating RestClient with endpoint:', BASE_URL);
-    const client = new RestClient(BASE_URL);
+    console.log('Creating RestClient with endpoint:', REST_ENDPOINT);
+    const client = new RestClient(REST_ENDPOINT);
     setRestClient(client);
   }, []);
 
@@ -30,7 +29,7 @@ export const RestProvider = ({ children }) => {
   return (
     <RestContext.Provider
       value={{
-        restEndpoint: BASE_URL,
+        restEndpoint: REST_ENDPOINT,
         restClient,
         createRestClient,
         clearRestClient,

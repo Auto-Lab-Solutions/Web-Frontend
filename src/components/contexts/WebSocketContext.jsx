@@ -11,7 +11,7 @@ import { useGlobalData } from './GlobalDataContext';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import { v4 as uuidv4 } from 'uuid';
 
-const webSocketEndpoint = 'wss://fnqp7nhpf1.execute-api.ap-southeast-2.amazonaws.com/production/';
+const WS_ENDPOINT = import.meta.env.VITE_WEB_SOCKET_BASE_URL;
 
 const WebSocketContext = createContext(undefined);
 
@@ -206,7 +206,7 @@ export const WebSocketProvider = ({ children }) => {
 
     setIsConnecting(true);
     
-    const newWsClient = new ReconnectingWebSocket(webSocketEndpoint, [], {
+    const newWsClient = new ReconnectingWebSocket(WS_ENDPOINT, [], {
       connectionTimeout: 1000,
       maxReconnectionDelay: 5000,
       minReconnectionDelay: 1000,
