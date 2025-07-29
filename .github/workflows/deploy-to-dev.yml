@@ -45,7 +45,6 @@ jobs:
           echo "S3_BUCKET_NAME: $S3_BUCKET_NAME"
           echo "CLOUDFRONT_DISTRIBUTION_ID: $CLOUDFRONT_DISTRIBUTION_ID"
           echo "AWS_REGION: $AWS_REGION"
-          env | sort
 
       - name: Create env file
         run: |
