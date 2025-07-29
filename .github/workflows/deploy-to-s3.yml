@@ -24,23 +24,15 @@ jobs:
       - name: Build React app
         run: npm run build
 
-      - name: Verify build output
-        run: ls -la dist  # confirm the folder exists and has files
+      - name: Debug build output
+        run: ls -la dist
 
-      - name: Debug workspace
-        run: |
-          echo "Current directory:"
-          pwd
-          echo "Contents:"
-          ls -la
-
-      - name: Deploy to AWS S3
-        uses: jakejarvis/s3-sync-action@v0.5.1
+      - name: Upload to S3
+        uses: aws-actions/s3-sync@v1
         with:
-          args: --delete
-        env:
-          AWS_S3_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          SOURCE_DIR: dist  # or build
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          source-dir: dist
+          destination-bucket: ${{ secrets.S3_BUCKET_NAME }}
+          delete: true
