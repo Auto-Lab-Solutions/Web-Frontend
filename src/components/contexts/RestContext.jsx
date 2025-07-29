@@ -30,7 +30,7 @@ export const RestProvider = ({ children }) => {
   return (
     <RestContext.Provider
       value={{
-        restEndpoint: API_CONFIG.BASE_URL,
+        restEndpoint: BASE_URL,
         restClient,
         createRestClient,
         clearRestClient,
