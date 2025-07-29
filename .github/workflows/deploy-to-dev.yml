@@ -36,6 +36,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Create env file
+        run: |
+          echo "VITE_API_GATEWAY_BASE_URL=$API_GATEWAY_BASE_URL" > .env
+          echo "VITE_WEB_SOCKET_BASE_URL=$WEB_SOCKET_BASE_URL" >> .env
+          echo "VITE_ENVIRONMENT=$ENVIRONMENT" >> .env
+          cat .env
+
       - name: Build React app
         run: npm run build
 
@@ -45,18 +52,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
-
-      - name: Deploy to S3
-        run: |
-          aws s3 sync dist/ s3://$S3_BUCKET_NAME --delete --region $AWS_REGION
-      
-      - name: Create env file
-        run: |
-          echo "VITE_API_GATEWAY_BASE_URL=$API_GATEWAY_BASE_URL" > .env
-          echo "VITE_WEB_SOCKET_BASE_URL=$WEB_SOCKET_BASE_URL" >> .env
-          echo "VITE_ENVIRONMENT=$ENVIRONMENT" >> .env
-          cat .env
-      
+        
       - name: Upload env file to S3
         run: |
           aws s3 cp .env s3://$S3_BUCKET_NAME/.env --region $AWS_REGION
