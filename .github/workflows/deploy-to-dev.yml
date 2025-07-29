@@ -36,6 +36,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+
+      - name: Debug: Show env context
+        run: |
+          echo "API_GATEWAY_BASE_URL: $API_GATEWAY_BASE_URL"
+          echo "WEB_SOCKET_BASE_URL: $WEB_SOCKET_BASE_URL"
+          echo "ENVIRONMENT: $ENVIRONMENT"
+          echo "S3_BUCKET_NAME: $S3_BUCKET_NAME"
+          echo "CLOUDFRONT_DISTRIBUTION_ID: $CLOUDFRONT_DISTRIBUTION_ID"
+          echo "AWS_REGION: $AWS_REGION"
+          env | sort
+
       - name: Create env file
         run: |
           echo "VITE_API_GATEWAY_BASE_URL=$API_GATEWAY_BASE_URL" > .env
@@ -43,8 +54,17 @@ jobs:
           echo "VITE_ENVIRONMENT=$ENVIRONMENT" >> .env
           cat .env
 
+      - name: Debug: Check .env file before build
+        run: cat .env
+
       - name: Build React app
         run: npm run build
+
+      - name: Debug: Check built files for env values
+        run: |
+          grep -r "$API_GATEWAY_BASE_URL" dist/ || true
+          grep -r "$WEB_SOCKET_BASE_URL" dist/ || true
+          grep -r "$ENVIRONMENT" dist/ || true
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
