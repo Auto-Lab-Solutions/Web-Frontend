@@ -5,7 +5,6 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { useGlobalData } from '../components/contexts/GlobalDataContext';
 import { useRestClient } from '../components/contexts/RestContext';
-import { PAYMENT_CONFIG } from '../config/env';
 import PageContainer from '../components/common/PageContainer';
 import FadeInItem from '../components/common/FadeInItem';
 import { Card, CardContent, CardHeader } from '../components/ui/card';
@@ -14,8 +13,10 @@ import { ArrowLeft, CreditCard, Lock, Shield, CheckCircle, XCircle, AlertCircle 
 import PaymentForm from '../components/payment/PaymentForm';
 import PaymentSummary from '../components/payment/PaymentSummary';
 
+const STRIPE_PUBLISHABLE_KEY = 'qe34w567i8o';
+
 // Initialize Stripe with environment configuration
-const stripePromise = loadStripe(PAYMENT_CONFIG.STRIPE_PUBLISHABLE_KEY);
+const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
 
 const PaymentPage = () => {
   const { referenceNumber, type } = useParams(); // type: 'appointment' or 'order'

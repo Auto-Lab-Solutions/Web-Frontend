@@ -1,7 +1,8 @@
 
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { RestClient } from '../../classes/RestClient';
-import { API_CONFIG } from '../../config/env';
+
+const BASE_URL = 'http://localhost:3000/api'; // Default to local API if not set
 
 const RestContext = createContext(undefined);
 
@@ -9,8 +10,8 @@ export const RestProvider = ({ children }) => {
   const [restClient, setRestClient] = useState(null);
 
   const createRestClient = useCallback(() => {
-    console.log('Creating RestClient with endpoint:', API_CONFIG.BASE_URL);
-    const client = new RestClient(API_CONFIG.BASE_URL);
+    console.log('Creating RestClient with endpoint:', BASE_URL);
+    const client = new RestClient(BASE_URL);
     setRestClient(client);
   }, []);
 
