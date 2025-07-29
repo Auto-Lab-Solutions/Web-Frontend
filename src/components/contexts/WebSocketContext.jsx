@@ -6,7 +6,7 @@ import React, {
   useState,
   useCallback,
 } from 'react';
-import { useRestClient } from './restContext';
+import { useRestClient } from './RestContext';
 import { useGlobalData } from './GlobalDataContext';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import { v4 as uuidv4 } from 'uuid';

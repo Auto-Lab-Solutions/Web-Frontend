@@ -24,7 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircleMore, SendHorizontal, Check, X } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
-import { useRestClient } from '../contexts/restContext';
+import { useRestClient } from '../contexts/RestContext';
 import { useWebSocket } from '../contexts/WebSocketContext';
 import { UAParser } from 'ua-parser-js';
 import { ClipLoader, HashLoader, SyncLoader } from 'react-spinners';
