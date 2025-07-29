@@ -1,8 +1,7 @@
 
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { RestClient } from '../../classes/RestClient';
-
-const REST_ENDPOINT = 'https://91maaqr173.execute-api.ap-southeast-2.amazonaws.com/production/';
+import { API_CONFIG } from '../../config/env';
 
 const RestContext = createContext(undefined);
 
@@ -10,8 +9,8 @@ export const RestProvider = ({ children }) => {
   const [restClient, setRestClient] = useState(null);
 
   const createRestClient = useCallback(() => {
-    console.log('Creating RestClient');
-    const client = new RestClient(REST_ENDPOINT);
+    console.log('Creating RestClient with endpoint:', API_CONFIG.BASE_URL);
+    const client = new RestClient(API_CONFIG.BASE_URL);
     setRestClient(client);
   }, []);
 
@@ -30,7 +29,7 @@ export const RestProvider = ({ children }) => {
   return (
     <RestContext.Provider
       value={{
-        restEndpoint: REST_ENDPOINT,
+        restEndpoint: API_CONFIG.BASE_URL,
         restClient,
         createRestClient,
         clearRestClient,

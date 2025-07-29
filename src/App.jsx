@@ -21,6 +21,8 @@ import OrderPage from "./pages/OrderPage";
 import StatusPage from "./pages/StatusPage";
 import CategorySelectionPage from "./pages/CategorySelectionPage";
 import ItemSelectionPage from "./pages/ItemSelectionPage";
+import PaymentPage from "./pages/PaymentPage";
+import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import { GlobalDataProvider } from "./components/contexts/GlobalDataContext";
 import { RestProvider } from "./components/contexts/RestContext";
 import { WebSocketProvider } from "./components/contexts/WebSocketContext";
@@ -70,6 +72,8 @@ function AnimatedRoutes() {
         <Route path="status" element={<StatusPage />} />
         <Route path="accessories/categories" element={<CategorySelectionPage />} />
         <Route path="accessories/items" element={<ItemSelectionPage />} />
+        <Route path="payment/:type/:referenceNumber" element={<PaymentPage />} />
+        <Route path="payment/success" element={<PaymentSuccessPage />} />
         {/* Catch-all route for 404 */}
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>

@@ -13,6 +13,7 @@ import { Search, Calendar, Package, Clock, Car, Settings, Banknote, CreditCard }
 import { getStatusColor, getStatusText, getPaymentStatusColor, getPaymentStatusText } from '../utils/appointmentUtils';
 import { getOrderStatusInfo, calculateOrderTotal } from '../utils/orderUtils';
 import { formatDate } from '../utils/appointmentUtils';
+import { isPaymentRequired, getPaymentStatusInfo } from '../utils/paymentUtils';
 import { getServiceById, getPlanById, getCategoryById, getItemById } from '../meta/menu';
 
 const StatusPage = () => {
@@ -126,9 +127,20 @@ const StatusPage = () => {
     const service = getServiceById(appointment.serviceId);
     const plan = getPlanById(appointment.serviceId, appointment.planId);
 
-    const handleCardClick = () => {
+    const handleCardClick = (e) => {
+      // Don't navigate if clicking on payment button
+      if (e.target.closest('.payment-button')) {
+        return;
+      }
       navigate(`/appointment/${appointment.appointmentId}`);
     };
+
+    const handlePayNowClick = (e) => {
+      e.stopPropagation();
+      navigate(`/payment/appointment/${appointment.appointmentId}`);
+    };
+
+    const needsPayment = isPaymentRequired(appointment.paymentStatus);
     
     return (
       <Card 
@@ -202,6 +214,20 @@ const StatusPage = () => {
                 ${plan?.price || 0}
               </span>
             </div>
+            
+            {/* Payment Button */}
+            {needsPayment && appointment.status?.toLowerCase() !== 'cancelled' && (
+              <div className="mt-3">
+                <Button
+                  onClick={handlePayNowClick}
+                  className="payment-button w-full animated-button-primary text-sm py-2"
+                  size="sm"
+                >
+                  <CreditCard className="w-4 h-4 mr-2" />
+                  Pay Now - ${plan?.price || 0}
+                </Button>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -211,9 +237,20 @@ const StatusPage = () => {
   const OrderCard = ({ order }) => {
     const statusInfo = getOrderStatusInfo(order.status);
     
-    const handleCardClick = () => {
+    const handleCardClick = (e) => {
+      // Don't navigate if clicking on payment button
+      if (e.target.closest('.payment-button')) {
+        return;
+      }
       navigate(`/order/${order.orderId}`);
     };
+
+    const handlePayNowClick = (e) => {
+      e.stopPropagation();
+      navigate(`/payment/order/${order.orderId}`);
+    };
+
+    const needsPayment = isPaymentRequired(order.paymentStatus);
     
     // Get category and item names for the first item (assuming single item orders for now)
     const firstItem = order.items?.[0];
@@ -246,6 +283,13 @@ const StatusPage = () => {
                 <Badge className={`${statusInfo.bg} ${statusInfo.color} text-white text-xs px-2 py-1 rounded-full font-medium`}>
                   {statusInfo.text}
                 </Badge>
+                {/* Payment Status Badge */}
+                {order.paymentStatus && (
+                  <Badge className={`${getPaymentStatusInfo(order.paymentStatus).bg} text-white text-xs px-2 py-1 rounded-full font-medium flex items-center space-x-1`}>
+                    <CreditCard className="w-3 h-3" />
+                    <span>{getPaymentStatusInfo(order.paymentStatus).text}</span>
+                  </Badge>
+                )}
               </div>
             </div>
             
@@ -304,6 +348,20 @@ const StatusPage = () => {
                 ${(order.totalPrice || 0).toFixed(2)}
               </span>
             </div>
+            
+            {/* Payment Button */}
+            {needsPayment && order.status?.toLowerCase() !== 'cancelled' && (
+              <div className="mt-3">
+                <Button
+                  onClick={handlePayNowClick}
+                  className="payment-button w-full animated-button-primary text-sm py-2"
+                  size="sm"
+                >
+                  <CreditCard className="w-4 h-4 mr-2" />
+                  Pay Now - ${(order.totalPrice || 0).toFixed(2)}
+                </Button>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

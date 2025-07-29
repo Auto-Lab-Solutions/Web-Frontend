@@ -17,10 +17,13 @@ import {
   Mail,
   MapPin,
   Truck,
-  DollarSign
+  DollarSign,
+  CreditCard,
+  CheckCircle
 } from 'lucide-react';
 import { getCategoryById, getItemById } from '../meta/menu';
 import { getOrderStatusInfo } from '../utils/orderUtils';
+import { isPaymentRequired, getPaymentStatusInfo } from '../utils/paymentUtils';
 
 const OrderPage = () => {
   const { referenceNumber } = useParams();
@@ -78,6 +81,7 @@ const OrderPage = () => {
     return {
       referenceNumber: orderData.orderId,
       status: orderData.status || 'pending',
+      paymentStatus: orderData.paymentStatus || 'pending',
       category: category?.name || 'Unknown Category',
       item: item?.name || 'Unknown Item',
       description: item?.description || 'No description available',
@@ -226,6 +230,55 @@ const OrderPage = () => {
                       <p className="text-text-primary font-semibold text-highlight-primary text-lg">${order.totalPrice}</p>
                     </div>
                   </div>
+                </CardContent>
+              </Card>
+            </FadeInItem>
+
+            {/* Payment Section */}
+            <FadeInItem element="div" direction="y">
+              <Card className="bg-card-primary border border-border-primary shadow-xl backdrop-blur-sm">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-xl font-semibold text-text-primary">Payment Status</h3>
+                    <div className={`flex items-center gap-2 px-4 py-2 rounded-full ${getPaymentStatusInfo(order.paymentStatus).bg}`}>
+                      <CreditCard className="w-4 h-4" />
+                      <span className={`font-semibold ${getPaymentStatusInfo(order.paymentStatus).textColor}`}>
+                        {getPaymentStatusInfo(order.paymentStatus).text}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {isPaymentRequired(order.paymentStatus) && order.status?.toLowerCase() !== 'cancelled' && (
+                    <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-text-primary font-medium mb-1">Payment Required</p>
+                          <p className="text-text-secondary text-sm">
+                            Complete your payment to process this order.
+                          </p>
+                        </div>
+                        <Button
+                          onClick={() => navigate(`/payment/order/${order.referenceNumber}`)}
+                          className="animated-button-primary ml-4"
+                        >
+                          <CreditCard className="w-4 h-4 mr-2" />
+                          Pay Now
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {!isPaymentRequired(order.paymentStatus) && (
+                    <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="w-5 h-5 text-green-500" />
+                        <div>
+                          <p className="text-green-400 font-medium">Payment Completed</p>
+                          <p className="text-green-300 text-sm">Thank you for your payment!</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </FadeInItem>
