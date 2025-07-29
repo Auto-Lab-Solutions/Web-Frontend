@@ -37,7 +37,7 @@ jobs:
         run: npm ci
 
 
-      - name: Debug: Show env context
+      - name: Debug Show env context
         run: |
           echo "API_GATEWAY_BASE_URL: $API_GATEWAY_BASE_URL"
           echo "WEB_SOCKET_BASE_URL: $WEB_SOCKET_BASE_URL"
@@ -53,13 +53,13 @@ jobs:
           echo "VITE_ENVIRONMENT=$ENVIRONMENT" >> .env
           cat .env
 
-      - name: Debug: Check .env file before build
+      - name: Debug Check .env file before build
         run: cat .env
 
       - name: Build React app
         run: npm run build
 
-      - name: Debug: Check built files for env values
+      - name: Debug Check built files for env values
         run: |
           grep -r "$API_GATEWAY_BASE_URL" dist/ || true
           grep -r "$WEB_SOCKET_BASE_URL" dist/ || true
