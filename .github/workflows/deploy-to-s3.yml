@@ -3,7 +3,7 @@ name: Deploy React App to S3
 on:
   push:
     branches:
-      - prod
+      - main
 
 jobs:
   deploy:
@@ -26,6 +26,13 @@ jobs:
 
       - name: Verify build output
         run: ls -la dist  # confirm the folder exists and has files
+
+      - name: Debug workspace
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Contents:"
+          ls -la
 
       - name: Deploy to AWS S3
         uses: jakejarvis/s3-sync-action@v0.5.1
