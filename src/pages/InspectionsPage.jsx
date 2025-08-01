@@ -21,6 +21,7 @@ import SectionHeading from "@/components/common/SectionHeading";
 import Autoplay from "embla-carousel-autoplay"
 import { companyName, coverageAreas } from '../meta/companyData';
 import MechanicsSection from '@/components/common/MechanicsSection';
+import { useNavigate } from 'react-router-dom';
 
 const iconStyles = "w-8 h-8 text-highlight-primary";
 
@@ -80,6 +81,7 @@ const inspectionBenefits = [
 ];
 
 const InspectionsPage = () => {
+  const navigate = useNavigate();
   return (
     <PageContainer>
       <div className="font-sans">
@@ -108,7 +110,9 @@ const InspectionsPage = () => {
             element="div"
             direction="y"
           >
-            <button className="mt-6 px-8 py-3 bg-button-primary text-text-tertiary font-semibold rounded-full shadow hover:bg-highlight-primary transition">
+            <button className="mt-6 px-8 py-3 bg-button-primary text-text-tertiary font-semibold rounded-full shadow hover:bg-highlight-primary transition"
+              onClick={() => navigate('/pricing/pre-purchase-inspection')}
+            >
               Book Pre‑Purchase Inspection
             </button>
           </FadeInItem>
@@ -231,7 +235,9 @@ const InspectionsPage = () => {
             direction="x"
             className="section-subheading mb-6 mt-6"
           >
-            <button className="px-10 py-2.5 bg-button-primary text-text-tertiary font-semibold rounded-full hover:bg-highlight-primary transition shadow">
+            <button className="px-10 py-2.5 bg-button-primary text-text-tertiary font-semibold rounded-full hover:bg-highlight-primary transition shadow"
+              onClick={() => navigate('/pricing/pre-purchase-inspection')}
+            >
               Book Your Inspection Now
             </button>
           </FadeInItem>

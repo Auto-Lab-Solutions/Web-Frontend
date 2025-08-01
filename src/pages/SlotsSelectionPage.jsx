@@ -19,6 +19,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { Calendar } from '@/components/ui/calendar';
 import { motion } from 'framer-motion';
+import AppointmentStepIndicator from '@/components/common/AppointmentStepIndicator';
 
 const generateTimeSlots = () => {
   const slots = [];
@@ -153,7 +154,7 @@ function SlotsSelectionPage() {
       className="min-h-screen w-full mx-auto bg-background-primary py-20 px-3 sm:px-12"
     >
 
-        <div className="text-center mb-8">
+        <div className="text-center mb-4">
           <h1 className="text-3xl font-bold mb-2 bg-text-primary bg-clip-text text-transparent">
             Book Your Time Slots
           </h1>
@@ -167,6 +168,9 @@ function SlotsSelectionPage() {
             Select your preferred date and time slots for the appointment. You can choose up to 4 slots and reorder them by priority.
           </p>
         </div>
+        
+        {/* Step Indicator */}
+        <AppointmentStepIndicator currentStep={3} className="mb-8" />
 
         {/* Calendar + Time Slots side by side */}
         <div className="rounded-2xl shadow-xl border border-border-secondary overflow-hidden bg-background-tertiary">

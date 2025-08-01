@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import FormField from "@/components/common/FormField"
 import FormSection from "@/components/common/FormSection"
+import AppointmentStepIndicator from "@/components/common/AppointmentStepIndicator"
 import { useMobileInputStyling } from "../hooks/useMobileOptimization"
 import { getPlansAndPricingUrl } from "@/meta/menu"
 
@@ -233,7 +234,7 @@ function BookingFormPage() {
           transition={{ duration: 0.5 }}
           className="max-w-6xl mx-auto"
         >
-          <div className="text-center mb-8">
+          <div className="text-center mb-4">
             <h1 className="text-4xl font-bold mb-2 bg-text-primary bg-clip-text text-transparent">
               Vehicle & Contact Details
             </h1>
@@ -241,6 +242,9 @@ function BookingFormPage() {
               Please provide your information and vehicle details for the inspection
             </p>
           </div>
+          
+          {/* Step Indicator */}
+          <AppointmentStepIndicator currentStep={2} className="mb-8" />
 
           {/* TOGGLE BUTTON */}
           <div className="flex justify-center mb-8">

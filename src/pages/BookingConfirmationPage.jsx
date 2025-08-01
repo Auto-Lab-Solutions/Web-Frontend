@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import AppointmentStepIndicator from "../components/common/AppointmentStepIndicator";
 
 // Reusable components
 const InfoItem = ({ label, value, labelWidth = "w-16" }) => (
@@ -120,7 +121,7 @@ function BookingConfirmationPage() {
     >
       <div className="max-w-6xl mx-auto space-y-10 text-black py-20 px-3 sm:px-12">
 
-        <div className="text-center mb-8">
+        <div className="text-center mb-4">
           <h1 className="text-3xl font-bold mb-2 bg-text-primary bg-clip-text text-transparent">
             Confirm Your Booking
           </h1>
@@ -128,6 +129,9 @@ function BookingConfirmationPage() {
             Please review your appointment details below and confirm to complete your booking.
           </p>
         </div>
+        
+        {/* Step Indicator */}
+        <AppointmentStepIndicator currentStep={4} className="mb-8" />
 
         {/* Custom Success Alert Modal */}
         {showAlert && (
