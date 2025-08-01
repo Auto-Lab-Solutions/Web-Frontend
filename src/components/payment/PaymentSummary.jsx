@@ -121,7 +121,7 @@ const PaymentSummary = ({ paymentData }) => {
           className="mb-6"
         >
           <div className="space-y-3">
-            {paymentData.orderInfo.items.map((item, index) => {
+            {paymentData.items.map((item, index) => {
               const category = getCategoryById(item.categoryId);
               const itemData = getItemById(item.categoryId, item.itemId);
               
@@ -147,7 +147,7 @@ const PaymentSummary = ({ paymentData }) => {
           <div className="border-t border-border-secondary pt-3 mt-4">
             <div className="flex justify-between items-center">
               <span className="font-semibold text-text-primary">Total Items:</span>
-              <span className="font-semibold text-text-primary">{paymentData.orderInfo.items.length}</span>
+              <span className="font-semibold text-text-primary">{paymentData.items.length}</span>
             </div>
           </div>
         </SectionCard>
@@ -161,18 +161,18 @@ const PaymentSummary = ({ paymentData }) => {
           <InfoItem
             icon={<Car />}
             label="Make & Model"
-            value={`${paymentData.orderInfo.vehicle.make} ${paymentData.orderInfo.vehicle.model}`}
+            value={`${paymentData.vehicleInfo.make} ${paymentData.vehicleInfo.model}`}
           />
           <InfoItem
             icon={<Calendar />}
             label="Year"
-            value={paymentData.orderInfo.vehicle.year}
+            value={paymentData.vehicleInfo.year}
           />
-          {paymentData.orderInfo.deliveryLocation && (
+          {paymentData.deliveryLocation && (
             <InfoItem
               icon={<MapPin />}
               label="Delivery Location"
-              value={paymentData.orderInfo.deliveryLocation}
+              value={paymentData.deliveryLocation}
             />
           )}
         </SectionCard>

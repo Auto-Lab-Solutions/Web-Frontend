@@ -249,6 +249,7 @@ export const WebSocketProvider = ({ children }) => {
             handleConnection(eventData);
             break;
         default:
+            console.error('❗ Unknown WebSocket message: ', eventData);
             console.error('❗ Unknown message type:', eventData.type);
             break;
       }

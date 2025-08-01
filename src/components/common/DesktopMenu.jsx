@@ -13,10 +13,7 @@ const navBarItem = (menuName) => (
 );
 
 export default function DesktopMenu({ menu }) {
-  const [isHover, toggleHover] = useState(false);
-  const toggleHoverMenu = () => {
-    toggleHover(!isHover);
-  };
+  const [isHover, setHover] = useState(false);
 
   const subMenuAnimate = {
     enter: {
@@ -43,11 +40,9 @@ export default function DesktopMenu({ menu }) {
 
   return (
     <motion.li
-      className="group/link"
-      onHoverStart={() => {
-        toggleHoverMenu();
-      }}
-      onHoverEnd={toggleHoverMenu}
+      className="group/link relative"
+      onHoverStart={() => setHover(true)}
+      onHoverEnd={() => setHover(false)}
       key={menu.name}
     >
       {!hasSubMenu ? (
@@ -59,7 +54,7 @@ export default function DesktopMenu({ menu }) {
       }
       {hasSubMenu && (
         <motion.div
-          className="sub-menu"
+          className="sub-menu absolute left-0 top-full mt-2 z-50 min-w-[220px] w-max"
           initial="exit"
           animate={isHover ? "enter" : "exit"}
           variants={subMenuAnimate}

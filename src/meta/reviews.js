@@ -3,7 +3,7 @@
 export const reviewsSummary = {
     rating: 5.0,
     starsCount: 5,
-    reviewsCount: 45,
+    reviewsCount: 54,
 }
 
 export const topReviews = [

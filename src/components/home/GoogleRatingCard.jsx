@@ -1,6 +1,7 @@
 import { FaStar } from 'react-icons/fa';
 import { reviewsSummary } from '@/meta/reviews';
 import googleLogo from '/google-logo.svg';
+import { companyGoogleBusinessLink } from '../../meta/companyData';
 
 const GoogleRatingCard = () => {
   return (
@@ -25,7 +26,7 @@ const GoogleRatingCard = () => {
         </div>
       </div>
       
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center" onClick={() => window.open(companyGoogleBusinessLink, '_blank')}>
         <p className="card-description underline hover:text-blue-500 transition-colors">
           Read our {reviewsSummary.reviewsCount} reviews
         </p>

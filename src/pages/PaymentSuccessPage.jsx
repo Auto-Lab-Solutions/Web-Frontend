@@ -32,9 +32,8 @@ const PaymentSuccessPage = () => {
     try {
       setLoading(true);
 
-      const response = await restClient.post('payments/confirm-success', {
-        paymentIntentId: paymentIntent,
-        userId: userId || 'guest'
+      const response = await restClient.post('payments/stripe/confirm', {
+        paymentIntentId: paymentIntent
       });
 
       if (response.data && response.data.success) {

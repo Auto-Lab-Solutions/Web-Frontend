@@ -12,8 +12,10 @@ import { Button } from '../components/ui/button';
 import { ArrowLeft, CreditCard, Lock, Shield, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import PaymentForm from '../components/payment/PaymentForm';
 import PaymentSummary from '../components/payment/PaymentSummary';
+import { getServiceById, getPlanById, getCategoryById, getItemById } from '../meta/menu';
+import { da } from 'date-fns/locale/da';
 
-const STRIPE_PUBLISHABLE_KEY = 'qe34w567i8o';
+const STRIPE_PUBLISHABLE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
 
 // Initialize Stripe with environment configuration
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
@@ -53,11 +55,11 @@ const PaymentPage = () => {
       let response;
       if (type === 'appointment') {
         response = await restClient.get(`appointments/${referenceNumber}`, { 
-          userId: userId || 'guest' 
+          userId: userId
         });
       } else if (type === 'order') {
         response = await restClient.get(`orders/${referenceNumber}`, { 
-          userId: userId || 'guest' 
+          userId: userId
         });
       } else {
         throw new Error('Invalid payment type');
@@ -69,7 +71,7 @@ const PaymentPage = () => {
         
         // Create payment intent if not already paid
         const paymentStatus = data.paymentStatus?.toLowerCase();
-        if (paymentStatus !== 'paid' && paymentStatus !== 'completed') {
+        if (paymentStatus !== 'paid') {
           await createPaymentIntent(data);
         }
       } else {
@@ -94,56 +96,44 @@ const PaymentPage = () => {
       return {
         type: 'appointment',
         referenceNumber: data.appointmentId,
-        title: 'Vehicle Inspection Payment',
-        description: `Payment for vehicle inspection service`,
-        amount: data.price || 0,
+        title: getServiceById(data.serviceId)?.name || 'Service Appointment',
+        subtitle: getPlanById(data.serviceId, data.planId)?.name || 'Standard Plan',
+        description: data.description || 'Service appointment details',
+        amount: data.totalPrice || 0,
         currency: 'AUD',
         status: data.status,
         paymentStatus: data.paymentStatus,
+        createdAt: data.createdDate || data.createdAt,
         customerInfo: {
-          name: data.buyerData?.name || data.sellerData?.name || 'N/A',
-          email: data.buyerData?.email || data.sellerData?.email || 'N/A',
-          phone: data.buyerData?.phoneNumber || data.sellerData?.phoneNumber || 'N/A',
+          name: data.isBuyer ? data.buyerName : data.sellerName,
+          email: data.isBuyer ? data.buyerEmail : data.sellerEmail,
+          phone: data.isBuyer ? data.buyerPhone : data.sellerPhone || ''
         },
-        serviceInfo: {
-          serviceId: data.serviceId,
-          planId: data.planId,
-          vehicle: {
-            make: data.carData?.make || 'N/A',
-            model: data.carData?.model || 'N/A',
-            year: data.carData?.year || 'N/A',
-            location: data.carData?.location || 'Not specified'
-          }
-        },
-        createdAt: data.createdDate || data.createdAt
       };
     } else if (dataType === 'order') {
-      const totalAmount = data.items?.reduce((sum, item) => sum + (item.totalPrice || 0), 0) || data.totalPrice || 0;
-      
       return {
         type: 'order',
         referenceNumber: data.orderId,
-        title: 'Auto Parts & Services Order',
-        description: `Payment for ${data.items?.length || 1} item(s)`,
-        amount: totalAmount,
+        title: getCategoryById(data.categoryId)?.name || 'Order',
+        subtitle: getItemById(data.categoryId, data.itemId)?.name || 'Order',
+        description: data.description || 'Order details',
+        amount: data.totalPrice || 0,
         currency: 'AUD',
         status: data.status,
         paymentStatus: data.paymentStatus,
+        createdAt: data.createdAt,
         customerInfo: {
-          name: data.customerData?.name || 'N/A',
-          email: data.customerData?.email || 'N/A',
-          phone: data.customerData?.phoneNumber || 'N/A',
+          name: data.customerName || '',
+          email: data.customerEmail || '',
+          phone: data.customerPhone || ''
         },
-        orderInfo: {
-          items: data.items || [],
-          vehicle: {
-            make: data.carData?.make || 'N/A',
-            model: data.carData?.model || 'N/A',
-            year: data.carData?.year || 'N/A',
-          },
-          deliveryLocation: data.deliveryLocation
+        items: data.items || [],
+        vehicleInfo: {
+          make: data.carMake || '',
+          model: data.carModel || '',
+          year: data.carYear || ''
         },
-        createdAt: data.createdDate || data.createdAt
+        deliveryLocation: data.deliveryLocation || ''
       };
     }
   };
@@ -152,13 +142,14 @@ const PaymentPage = () => {
     try {
       const amount = type === 'appointment' 
         ? data.price || 0
-        : (data.items?.reduce((sum, item) => sum + (item.totalPrice || 0), 0) || data.totalPrice || 0);
+        : data.totalPrice || data.items?.reduce((sum, item) => sum + (item.totalPrice || 0), 0) || 0;
 
-      const response = await restClient.post('payments/create-intent', {
-        amount: Math.round(amount * 100), // Convert to cents
-        currency: 'aud',
+      const response = await restClient.post('payments/stripe/intent', {
+        userId: userId || 'guest',
         referenceNumber,
         type,
+        amount: Math.round(amount * 100), // Convert to cents
+        currency: 'aud',
         metadata: {
           userId: userId || 'guest',
           referenceNumber,
@@ -173,7 +164,11 @@ const PaymentPage = () => {
       }
     } catch (error) {
       console.error('Error creating payment intent:', error);
-      setError('Failed to initialize payment. Please try again.');
+      if (error.response?.status === 400 && error.response?.data?.message) {
+        setError(error.response.data.message);
+      } else {
+        setError('Failed to initialize payment. Please try again.');
+      }
     }
   };
 
@@ -182,7 +177,7 @@ const PaymentPage = () => {
       setPaymentStatus('processing');
       
       // Update payment status in backend
-      await restClient.post(`payments/confirm`, {
+      await restClient.post(`/payments/stripe/confirm`, {
         paymentIntentId: paymentIntent.id,
         referenceNumber,
         type,
@@ -217,7 +212,6 @@ const PaymentPage = () => {
   const getPaymentStatusInfo = (status) => {
     switch (status?.toLowerCase()) {
       case 'paid':
-      case 'completed':
         return {
           icon: <CheckCircle className="w-6 h-6" />,
           text: 'Payment Completed',
@@ -290,7 +284,7 @@ const PaymentPage = () => {
 
   // Check if already paid
   const paymentStatusInfo = getPaymentStatusInfo(paymentData.paymentStatus);
-  const isAlreadyPaid = ['paid', 'completed'].includes(paymentData.paymentStatus?.toLowerCase());
+  const isAlreadyPaid = ['paid'].includes(paymentData.paymentStatus?.toLowerCase());
 
   if (isAlreadyPaid) {
     return (
