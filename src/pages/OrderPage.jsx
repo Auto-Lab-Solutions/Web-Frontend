@@ -135,8 +135,9 @@ const OrderPage = () => {
               <Button
                 onClick={() => navigate('/status')}
                 variant="outline"
-                className="border-border-secondary text-text-secondary hover:border-highlight-primary hover:text-highlight-primary"
+                className="border-border-secondary text-text-secondary hover:border-highlight-primary hover:text-highlight-primary hover:bg-card-primary/50 shadow-sm hover:shadow flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200"
               >
+                <ArrowLeft className="w-4 h-4 mr-1" />
                 Back to Status
               </Button>
               <Button
@@ -254,16 +255,20 @@ const OrderPage = () => {
                         <div>
                           <p className="text-text-primary font-medium mb-1">Payment Required</p>
                           <p className="text-text-secondary text-sm">
-                            Complete your payment to process this order.
+                            {order.status?.toLowerCase() !== 'pending' 
+                              ? 'Complete your payment to process this order.'
+                              : 'Payment will be available after your order is confirmed.'}
                           </p>
                         </div>
-                        <Button
-                          onClick={() => navigate(`/payment/order/${order.referenceNumber}`)}
-                          className="animated-button-primary ml-4"
-                        >
-                          <CreditCard className="w-4 h-4 mr-2" />
-                          Pay Now
-                        </Button>
+                        {order.status?.toLowerCase() !== 'pending' && (
+                          <Button
+                            onClick={() => navigate(`/payment/order/${order.referenceNumber}`)}
+                            className="payment-button animated-button-primary ml-4"
+                          >
+                            <CreditCard className="w-4 h-4 mr-2" />
+                            Pay Now
+                          </Button>
+                        )}
                       </div>
                     </div>
                   )}
@@ -402,7 +407,7 @@ const OrderPage = () => {
           <div className="max-w-4xl mx-auto">
             <motion.button
               onClick={() => navigate('/status')}
-              className="flex items-center gap-2 px-6 py-3 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group"
+              className="flex items-center gap-2 px-6 py-3 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group shadow-sm hover:shadow border border-border-secondary"
               whileHover={{ x: -4 }}
               whileTap={{ scale: 0.95 }}
             >

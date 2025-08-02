@@ -453,7 +453,7 @@ const OrderFormPage = () => {
                     <motion.button
                       type="button"
                       onClick={() => navigate('/cart')}
-                      className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm"
+                      className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm shadow-sm hover:shadow border border-border-secondary"
                       whileHover={{ x: -4 }}
                       whileTap={{ scale: 0.95 }}
                     >

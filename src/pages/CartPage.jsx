@@ -118,7 +118,7 @@ const CartPage = () => {
     navigate('/accessories/categories');
   };
 
-  const handleProceedToCheckout = () => {
+  const handleProceedToOrderForm = () => {
     navigate('/order-form');
   };
 
@@ -161,14 +161,9 @@ const CartPage = () => {
         >
           {/* Header */}
           <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
-            <Button
-              variant="ghost"
-              onClick={handleBack}
-              className="mb-4 sm:mb-0 flex items-center space-x-2 text-text-secondary hover:text-text-primary"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back</span>
-            </Button>
+            <div className="hidden">
+              {/* Back button moved to bottom */}
+            </div>
             <div className="text-center flex-1 mb-4 sm:mb-0">
               <FadeInItem element="h1" direction="y" className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
                 Your Cart
@@ -337,13 +332,28 @@ const CartPage = () => {
             </Button>
             
             <Button
-              onClick={handleProceedToCheckout}
+              onClick={handleProceedToOrderForm}
               className="w-full sm:w-auto flex items-center justify-center bg-highlight-primary text-text-tertiary hover:bg-highlight-primary/90 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 px-6 py-3 text-base sm:text-lg font-semibold"
             >
               <ShoppingCart className="w-5 h-5 mr-2" />
-              <span>Proceed to Checkout</span>
+              <span>Proceed to Details</span>
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
+          </div>
+          
+          {/* Back Button */}
+          <div className="flex justify-start mt-6">
+            <motion.button
+              onClick={handleBack}
+              className="flex items-center gap-2 px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm shadow-sm hover:shadow border border-border-secondary"
+              whileHover={{ x: -4 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Items
+            </motion.button>
           </div>
         </motion.div>
       </div>

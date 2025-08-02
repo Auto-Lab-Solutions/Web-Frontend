@@ -18,13 +18,18 @@ import { getServiceById, getPlanById, getCategoryById, getItemById } from '../me
 
 const StatusPage = () => {
   const { restClient } = useRestClient();
-  const { userId } = useGlobalData();
+  const { userId, clearFormData } = useGlobalData();
   const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('appointments');
+
+  // Clear any lingering cart data when viewing status page
+  useEffect(() => {
+    clearFormData();
+  }, [clearFormData]);
 
   useEffect(() => {
     if (userId && restClient) {
@@ -218,14 +223,20 @@ const StatusPage = () => {
             {/* Payment Button */}
             {needsPayment && appointment.status?.toLowerCase() !== 'cancelled' && (
               <div className="mt-3">
-                <Button
-                  onClick={handlePayNowClick}
-                  className="payment-button w-full animated-button-primary text-sm py-2"
-                  size="sm"
-                >
-                  <CreditCard className="w-4 h-4 mr-2" />
-                  Pay Now - ${plan?.price || 0}
-                </Button>
+                {appointment.status?.toLowerCase() !== 'pending' ? (
+                  <Button
+                    onClick={handlePayNowClick}
+                    className="payment-button w-full animated-button-primary text-sm py-2"
+                    size="sm"
+                  >
+                    <CreditCard className="w-4 h-4 mr-2" />
+                    Pay Now - ${plan?.price || 0}
+                  </Button>
+                ) : (
+                  <div className="text-center p-2 bg-background-secondary/30 rounded-lg text-sm text-text-secondary">
+                    Payment will be available after appointment is confirmed
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -352,14 +363,20 @@ const StatusPage = () => {
             {/* Payment Button */}
             {needsPayment && order.status?.toLowerCase() !== 'cancelled' && (
               <div className="mt-3">
-                <Button
-                  onClick={handlePayNowClick}
-                  className="payment-button w-full animated-button-primary text-sm py-2"
-                  size="sm"
-                >
-                  <CreditCard className="w-4 h-4 mr-2" />
-                  Pay Now - ${(order.totalPrice || 0).toFixed(2)}
-                </Button>
+                {order.status?.toLowerCase() !== 'pending' ? (
+                  <Button
+                    onClick={handlePayNowClick}
+                    className="payment-button w-full animated-button-primary text-sm py-2"
+                    size="sm"
+                  >
+                    <CreditCard className="w-4 h-4 mr-2" />
+                    Pay Now - ${(order.totalPrice || 0).toFixed(2)}
+                  </Button>
+                ) : (
+                  <div className="text-center p-2 bg-background-secondary/30 rounded-lg text-sm text-text-secondary">
+                    Payment will be available after order is confirmed
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -404,22 +421,39 @@ const StatusPage = () => {
 
           {/* Toggle Buttons */}
           <div className="flex justify-center mb-8">
-            <div className="bg-card-primary border border-border-primary rounded-lg p-1 inline-flex">
+            <div className="bg-card-primary border border-border-primary rounded-xl p-2 inline-flex shadow-md relative overflow-hidden w-full max-w-md">
+              {/* Active Tab Indicator - Animated Background */}
+              <div 
+                className={`absolute top-2 bottom-2 rounded-lg transition-all duration-300 ease-in-out bg-highlight-primary ${
+                  activeTab === 'appointments' ? 'left-2 right-[calc(50%+2px)]' : 'left-[calc(50%+2px)] right-2'
+                }`}
+                style={{ zIndex: 0 }}
+              ></div>
+              
+              {/* Appointments Tab */}
               <Button
-                variant={activeTab === 'appointments' ? 'default' : 'ghost'}
                 onClick={() => setActiveTab('appointments')}
-                className="flex items-center space-x-2"
+                className={`relative z-10 flex items-center justify-center gap-1 xs:gap-2 px-2 xs:px-3 sm:px-4 py-2 rounded-lg border-0 shadow-none transition-colors duration-300 w-1/2 ${
+                  activeTab === 'appointments' 
+                    ? 'text-white font-semibold' 
+                    : 'text-text-secondary hover:text-text-primary bg-transparent'
+                }`}
               >
-                <Calendar className="w-4 h-4" />
-                <span>Appointments ({filteredAppointments.length})</span>
+                <Calendar className={`w-4 h-4 flex-shrink-0 ${activeTab === 'appointments' ? 'text-white' : 'text-text-secondary'}`} />
+                <span className="whitespace-nowrap text-xs xs:text-sm">Appointments ({filteredAppointments.length})</span>
               </Button>
+              
+              {/* Orders Tab */}
               <Button
-                variant={activeTab === 'orders' ? 'default' : 'ghost'}
                 onClick={() => setActiveTab('orders')}
-                className="flex items-center space-x-2"
+                className={`relative z-10 flex items-center justify-center gap-1 xs:gap-2 px-2 xs:px-3 sm:px-4 py-2 rounded-lg border-0 shadow-none transition-colors duration-300 w-1/2 ${
+                  activeTab === 'orders' 
+                    ? 'text-white font-semibold' 
+                    : 'text-text-secondary hover:text-text-primary bg-transparent'
+                }`}
               >
-                <Package className="w-4 h-4" />
-                <span>Orders ({filteredOrders.length})</span>
+                <Package className={`w-4 h-4 flex-shrink-0 ${activeTab === 'orders' ? 'text-white' : 'text-text-secondary'}`} />
+                <span className="whitespace-nowrap text-xs xs:text-sm">Orders ({filteredOrders.length})</span>
               </Button>
             </div>
           </div>

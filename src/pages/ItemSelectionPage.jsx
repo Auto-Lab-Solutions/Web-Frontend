@@ -195,14 +195,9 @@ const ItemSelectionPage = () => {
         >
           {/* Header */}
           <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
-            <Button
-              variant="ghost"
-              onClick={handleBack}
-              className="mb-4 sm:mb-0 flex items-center space-x-2 text-text-secondary hover:text-text-primary"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back</span>
-            </Button>
+            <div className="hidden">
+              {/* Back button moved to bottom */}
+            </div>
             <div className="text-center flex-1 mb-4 sm:mb-0">
               <FadeInItem element="h1" direction="y" className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
                 {currentCategory.name}
@@ -211,19 +206,7 @@ const ItemSelectionPage = () => {
                 Select items and quantities for your order
               </FadeInItem>
             </div>
-            <div className="flex justify-center sm:justify-end w-full sm:w-auto">
-              {Object.keys(quantities).length > 0 && (
-                <Button
-                  variant="outline"
-                  onClick={() => navigate('/cart')}
-                  className="flex items-center space-x-2 text-highlight-primary border-highlight-primary hover:bg-highlight-primary/10 transition-all duration-300"
-                >
-                  <ShoppingCart className="w-4 h-4 mr-1" />
-                  <span>Cart ({Object.values(quantities).reduce((a, b) => a + b, 0)})</span>
-                </Button>
-              )}
-              {Object.keys(quantities).length === 0 && <div className="hidden sm:block w-20"></div>} {/* Spacer for symmetry on larger screens */}
-            </div>
+            <div className="hidden sm:block w-20"></div> {/* Spacer for symmetry on larger screens */}
           </div>
 
           {/* Progress Indicator */}
@@ -397,6 +380,21 @@ const ItemSelectionPage = () => {
               <span>Go to Cart</span>
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
+          </div>
+          
+          {/* Back Button */}
+          <div className="flex justify-start mt-6">
+            <motion.button
+              onClick={handleBack}
+              className="flex items-center gap-2 px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm shadow-sm hover:shadow border border-border-secondary"
+              whileHover={{ x: -4 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Go back to categories
+            </motion.button>
           </div>
         </motion.div>
       </div>

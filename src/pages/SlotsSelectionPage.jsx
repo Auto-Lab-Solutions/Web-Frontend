@@ -351,7 +351,7 @@ function SlotsSelectionPage() {
         <div className="flex justify-start mt-6">
           <motion.button
             onClick={() => navigate('/booking-form')}
-            className="flex items-center gap-2 px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm"
+            className="flex items-center gap-2 px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm shadow-sm hover:shadow border border-border-secondary"
             whileHover={{ x: -4 }}
             whileTap={{ scale: 0.95 }}
           >

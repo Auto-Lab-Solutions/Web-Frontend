@@ -92,11 +92,11 @@ function BookingConfirmationPage() {
         // Show custom success alert
         setShowAlert(true);
         
-        // Show success state for 3 seconds before navigating
+        // Show success state for 2 seconds before navigating
         setTimeout(() => {
           navigate("/status");
           clearFormData();
-        }, 3000);
+        }, 2000);
       } else {
         throw new Error(response.data?.message || "Failed to create appointment");
       }
@@ -455,7 +455,7 @@ function BookingConfirmationPage() {
           <motion.button
             onClick={handleBack}
             disabled={isSubmitting || isSuccess}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 group backdrop-blur-sm ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 group backdrop-blur-sm shadow-sm hover:shadow border border-border-secondary ${
               isSubmitting || isSuccess
                 ? 'opacity-50 cursor-not-allowed text-text-secondary' 
                 : 'text-text-secondary hover:text-text-primary hover:bg-card-primary/50'

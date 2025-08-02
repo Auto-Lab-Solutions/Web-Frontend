@@ -59,14 +59,9 @@ const CategorySelectionPage = () => {
         >
           {/* Header */}
           <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
-            <Button
-              variant="ghost"
-              onClick={handleBack}
-              className="mb-4 sm:mb-0 flex items-center space-x-2 text-text-secondary hover:text-text-primary"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back</span>
-            </Button>
+            <div className="hidden">
+              {/* Back button moved to bottom */}
+            </div>
             <div className="text-center flex-1 mb-4 sm:mb-0">
               <FadeInItem element="h1" direction="y" className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
                 Select Category
@@ -75,19 +70,7 @@ const CategorySelectionPage = () => {
                 Choose categories for your automotive products
               </FadeInItem>
             </div>
-            <div className="flex justify-center sm:justify-end w-full sm:w-auto">
-              {cartItemCount > 0 && (
-                <Button
-                  variant="outline"
-                  onClick={handleViewCart}
-                  className="flex items-center space-x-2 text-highlight-primary border-highlight-primary hover:bg-highlight-primary/10"
-                >
-                  <ShoppingCart className="w-4 h-4" />
-                  <span>Cart ({cartItemCount})</span>
-                </Button>
-              )}
-              {cartItemCount === 0 && <div className="hidden sm:block w-20"></div>} {/* Spacer for symmetry on larger screens */}
-            </div>
+            <div className="hidden sm:block w-20"></div> {/* Spacer for symmetry on larger screens */}
           </div>
 
           {/* Progress Indicator */}
@@ -204,6 +187,21 @@ const CategorySelectionPage = () => {
                 <span>View Cart ({cartItemCount})</span>
               </Button>
             )}
+          </div>
+          
+          {/* Back Button */}
+          <div className="flex justify-start mt-6">
+            <motion.button
+              onClick={handleBack}
+              className="flex items-center gap-2 px-4 py-2 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm shadow-sm hover:shadow border border-border-secondary"
+              whileHover={{ x: -4 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <svg className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back
+            </motion.button>
           </div>
         </motion.div>
       </div>

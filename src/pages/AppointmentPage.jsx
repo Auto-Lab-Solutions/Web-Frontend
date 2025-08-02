@@ -154,9 +154,10 @@ const AppointmentPage = () => {
               <p className="text-xl text-text-secondary mb-8">{error}</p>
               <Button
                 onClick={() => navigate('/status')}
-                className="animated-button-primary"
+                variant="outline"
+                className="border-border-secondary text-text-secondary hover:border-highlight-primary hover:text-highlight-primary hover:bg-card-primary/50 shadow-sm hover:shadow flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200"
               >
-                <ArrowLeft className="w-4 h-4 mr-2" />
+                <ArrowLeft className="w-4 h-4 mr-1" />
                 Back to Status
               </Button>
             </div>
@@ -268,16 +269,20 @@ const AppointmentPage = () => {
                         <div>
                           <p className="text-text-primary font-medium mb-1">Payment Required</p>
                           <p className="text-text-secondary text-sm">
-                            Complete your payment to confirm this appointment.
+                            {appointment.status?.toLowerCase() !== 'pending' 
+                              ? 'Complete your payment to confirm this appointment.'
+                              : 'Payment will be available after your appointment is confirmed.'}
                           </p>
                         </div>
-                        <Button
-                          onClick={() => navigate(`/payment/appointment/${appointment.referenceNumber}`)}
-                          className="animated-button-primary ml-4"
-                        >
-                          <CreditCard className="w-4 h-4 mr-2" />
-                          Pay Now
-                        </Button>
+                        {appointment.status?.toLowerCase() !== 'pending' && (
+                          <Button
+                            onClick={() => navigate(`/payment/appointment/${appointment.referenceNumber}`)}
+                            className="payment-button animated-button-primary ml-4"
+                          >
+                            <CreditCard className="w-4 h-4 mr-2" />
+                            Pay Now
+                          </Button>
+                        )}
                       </div>
                     </div>
                   )}

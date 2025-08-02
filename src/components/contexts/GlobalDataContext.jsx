@@ -85,8 +85,9 @@ export const GlobalDataProvider = ({ children }) => {
   };
 
   const clearFormData = () => {
+    // Reset to empty objects, not undefined
     setAppointmentFormData({});
-    setOrderFormData({});
+    setOrderFormData({items: []});
     localStorage.removeItem(STORAGE_KEYS.APPOINTMENT_FORM_DATA);
     localStorage.removeItem(STORAGE_KEYS.ORDER_FORM_DATA);
   };

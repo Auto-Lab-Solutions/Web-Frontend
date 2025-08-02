@@ -68,11 +68,13 @@ const OrderConfirmationPage = () => {
         console.log("Order created successfully:", response.data);
         setIsSuccess(true);
         
-        // Show success state for 3 seconds before navigating
+        // Clear form data first, then navigate after a short delay
+        clearFormData();
+        
+        // Show success state for 2 seconds before navigating
         setTimeout(() => {
           navigate("/status");
-          clearFormData();
-        }, 3000);
+        }, 2000);
       } else {
         throw new Error(response.data?.message || "Failed to create order");
       }
@@ -307,7 +309,7 @@ const OrderConfirmationPage = () => {
                 type="button"
                 onClick={handleBack}
                 disabled={isSubmitting}
-                className={`flex items-center justify-center gap-2 px-6 py-3 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm ${
+                className={`flex items-center justify-center gap-2 px-6 py-3 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm shadow-sm hover:shadow border border-border-secondary ${
                   isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
                 whileHover={isSubmitting ? {} : { x: -4 }}
