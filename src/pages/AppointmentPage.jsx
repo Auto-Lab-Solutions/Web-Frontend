@@ -152,14 +152,6 @@ const AppointmentPage = () => {
             <div className="max-w-2xl mx-auto">
               <h1 className="text-3xl sm:text-4xl font-bold mb-4 mt-8">Appointment Not Found</h1>
               <p className="text-xl text-text-secondary mb-8">{error}</p>
-              <Button
-                onClick={() => navigate('/status')}
-                variant="outline"
-                className="border-border-secondary text-text-secondary hover:border-highlight-primary hover:text-highlight-primary hover:bg-card-primary/50 shadow-sm hover:shadow flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200"
-              >
-                <ArrowLeft className="w-4 h-4 mr-1" />
-                Back to Status
-              </Button>
             </div>
           </section>
         </div>
@@ -176,18 +168,7 @@ const AppointmentPage = () => {
       <div className="font-sans min-h-screen bg-background-primary">
         {/* Hero Section */}
         <section className="bg-background-tertiary text-text-primary py-20 px-6">
-          <div className="max-w-4xl mx-auto">
-            <FadeInItem element="div" direction="y" className="mb-6">
-              <Button
-                onClick={() => navigate('/status')}
-                variant="outline"
-                className="mb-4 border-border-secondary text-text-secondary hover:border-highlight-primary hover:text-highlight-primary"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Status
-              </Button>
-            </FadeInItem>
-            
+          <div className="max-w-4xl mx-auto">            
             <FadeInItem element="h1" direction="y" className="text-3xl sm:text-4xl font-bold mb-4">
               Appointment Details
             </FadeInItem>
@@ -437,6 +418,21 @@ const AppointmentPage = () => {
                 </Card>
               </div>
             </FadeInItem>
+          </div>
+        </section>
+
+        {/* Back Button */}
+        <section className="bg-background-primary py-8 px-6">
+          <div className="max-w-4xl mx-auto">
+            <motion.button
+              onClick={() => navigate('/status')}
+              className="flex items-center gap-2 px-6 py-3 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group shadow-sm hover:shadow border border-border-secondary"
+              whileHover={{ x: -4 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" />
+              Back to Status
+            </motion.button>
           </div>
         </section>
       </div>

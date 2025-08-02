@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Link } from 'react-router-dom';
@@ -6,6 +6,20 @@ import { Link } from 'react-router-dom';
 export default function MobMenu({ Menus }) {
   const [isOpen, setIsOpen] = useState(false);
   const [clicked, setClicked] = useState(null);
+  
+  // Prevent body scrolling when menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isOpen]);
+
   const toggleDrawer = () => {
     setIsOpen(!isOpen);
     setClicked(null);
@@ -24,65 +38,74 @@ export default function MobMenu({ Menus }) {
 
   return (
     <div>
-      <button className="lg:hidden z-[999] relative" onClick={toggleDrawer}>
+      <button 
+        className="lg:hidden z-[999] relative p-2 rounded-md hover:bg-white/10 transition-colors" 
+        onClick={toggleDrawer}
+        aria-label={isOpen ? "Close menu" : "Open menu"}
+      >
         {isOpen ? <X /> : <Menu />}
       </button>
 
       <motion.div
-        className="fixed left-0 right-0 top-16 overflow-y-auto h-full bg-white-50 backdrop-blur text-white p-6 pb-20"
+        className="fixed inset-0 top-[60px] z-50 bg-zinc-900/95 backdrop-blur-sm text-white overflow-y-auto"
         initial={{ x: "-100%" }}
         animate={{ x: isOpen ? "0%" : "-100%" }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
       >
-        <ul>
-          {Menus.map(({ name, path, subMenu }, i) => {
-            const isClicked = clicked === i;
-            const hasSubMenu = subMenu?.length;
+        <div className="p-4 pb-28 max-h-[calc(100vh-60px)] overflow-y-auto">
+          <ul className="space-y-2">
+            {Menus.map(({ name, path, subMenu }, i) => {
+              const isClicked = clicked === i;
+              const hasSubMenu = subMenu?.length;
 
-            if (!hasSubMenu) {
+              if (!hasSubMenu) {
+                return (
+                  <li key={name}>
+                    <Link 
+                      to={path}
+                      onClick={toggleDrawer}
+                      className="flex items-center justify-between p-4 hover:bg-white/10 rounded-md cursor-pointer relative transition-colors text-lg font-medium"
+                    >
+                      {name}
+                    </Link>
+                  </li>
+                );
+              }
+
               return (
-                <li key={name}>
-                  <Link 
-                    to={path}
-                    onClick={toggleDrawer}
-                    className="flex-center-between p-4 hover:bg-white/5 rounded-md cursor-pointer relative"
+                <li key={name} className="bg-white/5 rounded-md overflow-hidden">
+                  <button
+                    type="button"
+                    className="w-full flex items-center justify-between p-4 hover:bg-white/10 cursor-pointer relative text-lg font-medium transition-colors"
+                    onClick={() => setClicked(isClicked ? null : i)}
+                    aria-expanded={isClicked}
                   >
                     {name}
-                  </Link>
+                    <ChevronDown className={`ml-auto transition-transform duration-300 ${isClicked ? "rotate-180" : ""}`} />
+                  </button>
+                  <motion.ul
+                    initial="exit"
+                    animate={isClicked ? "enter" : "exit"}
+                    variants={subMenuDrawer}
+                    className="bg-white/5"
+                  >
+                    {subMenu.map(({ name: subName, subpath, icon: Icon }) => (
+                      <Link to={`${path}${subpath}`} key={`${path}${subpath}`}>
+                        <li
+                          className="p-4 flex items-center hover:bg-white/10 gap-x-3 cursor-pointer transition-colors"
+                          onClick={toggleDrawer}
+                        >
+                          {Icon && <Icon size={18} className="text-highlight-primary" />}
+                          <span className="text-base">{subName}</span>
+                        </li>
+                      </Link>
+                    ))}
+                  </motion.ul>
                 </li>
               );
-            }
-
-            return (
-              <li key={name}>
-                <span
-                  className="flex-center-between p-4 hover:bg-white/5 rounded-md cursor-pointer relative"
-                  onClick={() => setClicked(isClicked ? null : i)}
-                >
-                  {name}
-                  <ChevronDown className={`ml-auto ${isClicked && "rotate-180"}`} />
-                </span>
-                <motion.ul
-                  initial="exit"
-                  animate={isClicked ? "enter" : "exit"}
-                  variants={subMenuDrawer}
-                  className="ml-5"
-                >
-                  {subMenu.map(({ name: subName, subpath, icon: Icon }) => (
-                    <Link to={`${path}${subpath}`} key={`${path}${subpath}`}>
-                      <li
-                        className="p-2 flex-center hover:bg-white/5 rounded-md gap-x-2 cursor-pointer"
-                        onClick={toggleDrawer}
-                      >
-                        <Icon size={17} />
-                        {subName}
-                      </li>
-                    </Link>
-                  ))}
-                </motion.ul>
-              </li>
-            );
-          })}
-        </ul>
+            })}
+          </ul>
+        </div>
       </motion.div>
     </div>
   );

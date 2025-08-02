@@ -137,7 +137,8 @@ const StatusPage = () => {
       if (e.target.closest('.payment-button')) {
         return;
       }
-      navigate(`/appointment/${appointment.appointmentId}`);
+      // Use navigate directly and force a reload by using replace:true
+      window.location.href = `/appointment/${appointment.appointmentId}`;
     };
 
     const handlePayNowClick = (e) => {
@@ -253,7 +254,8 @@ const StatusPage = () => {
       if (e.target.closest('.payment-button')) {
         return;
       }
-      navigate(`/order/${order.orderId}`);
+      // Use direct window.location to ensure page reload and correct state
+      window.location.href = `/order/${order.orderId}`;
     };
 
     const handlePayNowClick = (e) => {
@@ -435,11 +437,11 @@ const StatusPage = () => {
                 onClick={() => setActiveTab('appointments')}
                 className={`relative z-10 flex items-center justify-center gap-1 xs:gap-2 px-2 xs:px-3 sm:px-4 py-2 rounded-lg border-0 shadow-none transition-colors duration-300 w-1/2 ${
                   activeTab === 'appointments' 
-                    ? 'text-white font-semibold' 
+                    ? 'text-text-tertiary font-semibold' 
                     : 'text-text-secondary hover:text-text-primary bg-transparent'
                 }`}
               >
-                <Calendar className={`w-4 h-4 flex-shrink-0 ${activeTab === 'appointments' ? 'text-white' : 'text-text-secondary'}`} />
+                <Calendar className={`w-4 h-4 flex-shrink-0 ${activeTab === 'appointments' ? 'text-text-tertiary' : 'text-text-secondary'}`} />
                 <span className="whitespace-nowrap text-xs xs:text-sm">Appointments ({filteredAppointments.length})</span>
               </Button>
               
@@ -448,11 +450,11 @@ const StatusPage = () => {
                 onClick={() => setActiveTab('orders')}
                 className={`relative z-10 flex items-center justify-center gap-1 xs:gap-2 px-2 xs:px-3 sm:px-4 py-2 rounded-lg border-0 shadow-none transition-colors duration-300 w-1/2 ${
                   activeTab === 'orders' 
-                    ? 'text-white font-semibold' 
+                    ? 'text-text-tertiary font-semibold' 
                     : 'text-text-secondary hover:text-text-primary bg-transparent'
                 }`}
               >
-                <Package className={`w-4 h-4 flex-shrink-0 ${activeTab === 'orders' ? 'text-white' : 'text-text-secondary'}`} />
+                <Package className={`w-4 h-4 flex-shrink-0 ${activeTab === 'orders' ? 'text-text-tertiary' : 'text-text-secondary'}`} />
                 <span className="whitespace-nowrap text-xs xs:text-sm">Orders ({filteredOrders.length})</span>
               </Button>
             </div>
