@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function MobMenu({ Menus }) {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [clicked, setClicked] = useState(null);
   
@@ -23,6 +24,12 @@ export default function MobMenu({ Menus }) {
   const toggleDrawer = () => {
     setIsOpen(!isOpen);
     setClicked(null);
+  };
+  
+  const handleNavigation = (path) => {
+    // Force a full page reload instead of using React Router
+    window.location.href = path;
+    toggleDrawer();
   };
 
   const subMenuDrawer = {
@@ -61,13 +68,12 @@ export default function MobMenu({ Menus }) {
               if (!hasSubMenu) {
                 return (
                   <li key={name}>
-                    <Link 
-                      to={path}
-                      onClick={toggleDrawer}
+                    <div 
+                      onClick={() => handleNavigation(path)}
                       className="flex items-center justify-between p-4 hover:bg-white/10 rounded-md cursor-pointer relative transition-colors text-lg font-medium"
                     >
                       {name}
-                    </Link>
+                    </div>
                   </li>
                 );
               }
@@ -90,15 +96,15 @@ export default function MobMenu({ Menus }) {
                     className="bg-white/5"
                   >
                     {subMenu.map(({ name: subName, subpath, icon: Icon }) => (
-                      <Link to={`${path}${subpath}`} key={`${path}${subpath}`}>
+                      <div key={`${path}${subpath}`}>
                         <li
                           className="p-4 flex items-center hover:bg-white/10 gap-x-3 cursor-pointer transition-colors"
-                          onClick={toggleDrawer}
+                          onClick={() => handleNavigation(`${path}${subpath}`)}
                         >
                           {Icon && <Icon size={18} className="text-highlight-primary" />}
                           <span className="text-base">{subName}</span>
                         </li>
-                      </Link>
+                      </div>
                     ))}
                   </motion.ul>
                 </li>

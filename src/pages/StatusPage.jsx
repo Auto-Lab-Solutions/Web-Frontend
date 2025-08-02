@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useRestClient } from '../components/contexts/RestContext';
 import { useGlobalData } from '../components/contexts/GlobalDataContext';
 import PageContainer from '../components/common/PageContainer';
-import FadeInItem from '../components/common/FadeInItem';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -36,6 +34,19 @@ const StatusPage = () => {
       fetchData();
     }
   }, [userId, restClient]);
+
+  // Add cleanup function to ensure component unmounts properly
+  useEffect(() => {
+    // Add event listener only if necessary
+    const cleanup = () => {
+      // Clear any timers, event listeners, or other cleanup
+      setAppointments([]);
+      setOrders([]);
+      setLoading(false);
+    };
+    
+    return cleanup;
+  }, []);
 
   const fetchData = async () => {
     setLoading(true);
@@ -137,8 +148,8 @@ const StatusPage = () => {
       if (e.target.closest('.payment-button')) {
         return;
       }
-      // Use navigate directly and force a reload by using replace:true
-      window.location.href = `/appointment/${appointment.appointmentId}`;
+      // Use navigate instead of direct location change
+      navigate(`/appointment/${appointment.appointmentId}`);
     };
 
     const handlePayNowClick = (e) => {
@@ -254,8 +265,8 @@ const StatusPage = () => {
       if (e.target.closest('.payment-button')) {
         return;
       }
-      // Use direct window.location to ensure page reload and correct state
-      window.location.href = `/order/${order.orderId}`;
+      // Use navigate instead of direct location change
+      navigate(`/order/${order.orderId}`);
     };
 
     const handlePayNowClick = (e) => {
@@ -389,21 +400,16 @@ const StatusPage = () => {
 
   return (
     <PageContainer>
-      <div className="bg-background-primary text-text-primary min-h-screen px-4 py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-6xl mx-auto"
-        >
+      <div className="bg-background-primary text-text-primary px-4 py-8">
+        <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
-            <FadeInItem element="h1" direction="y" className="text-3xl sm:text-4xl font-bold mb-4">
+            <h1 className="text-3xl sm:text-4xl font-bold mb-4">
               Check Status
-            </FadeInItem>
-            <FadeInItem element="p" direction="y" className="text-xl text-text-secondary">
+            </h1>
+            <p className="text-xl text-text-secondary">
               Track your appointments and orders
-            </FadeInItem>
+            </p>
           </div>
 
           {/* Search */}
@@ -426,16 +432,15 @@ const StatusPage = () => {
             <div className="bg-card-primary border border-border-primary rounded-xl p-2 inline-flex shadow-md relative overflow-hidden w-full max-w-md">
               {/* Active Tab Indicator - Animated Background */}
               <div 
-                className={`absolute top-2 bottom-2 rounded-lg transition-all duration-300 ease-in-out bg-highlight-primary ${
+                className={`absolute top-2 bottom-2 rounded-lg transition-all duration-300 ease-in-out bg-highlight-primary pointer-events-none ${
                   activeTab === 'appointments' ? 'left-2 right-[calc(50%+2px)]' : 'left-[calc(50%+2px)] right-2'
                 }`}
-                style={{ zIndex: 0 }}
               ></div>
               
               {/* Appointments Tab */}
               <Button
                 onClick={() => setActiveTab('appointments')}
-                className={`relative z-10 flex items-center justify-center gap-1 xs:gap-2 px-2 xs:px-3 sm:px-4 py-2 rounded-lg border-0 shadow-none transition-colors duration-300 w-1/2 ${
+                className={`relative flex items-center justify-center gap-1 xs:gap-2 px-2 xs:px-3 sm:px-4 py-2 rounded-lg border-0 shadow-none transition-colors duration-300 w-1/2 ${
                   activeTab === 'appointments' 
                     ? 'text-text-tertiary font-semibold' 
                     : 'text-text-secondary hover:text-text-primary bg-transparent'
@@ -448,7 +453,7 @@ const StatusPage = () => {
               {/* Orders Tab */}
               <Button
                 onClick={() => setActiveTab('orders')}
-                className={`relative z-10 flex items-center justify-center gap-1 xs:gap-2 px-2 xs:px-3 sm:px-4 py-2 rounded-lg border-0 shadow-none transition-colors duration-300 w-1/2 ${
+                className={`relative flex items-center justify-center gap-1 xs:gap-2 px-2 xs:px-3 sm:px-4 py-2 rounded-lg border-0 shadow-none transition-colors duration-300 w-1/2 ${
                   activeTab === 'orders' 
                     ? 'text-text-tertiary font-semibold' 
                     : 'text-text-secondary hover:text-text-primary bg-transparent'
@@ -475,7 +480,14 @@ const StatusPage = () => {
                   <p className="text-text-secondary mb-6">
                     {searchTerm ? 'No appointments match your search.' : 'You have no appointments yet.'}
                   </p>
-                  <Button onClick={() => navigate('/pricing/pre-purchase-inspection')}>
+                  <Button 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      navigate('/pricing/pre-purchase-inspection');
+                    }}
+                    className="relative"
+                  >
                     Book Inspection
                   </Button>
                 </CardContent>
@@ -501,7 +513,14 @@ const StatusPage = () => {
                   <p className="text-text-secondary mb-6">
                     {searchTerm ? 'No orders match your search.' : 'You have no orders yet.'}
                   </p>
-                  <Button onClick={() => navigate('/pricing/accessories')}>
+                  <Button 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      navigate('/pricing/accessories');
+                    }}
+                    className="relative"
+                  >
                     Order Accessories
                   </Button>
                 </CardContent>
@@ -514,7 +533,7 @@ const StatusPage = () => {
               </div>
             )
           )}
-        </motion.div>
+        </div>
       </div>
     </PageContainer>
   );

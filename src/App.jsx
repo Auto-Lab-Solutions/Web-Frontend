@@ -35,21 +35,20 @@ function AnimatedRoutes() {
   const location = useLocation();
 
   return (
-    <AnimatePresence mode="wait">
-      <Routes key={location.pathname} location={location}>
-        <Route path={getMenuByName("Home").path} element={<HomePage />} />
-        <Route path={getMenuByName("Inspections").path} element={<InspectionsPage />} />
-        {
-          services.map(service => (
-            <Route
-              key={service.name}
-              path={`${getMenuByName("Plans & Pricing").path}${service.subpath}`}
-              element={
-                service.name === "Accessories" 
-                  ? <CategorySelectionPage />
-                  : <PricingPage serviceId={service.id} />
-              }
-            />
+    <Routes location={location}>
+      <Route path={getMenuByName("Home").path} element={<HomePage />} />
+      <Route path={getMenuByName("Inspections").path} element={<InspectionsPage />} />
+      {
+        services.map(service => (
+          <Route
+            key={service.name}
+            path={`${getMenuByName("Plans & Pricing").path}${service.subpath}`}
+            element={
+              service.name === "Accessories" 
+                ? <CategorySelectionPage />
+                : <PricingPage serviceId={service.id} />
+            }
+          />
           ))
         }
         <Route path={getMenuByName("NewsFeed").path} element={<NewsFeedPage />} />
@@ -79,13 +78,13 @@ function AnimatedRoutes() {
         {/* Catch-all route for 404 */}
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
-    </AnimatePresence>
   );
 }
 
 function AppContent() {
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { orderFormData } = useGlobalData();
   const [cartItemCount, setCartItemCount] = useState(0);
   
@@ -107,17 +106,16 @@ function AppContent() {
   }, []);
   
   return (
-    <div>
-        <AnimatedRoutes />
+    <div className="flex flex-col min-h-screen">
         <header
-          className={`h-15 text-[15px] fixed top-0 left-0 right-0 z-50 transition-all duration-300 pt-3 ${
+          className={`h-15 text-[15px] fixed top-0 left-0 right-0 z-[999] transition-all duration-300 pt-3 ${
             scrolled
               ? "bg-zinc-900/40 backdrop-blur-md shadow-md text-white"
               : "bg-transparent text-white"
           }`}
         >
-          <nav className=" px-3.5 flex-center-between w-full max-w-7xl mx-auto">
-            <div className="flex-center gap-x-3 z-[999] relative" onClick={() => navigate('/')}>
+          <nav className="px-3.5 flex-center-between w-full max-w-7xl mx-auto">
+            <div className="flex-center gap-x-3 z-[10] relative" onClick={() => window.location.href = '/'}>
               <img src={Logo} alt="" className="size-8" />
               {cartItemCount === 0 ? (
                 <>
@@ -136,7 +134,7 @@ function AppContent() {
               {cartItemCount > 0 && (
                 <button
                   aria-label="cart"
-                  onClick={() => navigate('/cart')}
+                  onClick={() => window.location.href = '/cart'}
                   className="bg-white/5 relative px-3 py-1.5 shadow rounded-xl flex-center font-semibold hover:bg-highlight-primary hover:text-text-tertiary transition"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
@@ -152,7 +150,7 @@ function AppContent() {
               )}
               <button
                 aria-label="inspection-progress"
-                onClick={() => navigate('/status')}
+                onClick={() => window.location.href = '/status'}
                 className="bg-white/5 relative px-3 py-1.5 shadow rounded-xl flex-center font-semibold hover:bg-highlight-primary hover:text-text-tertiary transition"
               >
                 Check Status
@@ -163,6 +161,11 @@ function AppContent() {
             </div>
           </nav>
         </header>
+        
+        <main className="flex-grow mt-[60px]">
+          <AnimatedRoutes />
+        </main>
+        
         <Footer />
     </div>
   );
