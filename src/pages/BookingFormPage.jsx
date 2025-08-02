@@ -11,6 +11,7 @@ import FormSection from "@/components/common/FormSection"
 import AppointmentStepIndicator from "@/components/common/AppointmentStepIndicator"
 import { useMobileInputStyling } from "../hooks/useMobileOptimization"
 import { getPlansAndPricingUrl } from "@/meta/menu"
+import BackArrow from '@/components/common/BackArrow'
 
 function BookingFormPage() {
   const navigate = useNavigate()
@@ -227,7 +228,8 @@ function BookingFormPage() {
 
   return (
     <TooltipProvider>
-      <div className="bg-background-primary text-text-primary min-h-screen px-4 py-20">
+      <div className="bg-background-primary text-text-primary min-h-screen px-4 py-20 relative">
+        <BackArrow to={() => navigate(getPlansAndPricingUrl(appointmentFormData.serviceId))} />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

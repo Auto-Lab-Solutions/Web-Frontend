@@ -117,7 +117,7 @@ function AppContent() {
           }`}
         >
           <nav className=" px-3.5 flex-center-between w-full max-w-7xl mx-auto">
-            <div className="flex-center gap-x-3 z-[999] relative">
+            <div className="flex-center gap-x-3 z-[999] relative" onClick={() => navigate('/')}>
               <img src={Logo} alt="" className="size-8" />
               {cartItemCount === 0 ? (
                 <>

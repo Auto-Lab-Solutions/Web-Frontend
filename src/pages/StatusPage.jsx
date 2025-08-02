@@ -297,7 +297,7 @@ const StatusPage = () => {
                   {statusInfo.text}
                 </Badge>
                 {/* Payment Status Badge */}
-                {order.paymentStatus && (
+                {order.status?.toLowerCase() !== 'cancelled' && order.status?.toLowerCase() !== 'pending' && (
                   <Badge className={`${getPaymentStatusInfo(order.paymentStatus).bg} text-white text-xs px-2 py-1 rounded-full font-medium flex items-center space-x-1`}>
                     <CreditCard className="w-3 h-3" />
                     <span>{getPaymentStatusInfo(order.paymentStatus).text}</span>

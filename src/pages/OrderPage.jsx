@@ -24,6 +24,7 @@ import {
 import { getCategoryById, getItemById } from '../meta/menu';
 import { getOrderStatusInfo } from '../utils/orderUtils';
 import { isPaymentRequired, getPaymentStatusInfo } from '../utils/paymentUtils';
+import BackArrow from '../components/common/BackArrow';
 
 const OrderPage = () => {
   const { referenceNumber } = useParams();
@@ -75,20 +76,28 @@ const OrderPage = () => {
   };
 
   const formatOrderData = (orderData) => {
-    const category = getCategoryById(orderData.categoryId);
-    const item = getItemById(orderData.categoryId, orderData.itemId);
+    // Format each item in the order with additional information
+    const formattedItems = (orderData.items || []).map(item => {
+      const category = getCategoryById(item.categoryId);
+      const itemDetails = getItemById(item.categoryId, item.itemId);
+      
+      return {
+        ...item,
+        name: itemDetails?.name || 'Unknown Item',
+        description: itemDetails?.description || 'No description available',
+        categoryName: category?.name || 'Unknown Category',
+        // Ensure price and quantity are numbers
+        price: parseFloat(item.price || 0),
+        quantity: parseInt(item.quantity || 1, 10)
+      };
+    });
     
     return {
       referenceNumber: orderData.orderId,
       status: orderData.status || 'pending',
       paymentStatus: orderData.paymentStatus || 'pending',
-      category: category?.name || 'Unknown Category',
-      item: item?.name || 'Unknown Item',
-      description: item?.description || 'No description available',
-      quantity: orderData.quantity || 1,
-      unitPrice: orderData.price || 0,
-      totalPrice: orderData.totalPrice || (orderData.price * orderData.quantity),
-      unit: item?.unit || 'piece',
+      items: formattedItems,
+      totalPrice: orderData.totalPrice || formattedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
       vehicle: {
         make: orderData.carMake || 'N/A',
         model: orderData.carModel || 'N/A',
@@ -104,7 +113,6 @@ const OrderPage = () => {
       scheduledDate: orderData.scheduledDate || null,
       notes: orderData.notes || '',
       createdAt: orderData.createdDate || orderData.createdAt || new Date().toISOString().split('T')[0],
-      postNotes: orderData.postNotes || ''
     };
   };
 
@@ -161,9 +169,10 @@ const OrderPage = () => {
 
   return (
     <PageContainer>
-      <div className="font-sans min-h-screen bg-background-primary">
+      <div className="font-sans min-h-screen bg-background-primary relative">
         {/* Hero Section */}
-        <section className="bg-background-tertiary text-text-primary py-20 px-6 text-center">
+        <section className="bg-background-tertiary text-text-primary pt-15 pb-20 px-6 text-center">
+          <BackArrow to={() => navigate('/status')} />
           <div className="max-w-4xl mx-auto">
             <FadeInItem element="h1" direction="y" className="text-3xl sm:text-4xl font-bold mb-4">
               Order Details
@@ -171,9 +180,9 @@ const OrderPage = () => {
             <FadeInItem
               element="p"
               direction="y"
-              className="text-xl text-text-secondary"
+              className="text-lg text-text-secondary"
             >
-              Reference: {order.referenceNumber}
+              {"Reference Number : " + order.referenceNumber.toUpperCase()}
             </FadeInItem>
           </div>
         </section>
@@ -205,30 +214,55 @@ const OrderPage = () => {
               <Card className="bg-card-primary border border-border-primary shadow-xl backdrop-blur-sm">
                 <CardContent className="p-6">
                   <h3 className="text-xl font-semibold text-text-primary mb-4">Order Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <p className="text-text-secondary text-sm">Category</p>
-                      <p className="text-text-primary font-semibold">{order.category}</p>
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-text-secondary text-sm">Item</p>
-                      <p className="text-text-primary font-semibold">{order.item}</p>
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-text-secondary text-sm">Description</p>
-                      <p className="text-text-primary">{order.description}</p>
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-text-secondary text-sm">Quantity</p>
-                      <p className="text-text-primary font-semibold">{order.quantity} {order.unit}(s)</p>
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-text-secondary text-sm">Unit Price</p>
-                      <p className="text-text-primary font-semibold">${order.unitPrice}</p>
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-text-secondary text-sm">Total Price</p>
-                      <p className="text-text-primary font-semibold text-highlight-primary text-lg">${order.totalPrice}</p>
+                  
+                  {/* Order Items List */}
+                  <div className="mb-6">
+                    <h4 className="text-lg font-semibold text-primary mb-3 flex items-center gap-2">
+                      <Package className="w-4 h-4" /> Ordered Items
+                    </h4>
+                    
+                    {order.items && order.items.length > 0 ? (
+                      <div className="space-y-4">
+                        {order.items.map((item, index) => (
+                          <div key={index} className="border border-border-secondary rounded-lg p-4 bg-background-secondary/30">
+                            <div className="flex flex-col md:flex-row md:items-center justify-between mb-3">
+                              <h5 className="text-text-primary font-semibold">{item.name || 'Item'}</h5>
+                              <div className="flex items-center gap-2 text-highlight-primary">
+                                {/* <DollarSign className="w-4 h-4" /> */}
+                                <span className="font-bold">${(item.totalPrice).toFixed(2)}</span>
+                              </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                              <div className="space-y-1">
+                                <p className="text-text-secondary text-xs">Category</p>
+                                <p className="text-text-primary text-sm">{item.categoryName || 'N/A'}</p>
+                              </div>
+                              <div className="space-y-1">
+                                <p className="text-text-secondary text-xs">Quantity</p>
+                                <p className="text-text-primary text-sm">{item.quantity || 1}</p>
+                              </div>
+                              <div className="space-y-1">
+                                <p className="text-text-secondary text-xs">Unit Price</p>
+                                <p className="text-text-primary text-sm">${item.price?.toFixed(2) || '0.00'}</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-4 bg-background-secondary/20 rounded-lg">
+                        <Package className="w-8 h-8 text-text-secondary mx-auto mb-2" />
+                        <p className="text-text-secondary">No items in this order</p>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Order Total */}
+                  <div className="border-t border-border-secondary pt-4 mt-4">
+                    <div className="flex justify-between items-center bg-primary/5 p-4 rounded-lg">
+                      <p className="text-text-primary font-semibold">Total Amount</p>
+                      <p className="text-highlight-primary font-bold text-xl">${order.totalPrice?.toFixed(2) || '0.00'}</p>
                     </div>
                   </div>
                 </CardContent>

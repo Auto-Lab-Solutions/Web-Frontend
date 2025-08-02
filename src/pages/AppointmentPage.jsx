@@ -7,10 +7,11 @@ import PageContainer from '../components/common/PageContainer';
 import FadeInItem from '../components/common/FadeInItem';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { ArrowLeft, Clock, CheckCircle, XCircle, Phone, Mail, Car, Calendar, CreditCard } from 'lucide-react';
+import { ArrowLeft, Clock, CheckCircle, XCircle, Phone, Mail, Car, Calendar, CreditCard, User } from 'lucide-react';
 import { companyLocalPhone, companyEmail } from '../meta/companyData';
 import { getServiceById, getPlanById } from '../meta/menu';
 import { isPaymentRequired, getPaymentStatusInfo } from '../utils/paymentUtils';
+import BackArrow from '../components/common/BackArrow';
 
 const AppointmentPage = () => {
   const { referenceNumber } = useParams();
@@ -72,18 +73,23 @@ const AppointmentPage = () => {
       service: service?.name || 'Unknown Service',
       plan: plan?.name || 'Unknown Plan',
       vehicle: {
-        make: aptData.carData?.make || 'N/A',
-        model: aptData.carData?.model || 'N/A',
-        year: aptData.carData?.year || 'N/A',
-        location: aptData.carData?.location || 'Not specified'
+        make: aptData.carMake || 'N/A',
+        model: aptData.carModel || 'N/A',
+        year: aptData.carYear || 'N/A',
+        location: aptData.carLocation || 'Not specified'
       },
       selectedSlots: aptData.selectedSlots || [],
+      scheduledDate: aptData.scheduledDate || null,
       contact: {
-        buyerName: aptData.buyerData?.name || aptData.sellerData?.name || 'N/A',
-        buyerEmail: aptData.buyerData?.email || aptData.sellerData?.email || 'N/A',
-        buyerPhone: aptData.buyerData?.phoneNumber || aptData.sellerData?.phoneNumber || 'N/A'
+        buyerName: aptData.buyerName ? aptData.buyerName : aptData.isBuyer ? 'N/A' : 'Not specified',
+        buyerEmail: aptData.buyerEmail ? aptData.buyerEmail : aptData.isBuyer ? 'N/A' : 'Not specified',
+        buyerPhone: aptData.buyerPhone ? aptData.buyerPhone : aptData.isBuyer ? 'N/A' : 'Not specified',
+        sellerName: aptData.sellerName ? aptData.sellerName : !aptData.isBuyer ? 'N/A' : 'Not specified',
+        sellerEmail: aptData.sellerEmail ? aptData.sellerEmail : !aptData.isBuyer ? 'N/A' : 'Not specified',
+        sellerPhone: aptData.sellerPhone ? aptData.sellerPhone : !aptData.isBuyer ? 'N/A' : 'Not specified'
       },
       notes: aptData.notes || '',
+      postNotes: aptData.postNotes || '',
       createdAt: aptData.createdDate || aptData.createdAt || new Date().toISOString().split('T')[0],
       totalCost: aptData.price ? `$${aptData.price}` : 'TBD'
     };
@@ -131,6 +137,15 @@ const AppointmentPage = () => {
     }
   };
 
+  // Helper function to check if seller information exists
+  const hasSellerInfo = (contact) => {
+    return (
+      contact.sellerName !== 'Not specified' ||
+      contact.sellerEmail !== 'Not specified' ||
+      contact.sellerPhone !== 'Not specified'
+    );
+  };
+
   if (loading) {
     return (
       <PageContainer>
@@ -165,19 +180,21 @@ const AppointmentPage = () => {
 
   return (
     <PageContainer>
+      
       <div className="font-sans min-h-screen bg-background-primary">
         {/* Hero Section */}
-        <section className="bg-background-tertiary text-text-primary py-20 px-6">
-          <div className="max-w-4xl mx-auto">            
+        <section className="bg-background-tertiary text-text-primary pt-15 pb-20 px-6">
+          <BackArrow to={() => navigate('/status')} />
+          <div className="max-w-4xl mx-auto text-center">    
             <FadeInItem element="h1" direction="y" className="text-3xl sm:text-4xl font-bold mb-4">
               Appointment Details
             </FadeInItem>
             <FadeInItem
               element="p"
               direction="y"
-              className="text-xl text-text-secondary"
+              className="text-lg text-text-secondary"
             >
-              Reference: {appointment.referenceNumber}
+              {"Reference Number : " + appointment.referenceNumber.toUpperCase()}
             </FadeInItem>
           </div>
         </section>
@@ -314,7 +331,7 @@ const AppointmentPage = () => {
               <FadeInItem element="div" direction="x">
                 <Card className="bg-card-primary border border-border-primary shadow-xl backdrop-blur-sm h-full">
                   <CardContent className="p-6">
-                    <h3 className="text-xl font-semibold text-text-primary mb-4">Schedule</h3>
+                    <h3 className="text-xl font-semibold text-text-primary mb-4">Selected Time Slots</h3>
                     <div className="space-y-3">
                       {appointment.selectedSlots && appointment.selectedSlots.length > 0 ? (
                         appointment.selectedSlots.map((slot, index) => (
@@ -345,20 +362,50 @@ const AppointmentPage = () => {
               <Card className="bg-card-primary border border-border-primary shadow-xl backdrop-blur-sm">
                 <CardContent className="p-6">
                   <h3 className="text-xl font-semibold text-text-primary mb-4">Contact Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <p className="text-text-secondary text-sm">Contact Name</p>
-                      <p className="text-text-primary font-semibold">{appointment.contact.buyerName}</p>
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-text-secondary text-sm">Email</p>
-                      <p className="text-text-primary font-semibold">{appointment.contact.buyerEmail}</p>
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-text-secondary text-sm">Phone</p>
-                      <p className="text-text-primary font-semibold">{appointment.contact.buyerPhone}</p>
+                  
+                  {/* Buyer Information */}
+                  <div className={!hasSellerInfo(appointment.contact) ? "" : "mb-6"}>
+                    <h4 className="text-lg font-semibold text-primary mb-3 flex items-center gap-2">
+                      <User className="w-4 h-4" /> Buyer Information
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2">
+                        <p className="text-text-secondary text-sm">Name</p>
+                        <p className="text-text-primary font-semibold">{appointment.contact.buyerName}</p>
+                      </div>
+                      <div className="space-y-2">
+                        <p className="text-text-secondary text-sm">Email</p>
+                        <p className="text-text-primary font-semibold">{appointment.contact.buyerEmail}</p>
+                      </div>
+                      <div className="space-y-2">
+                        <p className="text-text-secondary text-sm">Phone</p>
+                        <p className="text-text-primary font-semibold">{appointment.contact.buyerPhone}</p>
+                      </div>
                     </div>
                   </div>
+                  
+                  {/* Seller Information - Only show if at least one field has information */}
+                  {hasSellerInfo(appointment.contact) && (
+                    <div>
+                      <h4 className="text-lg font-semibold text-primary mb-3 flex items-center gap-2">
+                        <User className="w-4 h-4" /> Seller Information
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <p className="text-text-secondary text-sm">Name</p>
+                          <p className="text-text-primary font-semibold">{appointment.contact.sellerName}</p>
+                        </div>
+                        <div className="space-y-2">
+                          <p className="text-text-secondary text-sm">Email</p>
+                          <p className="text-text-primary font-semibold">{appointment.contact.sellerEmail}</p>
+                        </div>
+                        <div className="space-y-2">
+                          <p className="text-text-secondary text-sm">Phone</p>
+                          <p className="text-text-primary font-semibold">{appointment.contact.sellerPhone}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </FadeInItem>

@@ -20,6 +20,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { Calendar } from '@/components/ui/calendar';
 import { motion } from 'framer-motion';
 import AppointmentStepIndicator from '@/components/common/AppointmentStepIndicator';
+import BackArrow from '@/components/common/BackArrow';
 
 const generateTimeSlots = () => {
   const slots = [];
@@ -151,8 +152,9 @@ function SlotsSelectionPage() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen w-full mx-auto bg-background-primary py-20 px-3 sm:px-12"
+      className="min-h-screen w-full mx-auto bg-background-primary py-20 px-3 sm:px-12 relative"
     >
+        <BackArrow to={() => navigate('/booking-form')} />
 
         <div className="text-center mb-4">
           <h1 className="text-3xl font-bold mb-2 bg-text-primary bg-clip-text text-transparent">

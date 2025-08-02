@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import AppointmentStepIndicator from "../components/common/AppointmentStepIndicator";
+import BackArrow from "../components/common/BackArrow";
 
 // Reusable components
 const InfoItem = ({ label, value, labelWidth = "w-16" }) => (
@@ -59,7 +60,10 @@ function BookingConfirmationPage() {
   const [showAlert, setShowAlert] = useState(false);
 
   if (!appointmentFormData || !appointmentFormData?.serviceId || !appointmentFormData?.planId || !appointmentFormData?.selectedSlots?.length) {
-    navigate('/');
+    if (!isSuccess) {
+      navigate('/');
+      return null;
+    }
   }
 
   const handleConfirm = async () => {
@@ -117,10 +121,10 @@ function BookingConfirmationPage() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen w-full bg-background-primary"
+      className="min-h-screen w-full bg-background-primary relative"
     >
       <div className="max-w-6xl mx-auto space-y-10 text-black py-20 px-3 sm:px-12">
-
+        <BackArrow to={handleBack} />
         <div className="text-center mb-4">
           <h1 className="text-3xl font-bold mb-2 bg-text-primary bg-clip-text text-transparent">
             Confirm Your Booking

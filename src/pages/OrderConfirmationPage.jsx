@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useGlobalData } from '../components/contexts/GlobalDataContext';
@@ -8,6 +8,7 @@ import PageContainer from '../components/common/PageContainer';
 import FadeInItem from '../components/common/FadeInItem';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
+import BackArrow from '../components/common/BackArrow';
 import { 
   ArrowLeft, 
   ShoppingCart, 
@@ -28,13 +29,16 @@ const OrderConfirmationPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
   
   // Initialize progress bar scroll hook (step 4 of 4)
   const { containerRef, stepRefs } = useProgressBarScroll(4, 4);
 
   if (!orderFormData || !orderFormData.items || orderFormData.items.length === 0) {
-    navigate('/accessories/categories');
-    return null;
+    if (!isSuccess) {
+      navigate('/accessories/categories');
+      return null;
+    }
   }
 
   const selectedItems = orderFormData.items || [];
@@ -66,13 +70,20 @@ const OrderConfirmationPage = () => {
 
       if (response.data && response.data.success) {
         console.log("Order created successfully:", response.data);
+        
+        // First set success state
         setIsSuccess(true);
         
-        // Clear form data first, then navigate after a short delay
-        clearFormData();
-        
-        // Show success state for 2 seconds before navigating
+        // Then explicitly trigger the success alert modal
         setTimeout(() => {
+          setShowAlert(true);
+          console.log("Setting showAlert to true");
+        }, 300);
+        
+        // Set a longer delay for redirection to ensure the alert is visible
+        setTimeout(() => {
+          console.log("Redirecting to status page...");
+          clearFormData();
           navigate("/status");
         }, 2000);
       } else {
@@ -111,6 +122,14 @@ const OrderConfirmationPage = () => {
     </div>
   );
 
+  // Add an effect to ensure the success alert is shown when success state changes
+  useEffect(() => {
+    if (isSuccess) {
+      console.log("Success state is true, showing alert");
+      setShowAlert(true);
+    }
+  }, [isSuccess]);
+
   return (
     <PageContainer>
       <div className="bg-background-primary text-text-primary min-h-screen px-4 py-20">
@@ -120,6 +139,8 @@ const OrderConfirmationPage = () => {
           transition={{ duration: 0.5 }}
           className="max-w-4xl mx-auto"
         >
+          <BackArrow to={handleBack} />
+          
           {/* Header */}
           <div className="text-center mb-8">
             <FadeInItem element="h1" direction="y" className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
@@ -180,6 +201,120 @@ const OrderConfirmationPage = () => {
                 <CheckCircle className="w-12 h-12 text-white" />
               </motion.div>
             </div>
+          )}
+
+          {/* Custom Success Alert Modal - Moved to portal root for guaranteed visibility */}
+          {showAlert && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4"
+              // Only allow closing after a short delay to ensure it's seen
+              onClick={(e) => {
+                e.preventDefault(); // Prevent bubbling
+                // Don't close immediately to prevent accidental dismissal
+                if (isSuccess) {
+                  // Do nothing, let the automatic redirect happen
+                }
+              }}
+            >
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                transition={{ type: "spring", damping: 20, stiffness: 300 }}
+                className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl shadow-2xl border border-green-200 dark:border-green-700 p-8 max-w-md w-full mx-4 backdrop-blur-lg"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Success Icon */}
+                <div className="flex justify-center mb-6">
+                  <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+                    <motion.svg
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.2, type: "spring", damping: 15 }}
+                      className="w-10 h-10 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </motion.svg>
+                  </div>
+                </div>
+
+                {/* Alert Content */}
+                <div className="text-center space-y-4">
+                  <motion.h3
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-2xl font-bold text-green-800 dark:text-green-200"
+                  >
+                    🎉 Success!
+                  </motion.h3>
+                  
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="text-green-700 dark:text-green-300 text-lg font-medium"
+                  >
+                    Your order has been placed successfully!
+                  </motion.p>
+                  
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                    className="text-green-600 dark:text-green-400 text-sm"
+                  >
+                    You will be redirected to your status page shortly.
+                  </motion.p>
+
+                  {/* Progress bar */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.6 }}
+                    className="mt-6"
+                  >
+                    <div className="bg-green-200 dark:bg-green-800 rounded-full h-2 overflow-hidden">
+                      <motion.div
+                        initial={{ width: "0%" }}
+                        animate={{ width: "100%" }}
+                        transition={{ duration: 3, ease: "linear", delay: 0.7 }}
+                        className="h-full bg-gradient-to-r from-green-500 to-emerald-600 rounded-full"
+                      />
+                    </div>
+                    <p className="text-xs text-green-600 dark:text-green-400 mt-2 redirecting-text">
+                      Redirecting automatically...
+                    </p>
+                  </motion.div>
+
+                  {/* Close button */}
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.8 }}
+                    onClick={() => {
+                      if (isSuccess) {
+                        // If we're in success state, don't close - let the redirect happen
+                        // but we can provide feedback that it's working
+                        const redirectEl = document.querySelector('.redirecting-text');
+                        if (redirectEl) {
+                          redirectEl.textContent = 'Redirecting now...';
+                        }
+                      } else {
+                        setShowAlert(false);
+                      }
+                    }}
+                    className="mt-4 px-6 py-2 bg-gradient-to-r from-green-600 to-emerald-700 text-white rounded-lg hover:from-green-700 hover:to-emerald-800 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                  >
+                    {isSuccess ? 'Redirecting...' : 'Close'}
+                  </motion.button>
+                </div>
+              </motion.div>
+            </motion.div>
           )}
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

@@ -11,6 +11,7 @@ import { Input } from '../components/ui/input';
 import { ArrowLeft, ArrowRight, Plus, Minus, ShoppingCart } from 'lucide-react';
 import { categories, getCategoryById } from '../meta/menu';
 import { useMobileInputStyling } from '../hooks/useMobileOptimization';
+import BackArrow from '../components/common/BackArrow';
 
 const ItemSelectionPage = () => {
   const navigate = useNavigate();
@@ -186,7 +187,8 @@ const ItemSelectionPage = () => {
 
   return (
     <PageContainer>
-      <div className="bg-background-primary text-text-primary min-h-screen px-4 py-20">
+      <div className="bg-background-primary text-text-primary min-h-screen px-4 py-20 relative">
+        <BackArrow to={handleBack} />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

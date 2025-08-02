@@ -99,15 +99,21 @@ const PaymentPage = () => {
         title: getServiceById(data.serviceId)?.name || 'Service Appointment',
         subtitle: getPlanById(data.serviceId, data.planId)?.name || 'Standard Plan',
         description: data.description || 'Service appointment details',
-        amount: data.totalPrice || 0,
+        amount: data.price || 0,
         currency: 'AUD',
         status: data.status,
         paymentStatus: data.paymentStatus,
-        createdAt: data.createdDate || data.createdAt,
+        createdAt: data.createdAt,
         customerInfo: {
           name: data.isBuyer ? data.buyerName : data.sellerName,
           email: data.isBuyer ? data.buyerEmail : data.sellerEmail,
-          phone: data.isBuyer ? data.buyerPhone : data.sellerPhone || ''
+          phone: data.isBuyer ? data.buyerPhone : data.sellerPhone
+        },
+        vehicleInfo: {
+          make: data.carMake,
+          model: data.carModel,
+          year: data.carYear,
+          location: data.carLocation || 'Not specified'
         },
       };
     } else if (dataType === 'order') {

@@ -87,7 +87,7 @@ export const getPaymentStatusInfo = (paymentStatus) => {
     case 'pending':
     case 'processing':
       return {
-        text: 'Payment Pending',
+        text: 'Pending',
         color: 'text-yellow-500',
         bg: 'bg-yellow-500/10 border border-yellow-500/20',
         textColor: 'text-yellow-500'
@@ -96,7 +96,7 @@ export const getPaymentStatusInfo = (paymentStatus) => {
     case 'declined':
     case 'canceled':
       return {
-        text: 'Payment Failed',
+        text: 'Failed',
         color: 'text-red-500',
         bg: 'bg-red-500/10 border border-red-500/20',
         textColor: 'text-red-500'
@@ -110,7 +110,7 @@ export const getPaymentStatusInfo = (paymentStatus) => {
       };
     case 'requires_payment_method':
       return {
-        text: 'Payment Required',
+        text: 'Required',
         color: 'text-orange-500',
         bg: 'bg-orange-500/10 border border-orange-500/20',
         textColor: 'text-orange-500'
