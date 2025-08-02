@@ -162,7 +162,7 @@ function AppContent() {
           </nav>
         </header>
         
-        <main className="flex-grow mt-[60px]">
+        <main className="flex-grow">
           <AnimatedRoutes />
         </main>
         

@@ -400,7 +400,7 @@ const StatusPage = () => {
 
   return (
     <PageContainer>
-      <div className="bg-background-primary text-text-primary px-4 py-8">
+      <div className="bg-background-primary text-text-primary px-4 py-20">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
