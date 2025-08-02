@@ -13,20 +13,42 @@ import { categories, getCategoryById } from '../meta/menu';
 const ItemSelectionPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { updateOrderFormData } = useGlobalData();
+  const { orderFormData, updateOrderFormData } = useGlobalData();
   const [selectedItems, setSelectedItems] = useState({});
   const [category, setCategory] = useState(null);
+  const [cartItemsCount, setCartItemsCount] = useState(0);
+  const [currentCartItems, setCurrentCartItems] = useState([]);
 
   const categoryId = parseInt(searchParams.get('category'));
 
+  // Initialize with existing items from the current category (if any)
   useEffect(() => {
+    // Load existing cart items
+    if (orderFormData && orderFormData.items) {
+      setCurrentCartItems(orderFormData.items);
+      setCartItemsCount(orderFormData.items.length);
+      
+      // Check if we already have items from this category
+      if (categoryId) {
+        const existingItemsFromCategory = orderFormData.items
+          .filter(item => item.categoryId === categoryId)
+          .reduce((acc, item) => {
+            acc[item.itemId] = item.quantity;
+            return acc;
+          }, {});
+          
+        setSelectedItems(existingItemsFromCategory);
+      }
+    }
+    
     if (categoryId) {
       const foundCategory = getCategoryById(categoryId);
       setCategory(foundCategory);
     }
-  }, [categoryId]);
+  }, [categoryId, orderFormData]);
 
   const handleItemQuantityChange = (itemId, quantity) => {
+    // Update local state
     setSelectedItems(prev => {
       const newItems = { ...prev };
       if (quantity > 0) {
@@ -35,6 +57,68 @@ const ItemSelectionPage = () => {
         delete newItems[itemId];
       }
       return newItems;
+    });
+    
+    // Update global state immediately
+    if (category) {
+      const numericItemId = parseInt(itemId);
+      updateOrderDataWithCurrentSelection(numericItemId, quantity);
+    }
+  };
+  
+  // Helper function to update order data with current selection
+  const updateOrderDataWithCurrentSelection = (changedItemId, newQuantity) => {
+    if (!category) return;
+    
+    // Get the changed item details
+    const changedItem = category.items.find(i => i.id === changedItemId);
+    if (!changedItem) return;
+    
+    // Create a copy of the current cart items
+    let updatedCartItems = [...currentCartItems];
+    
+    // Find if the item already exists in the cart
+    const existingItemIndex = updatedCartItems.findIndex(
+      item => item.categoryId === category.id && item.itemId === changedItemId
+    );
+    
+    if (existingItemIndex >= 0) {
+      // Item exists in cart, update its quantity or remove it
+      if (newQuantity > 0) {
+        updatedCartItems[existingItemIndex] = {
+          ...updatedCartItems[existingItemIndex],
+          quantity: newQuantity,
+          totalPrice: changedItem.price * newQuantity
+        };
+      } else {
+        // Remove the item if quantity is 0
+        updatedCartItems = updatedCartItems.filter((_, index) => index !== existingItemIndex);
+      }
+    } else if (newQuantity > 0) {
+      // Item doesn't exist in cart, add it
+      updatedCartItems.push({
+        categoryId: category.id,
+        categoryName: category.name,
+        itemId: changedItemId,
+        itemName: changedItem.name,
+        itemPrice: changedItem.price,
+        itemDesc: changedItem.desc,
+        quantity: newQuantity,
+        totalPrice: changedItem.price * newQuantity
+      });
+    }
+    
+    // Calculate new total amount
+    const newTotalAmount = updatedCartItems.reduce((sum, item) => sum + item.totalPrice, 0);
+    
+    // Update local state
+    setCurrentCartItems(updatedCartItems);
+    setCartItemsCount(updatedCartItems.length);
+    
+    // Update global state
+    updateOrderFormData({
+      items: updatedCartItems,
+      totalAmount: newTotalAmount
     });
   };
 
@@ -50,36 +134,29 @@ const ItemSelectionPage = () => {
     }, 0);
   };
 
+  const getTotalCartPrice = () => {
+    if (!currentCartItems || currentCartItems.length === 0) return 0;
+    return currentCartItems.reduce((total, item) => total + item.totalPrice, 0);
+  };
+
   const handleContinue = () => {
-    if (Object.keys(selectedItems).length === 0) return;
-
-    // Prepare order data for the global context
-    const orderItems = Object.entries(selectedItems).map(([itemId, quantity]) => {
-      const item = category.items.find(i => i.id === parseInt(itemId));
-      return {
-        categoryId: category.id,
-        categoryName: category.name,
-        itemId: item.id,
-        itemName: item.name,
-        itemPrice: item.price,
-        itemDesc: item.desc,
-        quantity: quantity,
-        totalPrice: item.price * quantity
-      };
-    });
-
-    updateOrderFormData({
-      categoryId: category.id,
-      categoryName: category.name,
-      items: orderItems,
-      totalAmount: getTotalPrice()
-    });
-
-    navigate('/order-form');
+    // Save current selection and navigate to cart
+    if (saveCurrentCategoryItems()) {
+      navigate('/cart');
+    }
   };
 
   const handleBack = () => {
+    // Save current selection before navigating back
+    saveCurrentCategoryItems();
     navigate('/accessories/categories');
+  };
+
+  // Save current category items to global state
+  const saveCurrentCategoryItems = () => {
+    // Since we're now updating the global state in real-time with handleItemQuantityChange,
+    // this function only needs to check if there are any items selected and return true/false
+    return Object.keys(selectedItems).length > 0;
   };
 
   if (!category) {
@@ -124,31 +201,51 @@ const ItemSelectionPage = () => {
                 Select items and quantities for your order
               </FadeInItem>
             </div>
-            <div className="w-20"></div> {/* Spacer for symmetry */}
+            {cartItemsCount > 0 && (
+              <Button
+                variant="outline"
+                onClick={() => navigate('/cart')}
+                className="flex items-center space-x-2 text-highlight-primary border-highlight-primary hover:bg-highlight-primary/10 transition-all duration-300"
+              >
+                <ShoppingCart className="w-4 h-4 mr-1" />
+                <span>Cart ({cartItemsCount})</span>
+              </Button>
+            )}
+            {cartItemsCount === 0 && <div className="w-20"></div>} {/* Spacer for symmetry */}
           </div>
 
           {/* Progress Indicator */}
           <div className="flex items-center justify-center mb-12">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-semibold">
+            <div className="flex items-center space-x-3 sm:space-x-4 px-4 py-2 bg-background-secondary rounded-lg shadow-sm">
+              <div className="flex items-center cursor-pointer" onClick={() => {
+                saveCurrentCategoryItems();
+                navigate('/accessories/categories');
+              }}>
+                <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-semibold shadow-sm">
                   ✓
                 </div>
-                <span className="ml-2 text-text-primary font-medium">Category</span>
+                <span className="ml-2 text-text-primary font-medium hover:text-highlight-primary">Category</span>
               </div>
-              <div className="w-12 h-0.5 bg-highlight-primary"></div>
+              <div className="w-8 sm:w-12 h-0.5 bg-highlight-primary"></div>
               <div className="flex items-center">
-                <div className="w-8 h-8 bg-highlight-primary text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                <div className="w-8 h-8 bg-highlight-primary text-white rounded-full flex items-center justify-center text-sm font-semibold shadow-sm">
                   2
                 </div>
                 <span className="ml-2 text-text-primary font-medium">Items</span>
               </div>
-              <div className="w-12 h-0.5 bg-border-secondary"></div>
+              <div className="w-8 sm:w-12 h-0.5 bg-border-secondary"></div>
               <div className="flex items-center">
-                <div className="w-8 h-8 bg-border-secondary text-text-secondary rounded-full flex items-center justify-center text-sm">
+                <div className="w-8 h-8 bg-border-secondary text-text-secondary rounded-full flex items-center justify-center text-sm shadow-sm">
                   3
                 </div>
-                <span className="ml-2 text-text-secondary">Order</span>
+                <span className="ml-2 text-text-secondary">Details</span>
+              </div>
+              <div className="w-8 sm:w-12 h-0.5 bg-border-secondary"></div>
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-border-secondary text-text-secondary rounded-full flex items-center justify-center text-sm shadow-sm">
+                  4
+                </div>
+                <span className="ml-2 text-text-secondary">Confirmation</span>
               </div>
             </div>
           </div>
@@ -192,7 +289,7 @@ const ItemSelectionPage = () => {
                           size="sm"
                           onClick={() => handleItemQuantityChange(item.id, Math.max(0, (selectedItems[item.id] || 0) - 1))}
                           disabled={!selectedItems[item.id]}
-                          className="w-8 h-8 p-0"
+                          className="w-8 h-8 p-0 border-highlight-primary text-highlight-primary hover:bg-highlight-primary/10 transition-all duration-200"
                         >
                           <Minus className="w-4 h-4" />
                         </Button>
@@ -203,14 +300,14 @@ const ItemSelectionPage = () => {
                           max="99"
                           value={selectedItems[item.id] || 0}
                           onChange={(e) => handleItemQuantityChange(item.id, Math.max(0, parseInt(e.target.value) || 0))}
-                          className="w-16 text-center"
+                          className="w-16 text-center font-medium"
                         />
                         
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => handleItemQuantityChange(item.id, Math.min(99, (selectedItems[item.id] || 0) + 1))}
-                          className="w-8 h-8 p-0"
+                          className="w-8 h-8 p-0 border-highlight-primary text-highlight-primary hover:bg-highlight-primary/10 transition-all duration-200"
                         >
                           <Plus className="w-4 h-4" />
                         </Button>
@@ -229,7 +326,7 @@ const ItemSelectionPage = () => {
           </div>
 
           {/* Summary and Continue */}
-          {getTotalItems() > 0 && (
+          {(getTotalItems() > 0 || cartItemsCount > 0) && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -242,25 +339,45 @@ const ItemSelectionPage = () => {
                 </div>
                 <div className="text-right">
                   <div className="text-sm text-text-secondary">
-                    {getTotalItems()} item{getTotalItems() > 1 ? 's' : ''} selected
+                    {cartItemsCount} item{cartItemsCount > 1 ? 's' : ''} in cart
                   </div>
-                  <div className="text-xl font-bold text-highlight-primary">
-                    ${getTotalPrice().toFixed(2)}
-                  </div>
+                </div>
+              </div>
+
+              {/* Price breakdown - simplified to only show total */}
+              <div className="mt-3 pt-3 border-t border-border-secondary">
+                {/* Total cart value */}
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold">Total:</span>
+                  <span className="text-xl font-bold text-highlight-primary">${getTotalCartPrice().toFixed(2)}</span>
                 </div>
               </div>
             </motion.div>
           )}
 
-          {/* Continue Button */}
-          <div className="flex justify-center">
+          {/* Continue Buttons */}
+          <div className="flex justify-center space-x-4">
+            <Button
+              onClick={() => {
+                // Save current selection before navigating to categories
+                saveCurrentCategoryItems();
+                navigate('/accessories/categories');
+              }}
+              variant="outline"
+              className="px-6 py-3 text-lg font-semibold flex items-center border-highlight-primary text-highlight-primary hover:bg-highlight-primary/10 transition-all duration-300"
+            >
+              <Plus className="w-5 h-5 mr-2" />
+              <span>Add Items from Other Categories</span>
+            </Button>
+            
             <Button
               onClick={handleContinue}
               disabled={getTotalItems() === 0}
-              className="px-8 py-3 text-lg font-semibold flex items-center space-x-2"
+              className="px-6 py-3 text-lg font-semibold flex items-center bg-highlight-primary text-text-tertiary hover:bg-highlight-primary/90 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
             >
-              <span>Continue to Order Form</span>
-              <ArrowRight className="w-5 h-5" />
+              <ShoppingCart className="w-5 h-5 mr-2" />
+              <span>Go to Cart</span>
+              <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </div>
         </motion.div>

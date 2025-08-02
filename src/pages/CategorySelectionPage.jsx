@@ -1,16 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useGlobalData } from '../components/contexts/GlobalDataContext';
 import PageContainer from '../components/common/PageContainer';
 import FadeInItem from '../components/common/FadeInItem';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Plus, ShoppingCart } from 'lucide-react';
 import { categories } from '../meta/menu';
 
 const CategorySelectionPage = () => {
   const navigate = useNavigate();
+  const { orderFormData } = useGlobalData();
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [cartItemCount, setCartItemCount] = useState(0);
+  
+  // Check if there are already items in the cart
+  useEffect(() => {
+    if (orderFormData && orderFormData.items) {
+      setCartItemCount(orderFormData.items.length);
+    }
+  }, [orderFormData]);
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
@@ -20,6 +30,10 @@ const CategorySelectionPage = () => {
     if (selectedCategory) {
       navigate(`/accessories/items?category=${selectedCategory.id}`);
     }
+  };
+
+  const handleViewCart = () => {
+    navigate('/cart');
   };
 
   const handleBack = () => {
@@ -50,39 +64,61 @@ const CategorySelectionPage = () => {
                 Select Category
               </FadeInItem>
               <FadeInItem element="p" direction="y" className="text-xl text-text-secondary">
-                Choose the type of automotive products you need
+                Choose categories for your automotive products
               </FadeInItem>
             </div>
-            <div className="w-20"></div> {/* Spacer for symmetry */}
+            {cartItemCount > 0 && (
+              <Button
+                variant="outline"
+                onClick={handleViewCart}
+                className="flex items-center space-x-2 text-highlight-primary border-highlight-primary hover:bg-highlight-primary/10"
+              >
+                <ShoppingCart className="w-4 h-4" />
+                <span>Cart ({cartItemCount})</span>
+              </Button>
+            )}
+            {cartItemCount === 0 && <div className="w-20"></div>} {/* Spacer for symmetry */}
           </div>
 
           {/* Progress Indicator */}
           <div className="flex items-center justify-center mb-12">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3 sm:space-x-4 px-4 py-2 bg-background-secondary rounded-lg shadow-sm">
               <div className="flex items-center">
-                <div className="w-8 h-8 bg-highlight-primary text-white rounded-full flex items-center justify-center text-sm font-semibold">
+                <div className="w-8 h-8 bg-highlight-primary text-white rounded-full flex items-center justify-center text-sm font-semibold shadow-sm">
                   1
                 </div>
                 <span className="ml-2 text-text-primary font-medium">Category</span>
               </div>
-              <div className="w-12 h-0.5 bg-border-secondary"></div>
+              <div className="w-8 sm:w-12 h-0.5 bg-highlight-primary"></div>
               <div className="flex items-center">
-                <div className="w-8 h-8 bg-border-secondary text-text-secondary rounded-full flex items-center justify-center text-sm">
+                <div className="w-8 h-8 bg-border-secondary text-text-secondary rounded-full flex items-center justify-center text-sm shadow-sm">
                   2
                 </div>
                 <span className="ml-2 text-text-secondary">Items</span>
               </div>
-              <div className="w-12 h-0.5 bg-border-secondary"></div>
+              <div className="w-8 sm:w-12 h-0.5 bg-border-secondary"></div>
               <div className="flex items-center">
-                <div className="w-8 h-8 bg-border-secondary text-text-secondary rounded-full flex items-center justify-center text-sm">
+                <div className="w-8 h-8 bg-border-secondary text-text-secondary rounded-full flex items-center justify-center text-sm shadow-sm">
                   3
                 </div>
-                <span className="ml-2 text-text-secondary">Order</span>
+                <span className="ml-2 text-text-secondary">Details</span>
+              </div>
+              <div className="w-8 sm:w-12 h-0.5 bg-border-secondary"></div>
+              <div className="flex items-center">
+                <div className="w-8 h-8 bg-border-secondary text-text-secondary rounded-full flex items-center justify-center text-sm shadow-sm">
+                  4
+                </div>
+                <span className="ml-2 text-text-secondary">Confirmation</span>
               </div>
             </div>
           </div>
 
           {/* Categories Grid */}
+          <div className="mb-6 text-center">
+            <p className="text-text-secondary italic">
+              You can select items from multiple categories. After adding items from one category, you can return here to add more.
+            </p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {categories.map((category) => (
               <motion.div
@@ -137,16 +173,27 @@ const CategorySelectionPage = () => {
             ))}
           </div>
 
-          {/* Continue Button */}
-          <div className="flex justify-center">
+          {/* Continue and View Cart Buttons */}
+          <div className="flex justify-center space-x-4">
             <Button
               onClick={handleContinue}
               disabled={!selectedCategory}
-              className="px-8 py-3 text-lg font-semibold flex items-center space-x-2"
+              className="px-8 py-3 text-lg font-semibold flex items-center bg-highlight-primary text-text-tertiary hover:bg-highlight-primary/90 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
             >
-              <span>Continue to Items</span>
-              <ArrowRight className="w-5 h-5" />
+              <Plus className="w-5 h-5 mr-2" />
+              <span>Select Items from this Category</span>
+              <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
+            {cartItemCount > 0 && (
+              <Button
+                onClick={handleViewCart}
+                variant="outline"
+                className="px-8 py-3 text-lg font-semibold flex items-center border-highlight-primary text-highlight-primary hover:bg-highlight-primary/10 transition-all duration-300"
+              >
+                <ShoppingCart className="w-5 h-5 mr-2" />
+                <span>View Cart ({cartItemCount})</span>
+              </Button>
+            )}
           </div>
         </motion.div>
       </div>

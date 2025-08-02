@@ -196,63 +196,118 @@ const OrderFormPage = () => {
   return (
     <TooltipProvider>
       <PageContainer>
-      <div className="bg-background-primary text-text-primary min-h-screen px-4 py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-4xl mx-auto"
-        >
-          {/* Header */}
-          <div className="text-center mb-8">
-            <FadeInItem element="h1" direction="y" className="text-3xl sm:text-4xl font-bold mb-4">
-              Create New Order
-            </FadeInItem>
-            <FadeInItem element="p" direction="y" className="text-xl text-text-secondary">
-              Fill out the form below to place your order
-            </FadeInItem>
-          </div>
+        <div className="bg-background-primary text-text-primary min-h-screen px-4 py-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-4xl mx-auto"
+          >
+            {/* Header */}
+            <div className="text-center mb-8">
+              <FadeInItem element="h1" direction="y" className="text-3xl sm:text-4xl font-bold mb-4">
+                Create New Order
+              </FadeInItem>
+              <FadeInItem element="p" direction="y" className="text-xl text-text-secondary">
+                Fill out the form below to place your order
+              </FadeInItem>
+            </div>
 
-          <Card className="bg-card-primary border border-border-primary shadow-xl backdrop-blur-sm">
-            <CardContent className="p-8">
-              <form onSubmit={handleSubmit} className="space-y-8">
-                
-                {/* Order Details Section */}
-                <FormSection title="Order Summary" icon={<Package className="w-5 h-5" />}>
-                  {/* Selected Items Display */}
-                  <div className="space-y-4">
-                    <div className="bg-background-secondary border border-border-secondary rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-4">
+            {/* Progress Indicator */}
+            <div className="flex items-center justify-center mb-8">
+              <div className="flex items-center space-x-3 sm:space-x-4 px-4 py-2 bg-background-secondary rounded-lg shadow-sm">
+                <div className="flex items-center cursor-pointer" onClick={() => navigate('/accessories/categories')}>
+                  <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-semibold shadow-sm">
+                    ✓
+                  </div>
+                  <span className="ml-2 text-text-primary font-medium hover:text-highlight-primary">Category</span>
+                </div>
+                <div className="w-8 sm:w-12 h-0.5 bg-green-500"></div>
+                <div className="flex items-center cursor-pointer" onClick={() => navigate('/cart')}>
+                  <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-semibold shadow-sm">
+                    ✓
+                  </div>
+                  <span className="ml-2 text-text-primary font-medium hover:text-highlight-primary">Items</span>
+                </div>
+                <div className="w-8 sm:w-12 h-0.5 bg-highlight-primary"></div>
+                <div className="flex items-center">
+                  <div className="w-8 h-8 bg-highlight-primary text-white rounded-full flex items-center justify-center text-sm font-semibold shadow-sm">
+                    3
+                  </div>
+                  <span className="ml-2 text-text-primary font-medium">Details</span>
+                </div>
+                <div className="w-8 sm:w-12 h-0.5 bg-border-secondary"></div>
+                <div className="flex items-center">
+                  <div className="w-8 h-8 bg-border-secondary text-text-secondary rounded-full flex items-center justify-center text-sm shadow-sm">
+                    4
+                  </div>
+                  <span className="ml-2 text-text-secondary">Confirmation</span>
+                </div>
+              </div>
+            </div>
+
+            <Card className="bg-card-primary border border-border-primary shadow-xl backdrop-blur-sm">
+              <CardContent className="p-8">
+                <form onSubmit={handleSubmit} className="space-y-8">
+                  
+                  {/* Order Details Section */}
+                  <FormSection title="Order Summary" icon={<Package className="w-5 h-5" />}>
+                    {/* Selected Items Display */}
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center mb-2">
                         <h3 className="text-lg font-semibold text-text-primary">
-                          {categoryName}
+                          Selected Items
                         </h3>
                         <button
                           type="button"
-                          onClick={() => navigate(`/accessories/items?category=${orderFormData.categoryId}`)}
+                          onClick={() => navigate('/accessories/categories')}
                           className="text-sm text-highlight-primary hover:text-highlight-secondary transition-colors"
                         >
-                          Edit Items
+                          Add More Items
                         </button>
                       </div>
                       
-                      <div className="space-y-3">
-                        {selectedItems.map((item, index) => (
-                          <div key={index} className="flex items-center justify-between p-3 bg-background-primary/50 rounded-lg">
-                            <div className="flex-1">
-                              <h4 className="font-medium text-text-primary">{item.itemName}</h4>
-                              <p className="text-sm text-text-secondary">{item.itemDesc}</p>
-                              <p className="text-sm text-text-secondary">
-                                ${item.itemPrice} × {item.quantity}
-                              </p>
+                      {/* Group items by category */}
+                      {Array.from(new Set(selectedItems.map(item => item.categoryId))).map(categoryId => {
+                        const categoryItems = selectedItems.filter(item => item.categoryId === categoryId);
+                        const categoryName = categoryItems[0]?.categoryName || "Products";
+                        
+                        return (
+                          <div key={categoryId} className="bg-background-secondary border border-border-secondary rounded-lg p-4 mb-4">
+                            <div className="flex items-center justify-between mb-4">
+                              <h3 className="text-lg font-semibold text-text-primary">
+                                {categoryName}
+                              </h3>
+                              <button
+                                type="button"
+                                onClick={() => navigate(`/accessories/items?category=${categoryId}`)}
+                                className="text-sm text-highlight-primary hover:text-highlight-secondary transition-colors"
+                              >
+                                Edit Items
+                              </button>
                             </div>
-                            <div className="text-right">
-                              <div className="font-semibold text-text-primary">
-                                ${item.totalPrice.toFixed(2)}
-                              </div>
+                            
+                            <div className="space-y-3">
+                              {categoryItems.map((item, index) => (
+                                <div key={index} className="flex items-center justify-between p-3 bg-background-primary/50 rounded-lg">
+                                  <div className="flex-1">
+                                    <h4 className="font-medium text-text-primary">{item.itemName}</h4>
+                                    <p className="text-sm text-text-secondary">{item.itemDesc}</p>
+                                    <p className="text-sm text-text-secondary">
+                                      ${item.itemPrice} × {item.quantity}
+                                    </p>
+                                  </div>
+                                  <div className="text-right">
+                                    <div className="font-semibold text-text-primary">
+                                      ${item.totalPrice.toFixed(2)}
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
                             </div>
                           </div>
-                        ))}
-                      </div>
+                        );
+                      })}
                       
                       {/* Total Price Display */}
                       <div className="mt-4 pt-4 border-t border-border-secondary">
@@ -263,153 +318,152 @@ const OrderFormPage = () => {
                           </span>
                         </div>
                       </div>
+                      
+                      {errors.items && (
+                        <p className="text-red-500 text-sm mt-2">{errors.items}</p>
+                      )}
                     </div>
-                    
-                    {errors.items && (
-                      <p className="text-red-500 text-sm mt-2">{errors.items}</p>
-                    )}
+                  </FormSection>
+
+                  {/* Customer Information Section */}
+                  <FormSection title="Customer Information" icon={<User className="w-5 h-5" />}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        id="customerName"
+                        name="customerName"
+                        label="Full Name"
+                        value={orderData.customerName}
+                        onChange={handleChange}
+                        error={errors.customerName}
+                        required={true}
+                        tooltip="Enter your full name"
+                      />
+                      <FormField
+                        id="customerEmail"
+                        name="customerEmail"
+                        label="Email Address"
+                        type="email"
+                        value={orderData.customerEmail}
+                        onChange={handleChange}
+                        error={errors.customerEmail}
+                        required={true}
+                        tooltip="Enter your email address"
+                      />
+                      <FormField
+                        id="customerPhone"
+                        name="customerPhone"
+                        label="Phone Number"
+                        type="tel"
+                        value={orderData.customerPhone}
+                        onChange={handleChange}
+                        error={errors.customerPhone}
+                        required={true}
+                        tooltip="Enter your phone number"
+                      />
+                    </div>
+                  </FormSection>
+
+                  {/* Vehicle Information Section */}
+                  <FormSection title="Vehicle Information" icon={<Car className="w-5 h-5" />}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        id="carMake"
+                        name="carMake"
+                        label="Make"
+                        value={orderData.carMake}
+                        onChange={handleChange}
+                        error={errors.carMake}
+                        required={true}
+                        tooltip="Vehicle manufacturer (e.g., Toyota, Honda, BMW)"
+                      />
+                      <FormField
+                        id="carModel"
+                        name="carModel"
+                        label="Model"
+                        value={orderData.carModel}
+                        onChange={handleChange}
+                        error={errors.carModel}
+                        required={true}
+                        tooltip="Specific model name (e.g., Camry, Civic, 3 Series)"
+                      />
+                      <FormField
+                        id="carYear"
+                        name="carYear"
+                        label="Year"
+                        type="number"
+                        value={orderData.carYear}
+                        onChange={handleChange}
+                        error={errors.carYear}
+                        required={true}
+                        tooltip="Manufacturing year of the vehicle"
+                        min="1900"
+                        max={new Date().getFullYear() + 1}
+                      />
+                    </div>
+                  </FormSection>
+
+                  {/* Delivery Information Section */}
+                  <FormSection title="Delivery Information" icon={<Package className="w-5 h-5" />}>
+                    <FormField
+                      id="deliveryLocation"
+                      name="deliveryLocation"
+                      label="Delivery Location (Optional)"
+                      value={orderData.deliveryLocation}
+                      onChange={handleChange}
+                      tooltip="Where would you like the items delivered? (e.g., Home, Office, Workshop address)"
+                      placeholder="Enter delivery address or location..."
+                    />
+                  </FormSection>
+
+                  {/* Additional Notes */}
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-text-primary">
+                      Additional Notes (Optional)
+                    </label>
+                    <textarea
+                      name="notes"
+                      value={orderData.notes}
+                      onChange={handleChange}
+                      rows={4}
+                      className="w-full bg-background-secondary border border-border-secondary text-text-primary px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-highlight-primary transition"
+                      placeholder="Any special instructions or requirements..."
+                    />
                   </div>
-                </FormSection>
 
-                {/* Customer Information Section */}
-                <FormSection title="Customer Information" icon={<User className="w-5 h-5" />}>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                      id="customerName"
-                      name="customerName"
-                      label="Full Name"
-                      value={orderData.customerName}
-                      onChange={handleChange}
-                      error={errors.customerName}
-                      required={true}
-                      tooltip="Enter your full name"
-                    />
-                    <FormField
-                      id="customerEmail"
-                      name="customerEmail"
-                      label="Email Address"
-                      type="email"
-                      value={orderData.customerEmail}
-                      onChange={handleChange}
-                      error={errors.customerEmail}
-                      required={true}
-                      tooltip="Enter your email address"
-                    />
-                    <FormField
-                      id="customerPhone"
-                      name="customerPhone"
-                      label="Phone Number"
-                      type="tel"
-                      value={orderData.customerPhone}
-                      onChange={handleChange}
-                      error={errors.customerPhone}
-                      required={true}
-                      tooltip="Enter your phone number"
-                    />
-                  </div>
-                </FormSection>
-
-                {/* Vehicle Information Section */}
-                <FormSection title="Vehicle Information" icon={<Car className="w-5 h-5" />}>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                      id="carMake"
-                      name="carMake"
-                      label="Make"
-                      value={orderData.carMake}
-                      onChange={handleChange}
-                      error={errors.carMake}
-                      required={true}
-                      tooltip="Vehicle manufacturer (e.g., Toyota, Honda, BMW)"
-                    />
-                    <FormField
-                      id="carModel"
-                      name="carModel"
-                      label="Model"
-                      value={orderData.carModel}
-                      onChange={handleChange}
-                      error={errors.carModel}
-                      required={true}
-                      tooltip="Specific model name (e.g., Camry, Civic, 3 Series)"
-                    />
-                    <FormField
-                      id="carYear"
-                      name="carYear"
-                      label="Year"
-                      type="number"
-                      value={orderData.carYear}
-                      onChange={handleChange}
-                      error={errors.carYear}
-                      required={true}
-                      tooltip="Manufacturing year of the vehicle"
-                      min="1900"
-                      max={new Date().getFullYear() + 1}
-                    />
-                  </div>
-                </FormSection>
-
-                {/* Delivery Information Section */}
-                <FormSection title="Delivery Information" icon={<Package className="w-5 h-5" />}>
-                  <FormField
-                    id="deliveryLocation"
-                    name="deliveryLocation"
-                    label="Delivery Location (Optional)"
-                    value={orderData.deliveryLocation}
-                    onChange={handleChange}
-                    tooltip="Where would you like the items delivered? (e.g., Home, Office, Workshop address)"
-                    placeholder="Enter delivery address or location..."
-                  />
-                </FormSection>
-
-                {/* Additional Notes */}
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-text-primary">
-                    Additional Notes (Optional)
-                  </label>
-                  <textarea
-                    name="notes"
-                    value={orderData.notes}
-                    onChange={handleChange}
-                    rows={4}
-                    className="w-full bg-background-secondary border border-border-secondary text-text-primary px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-highlight-primary transition"
-                    placeholder="Any special instructions or requirements..."
-                  />
-                </div>
-
-                {/* Form Actions */}
-                <div className="flex flex-col sm:flex-row gap-4 pt-6">
-                  <motion.button
-                    type="button"
-                    onClick={() => navigate(`/accessories/items?category=${orderFormData.categoryId}`)}
-                    className="flex items-center justify-center gap-2 px-6 py-3 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm"
-                    whileHover={{ x: -4 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" />
-                    Back to Items
-                  </motion.button>
-
-                  <motion.div
-                    className="flex-1"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Button
+                  {/* Form Actions */}
+                  <div className="flex flex-col sm:flex-row gap-4 pt-6">
+                    <motion.button
                       type="button"
-                      className="w-full h-12 text-base font-semibold animated-button-primary"
-                      onClick={handleSubmit}
+                      onClick={() => navigate('/cart')}
+                      className="flex items-center justify-center gap-2 px-6 py-3 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm"
+                      whileHover={{ x: -4 }}
+                      whileTap={{ scale: 0.95 }}
                     >
-                      <ShoppingCart className="w-5 h-5 mr-2" />
-                      Review Order
-                    </Button>
-                  </motion.div>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
-    </PageContainer>
+                      <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" />
+                      Back to Cart
+                    </motion.button>
+
+                    <motion.div
+                      className="flex-1"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <Button
+                        type="button"
+                        className="w-full h-12 text-base font-semibold animated-button-primary"
+                        onClick={handleSubmit}
+                      >
+                        <ShoppingCart className="w-5 h-5 mr-2" />
+                        Review Order
+                      </Button>
+                    </motion.div>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+      </PageContainer>
     </TooltipProvider>
   );
 };
