@@ -115,7 +115,7 @@ function AppContent() {
           }`}
         >
           <nav className="px-3.5 flex-center-between w-full max-w-7xl mx-auto">
-            <div className="flex-center gap-x-3 z-[10] relative" onClick={() => window.location.href = '/'}>
+            <div className="flex-center gap-x-3 z-[10] relative" onClick={() => navigate('/')}>
               <img src={Logo} alt="" className="size-8" />
               {cartItemCount === 0 ? (
                 <>
@@ -134,7 +134,7 @@ function AppContent() {
               {cartItemCount > 0 && (
                 <button
                   aria-label="cart"
-                  onClick={() => window.location.href = '/cart'}
+                  onClick={() => navigate('/cart')}
                   className="bg-white/5 relative px-3 py-1.5 shadow rounded-xl flex-center font-semibold hover:bg-highlight-primary hover:text-text-tertiary transition"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
@@ -150,7 +150,7 @@ function AppContent() {
               )}
               <button
                 aria-label="inspection-progress"
-                onClick={() => window.location.href = '/status'}
+                onClick={() => navigate('/status')}
                 className="bg-white/5 relative px-3 py-1.5 shadow rounded-xl flex-center font-semibold hover:bg-highlight-primary hover:text-text-tertiary transition"
               >
                 Check Status

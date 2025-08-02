@@ -144,17 +144,15 @@ const StatusPage = () => {
     const plan = getPlanById(appointment.serviceId, appointment.planId);
 
     const handleCardClick = (e) => {
-      // Don't navigate if clicking on payment button
-      if (e.target.closest('.payment-button')) {
-        return;
-      }
       // Use navigate instead of direct location change
-      navigate(`/appointment/${appointment.appointmentId}`);
+      // navigate(`/appointment/${appointment.appointmentId}`);
+      window.location.href = `/appointment/${appointment.appointmentId}`;
     };
 
     const handlePayNowClick = (e) => {
-      e.stopPropagation();
-      navigate(`/payment/appointment/${appointment.appointmentId}`);
+      // e.stopPropagation();
+      // navigate(`/payment/appointment/${appointment.appointmentId}`);
+      window.location.href = `/payment/appointment/${appointment.appointmentId}`;
     };
 
     const needsPayment = isPaymentRequired(appointment.paymentStatus);
@@ -259,19 +257,17 @@ const StatusPage = () => {
 
   const OrderCard = ({ order }) => {
     const statusInfo = getOrderStatusInfo(order.status);
-    
+
     const handleCardClick = (e) => {
-      // Don't navigate if clicking on payment button
-      if (e.target.closest('.payment-button')) {
-        return;
-      }
       // Use navigate instead of direct location change
-      navigate(`/order/${order.orderId}`);
+      // navigate(`/order/${order.orderId}`);
+      window.location.href = `/order/${order.orderId}`;
     };
 
     const handlePayNowClick = (e) => {
-      e.stopPropagation();
-      navigate(`/payment/order/${order.orderId}`);
+      // e.stopPropagation();
+      // navigate(`/payment/order/${order.orderId}`);
+      window.location.href = `/payment/order/${order.orderId}`;
     };
 
     const needsPayment = isPaymentRequired(order.paymentStatus);
