@@ -1,0 +1,99 @@
+/* Additional styles for progress indicators scrollbar */
+.scrollbar-thin::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 0 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--color-border-secondary, #e2e8f0);
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-primary, #cbd5e1);
+}
+
+/* Hide scrollbar for Firefox */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-secondary, #e2e8f0) transparent;
+}
+
+/* Extra small screens utility class */
+@media (max-width: 479px) {
+  .xs\:hidden {
+    display: none;
+  }
+  .xs\:block {
+    display: block;
+  }
+  .xs\:w-6 {
+    width: 1.5rem;
+  }
+  .xs\:h-6 {
+    height: 1.5rem;
+  }
+  .xs\:w-7 {
+    width: 1.75rem;
+  }
+  .xs\:h-7 {
+    height: 1.75rem;
+  }
+  .xs\:text-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+  .xs\:text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  .xs\:ml-1 {
+    margin-left: 0.25rem;
+  }
+  .xs\:space-x-2 > :not([hidden]) ~ :not([hidden]) {
+    --tw-space-x-reverse: 0;
+    margin-right: calc(0.5rem * var(--tw-space-x-reverse));
+    margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
+  }
+  .xs\:px-3 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  .xs\:pl-4 {
+    padding-left: 1rem;
+  }
+  .xs\:pr-4 {
+    padding-right: 1rem;
+  }
+  .xs\:px-10 {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+}
+
+/* Hide scrollbar but allow scrolling */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  scroll-behavior: smooth; /* For all browsers that support it */
+  overscroll-behavior-x: contain; /* Prevent unwanted page scrolling on mobile */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+  width: 0;
+  height: 0;
+}
+
+/* Ensure the scroll container is positioned correctly */
+.hide-scrollbar {
+  position: relative;
+  z-index: 1;
+}

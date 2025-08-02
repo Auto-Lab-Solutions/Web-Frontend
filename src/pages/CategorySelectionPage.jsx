@@ -1,13 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useGlobalData } from '../components/contexts/GlobalDataContext';
+import useProgressBarScroll from '../hooks/useProgressBarScroll';
 import PageContainer from '../components/common/PageContainer';
 import FadeInItem from '../components/common/FadeInItem';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { ArrowLeft, ArrowRight, Plus, ShoppingCart } from 'lucide-react';
 import { categories } from '../meta/menu';
+import { useMobileInputStyling } from '../hooks/useMobileOptimization';
 
 const CategorySelectionPage = () => {
   const navigate = useNavigate();
@@ -15,12 +17,18 @@ const CategorySelectionPage = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [cartItemCount, setCartItemCount] = useState(0);
   
+  // Initialize progress bar scroll hook (step 1 of 4)
+  const { containerRef, stepRefs } = useProgressBarScroll(1, 4);
+  
   // Check if there are already items in the cart
   useEffect(() => {
     if (orderFormData && orderFormData.items) {
       setCartItemCount(orderFormData.items.length);
     }
   }, [orderFormData]);
+
+  // Apply mobile input optimizations
+  useMobileInputStyling();
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
@@ -50,65 +58,67 @@ const CategorySelectionPage = () => {
           className="max-w-6xl mx-auto"
         >
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
             <Button
               variant="ghost"
               onClick={handleBack}
-              className="flex items-center space-x-2 text-text-secondary hover:text-text-primary"
+              className="mb-4 sm:mb-0 flex items-center space-x-2 text-text-secondary hover:text-text-primary"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Back</span>
             </Button>
-            <div className="text-center flex-1">
-              <FadeInItem element="h1" direction="y" className="text-3xl sm:text-4xl font-bold mb-2">
+            <div className="text-center flex-1 mb-4 sm:mb-0">
+              <FadeInItem element="h1" direction="y" className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
                 Select Category
               </FadeInItem>
-              <FadeInItem element="p" direction="y" className="text-xl text-text-secondary">
+              <FadeInItem element="p" direction="y" className="text-base sm:text-xl text-text-secondary">
                 Choose categories for your automotive products
               </FadeInItem>
             </div>
-            {cartItemCount > 0 && (
-              <Button
-                variant="outline"
-                onClick={handleViewCart}
-                className="flex items-center space-x-2 text-highlight-primary border-highlight-primary hover:bg-highlight-primary/10"
-              >
-                <ShoppingCart className="w-4 h-4" />
-                <span>Cart ({cartItemCount})</span>
-              </Button>
-            )}
-            {cartItemCount === 0 && <div className="w-20"></div>} {/* Spacer for symmetry */}
+            <div className="flex justify-center sm:justify-end w-full sm:w-auto">
+              {cartItemCount > 0 && (
+                <Button
+                  variant="outline"
+                  onClick={handleViewCart}
+                  className="flex items-center space-x-2 text-highlight-primary border-highlight-primary hover:bg-highlight-primary/10"
+                >
+                  <ShoppingCart className="w-4 h-4" />
+                  <span>Cart ({cartItemCount})</span>
+                </Button>
+              )}
+              {cartItemCount === 0 && <div className="hidden sm:block w-20"></div>} {/* Spacer for symmetry on larger screens */}
+            </div>
           </div>
 
           {/* Progress Indicator */}
-          <div className="flex items-center justify-center mb-12">
-            <div className="flex items-center space-x-3 sm:space-x-4 px-4 py-2 bg-background-secondary rounded-lg shadow-sm">
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-highlight-primary text-white rounded-full flex items-center justify-center text-sm font-semibold shadow-sm">
+          <div ref={containerRef} className="flex items-center justify-center mb-12 overflow-x-auto pb-2 -mx-4 px-6 sm:px-8 scrollbar-thin scrollbar-thumb-border-secondary hide-scrollbar" style={{ scrollbarWidth: 'none' }}>
+            <div className="flex items-center space-x-1 xs:space-x-2 sm:space-x-3 md:space-x-4 px-8 xs:px-10 sm:px-12 py-2 bg-background-secondary rounded-lg shadow-sm min-w-[800px]">
+              <div ref={stepRefs?.current[0] || null} id="step-1" className="flex items-center cursor-pointer whitespace-nowrap pl-6 xs:pl-4">
+                <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-highlight-primary text-white rounded-full flex items-center justify-center text-[10px] xs:text-xs sm:text-sm font-semibold shadow-sm">
                   1
                 </div>
-                <span className="ml-2 text-text-primary font-medium">Category</span>
+                <span className="ml-1 xs:ml-1 sm:ml-2 text-xs xs:text-sm sm:text-base text-text-primary font-medium">Category</span>
               </div>
-              <div className="w-8 sm:w-12 h-0.5 bg-highlight-primary"></div>
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-border-secondary text-text-secondary rounded-full flex items-center justify-center text-sm shadow-sm">
+              <div className="w-4 xs:w-6 sm:w-8 md:w-12 h-0.5 bg-highlight-primary"></div>
+              <div ref={stepRefs?.current[1] || null} id="step-2" className="flex items-center cursor-pointer whitespace-nowrap" onClick={() => navigate('/accessories/items')}>
+                <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-border-secondary text-text-secondary rounded-full flex items-center justify-center text-[10px] xs:text-xs sm:text-sm shadow-sm">
                   2
                 </div>
-                <span className="ml-2 text-text-secondary">Items</span>
+                <span className="ml-1 xs:ml-1 sm:ml-2 text-xs xs:text-sm sm:text-base text-text-secondary hover:text-highlight-primary">Items</span>
               </div>
-              <div className="w-8 sm:w-12 h-0.5 bg-border-secondary"></div>
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-border-secondary text-text-secondary rounded-full flex items-center justify-center text-sm shadow-sm">
+              <div className="w-4 xs:w-6 sm:w-8 md:w-12 h-0.5 bg-border-secondary"></div>
+              <div ref={stepRefs?.current[2] || null} id="step-3" className="flex items-center cursor-pointer whitespace-nowrap" onClick={() => navigate('/order-form')}>
+                <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-border-secondary text-text-secondary rounded-full flex items-center justify-center text-[10px] xs:text-xs sm:text-sm shadow-sm">
                   3
                 </div>
-                <span className="ml-2 text-text-secondary">Details</span>
+                <span className="ml-1 xs:ml-1 sm:ml-2 text-xs xs:text-sm sm:text-base text-text-secondary hover:text-highlight-primary">Details</span>
               </div>
-              <div className="w-8 sm:w-12 h-0.5 bg-border-secondary"></div>
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-border-secondary text-text-secondary rounded-full flex items-center justify-center text-sm shadow-sm">
+              <div className="w-4 xs:w-6 sm:w-8 md:w-12 h-0.5 bg-border-secondary"></div>
+              <div ref={stepRefs?.current[3] || null} id="step-4" className="flex items-center cursor-pointer whitespace-nowrap pr-6 xs:pr-4" onClick={() => navigate('/order-confirmation')}>
+                <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-border-secondary text-text-secondary rounded-full flex items-center justify-center text-[10px] xs:text-xs sm:text-sm shadow-sm">
                   4
                 </div>
-                <span className="ml-2 text-text-secondary">Confirmation</span>
+                <span className="ml-1 xs:ml-1 sm:ml-2 text-xs xs:text-sm sm:text-base text-text-secondary hover:text-highlight-primary">Confirmation</span>
               </div>
             </div>
           </div>
@@ -174,11 +184,11 @@ const CategorySelectionPage = () => {
           </div>
 
           {/* Continue and View Cart Buttons */}
-          <div className="flex justify-center space-x-4">
+          <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
             <Button
               onClick={handleContinue}
               disabled={!selectedCategory}
-              className="px-8 py-3 text-lg font-semibold flex items-center bg-highlight-primary text-text-tertiary hover:bg-highlight-primary/90 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+              className="w-full sm:w-auto px-6 sm:px-8 py-3 text-base sm:text-lg font-semibold flex items-center justify-center bg-highlight-primary text-text-tertiary hover:bg-highlight-primary/90 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
             >
               <Plus className="w-5 h-5 mr-2" />
               <span>Select Items from this Category</span>
@@ -188,7 +198,7 @@ const CategorySelectionPage = () => {
               <Button
                 onClick={handleViewCart}
                 variant="outline"
-                className="px-8 py-3 text-lg font-semibold flex items-center border-highlight-primary text-highlight-primary hover:bg-highlight-primary/10 transition-all duration-300"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3 text-base sm:text-lg font-semibold flex items-center justify-center border-highlight-primary text-highlight-primary hover:bg-highlight-primary/10 transition-all duration-300"
               >
                 <ShoppingCart className="w-5 h-5 mr-2" />
                 <span>View Cart ({cartItemCount})</span>

@@ -4,6 +4,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App.jsx'
 import '../css/index.css'
 import { initializeMobileOptimizations } from './utils/mobileUtils.js'
+import './utils/scrollPolyfill.js'
 
 // Initialize mobile optimizations
 initializeMobileOptimizations();

@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useGlobalData } from '../components/contexts/GlobalDataContext';
+import useProgressBarScroll from '../hooks/useProgressBarScroll';
 import PageContainer from '../components/common/PageContainer';
 import FadeInItem from '../components/common/FadeInItem';
 import FormField from '../components/common/FormField';
@@ -17,8 +18,25 @@ import { useMobileInputStyling } from '../hooks/useMobileOptimization';
 const OrderFormPage = () => {
   const navigate = useNavigate();
   const { orderFormData, updateOrderFormData } = useGlobalData();
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    zipCode: '',
+    vehicleMake: '',
+    vehicleModel: '',
+    vehicleYear: '',
+    additionalInfo: '',
+  });
   const [errors, setErrors] = useState({});
   
+  // Initialize progress bar scroll hook (step 3 of 4)
+  const { containerRef, stepRefs } = useProgressBarScroll(3, 4);
+
   // Apply mobile input optimizations
   useMobileInputStyling();
 
@@ -205,43 +223,43 @@ const OrderFormPage = () => {
           >
             {/* Header */}
             <div className="text-center mb-8">
-              <FadeInItem element="h1" direction="y" className="text-3xl sm:text-4xl font-bold mb-4">
+              <FadeInItem element="h1" direction="y" className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
                 Create New Order
               </FadeInItem>
-              <FadeInItem element="p" direction="y" className="text-xl text-text-secondary">
+              <FadeInItem element="p" direction="y" className="text-base sm:text-xl text-text-secondary px-2">
                 Fill out the form below to place your order
               </FadeInItem>
             </div>
 
             {/* Progress Indicator */}
-            <div className="flex items-center justify-center mb-8">
-              <div className="flex items-center space-x-3 sm:space-x-4 px-4 py-2 bg-background-secondary rounded-lg shadow-sm">
-                <div className="flex items-center cursor-pointer" onClick={() => navigate('/accessories/categories')}>
-                  <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-semibold shadow-sm">
+            <div ref={containerRef} className="flex items-center justify-center mb-8 overflow-x-auto pb-2 -mx-4 px-6 sm:px-8 scrollbar-thin scrollbar-thumb-border-secondary hide-scrollbar" style={{ scrollbarWidth: 'none' }}>
+              <div className="flex items-center space-x-1 xs:space-x-2 sm:space-x-3 md:space-x-4 px-8 xs:px-10 sm:px-12 py-2 bg-background-secondary rounded-lg shadow-sm min-w-[800px]">
+                <div ref={stepRefs.current[0]} id="step-1" className="flex items-center cursor-pointer whitespace-nowrap pl-6 xs:pl-4" onClick={() => navigate('/accessories/categories')}>
+                  <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-[10px] xs:text-xs sm:text-sm font-semibold shadow-sm">
                     ✓
                   </div>
-                  <span className="ml-2 text-text-primary font-medium hover:text-highlight-primary">Category</span>
+                  <span className="ml-1 xs:ml-1 sm:ml-2 text-xs xs:text-sm sm:text-base text-text-primary font-medium hover:text-highlight-primary">Category</span>
                 </div>
-                <div className="w-8 sm:w-12 h-0.5 bg-green-500"></div>
-                <div className="flex items-center cursor-pointer" onClick={() => navigate('/cart')}>
-                  <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-semibold shadow-sm">
+                <div className="w-4 xs:w-6 sm:w-8 md:w-12 h-0.5 bg-green-500"></div>
+                <div ref={stepRefs.current[1]} id="step-2" className="flex items-center cursor-pointer whitespace-nowrap" onClick={() => navigate('/cart')}>
+                  <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-[10px] xs:text-xs sm:text-sm font-semibold shadow-sm">
                     ✓
                   </div>
-                  <span className="ml-2 text-text-primary font-medium hover:text-highlight-primary">Items</span>
+                  <span className="ml-1 xs:ml-1 sm:ml-2 text-xs xs:text-sm sm:text-base text-text-primary font-medium hover:text-highlight-primary">Items</span>
                 </div>
-                <div className="w-8 sm:w-12 h-0.5 bg-highlight-primary"></div>
-                <div className="flex items-center">
-                  <div className="w-8 h-8 bg-highlight-primary text-white rounded-full flex items-center justify-center text-sm font-semibold shadow-sm">
+                <div className="w-4 xs:w-6 sm:w-8 md:w-12 h-0.5 bg-highlight-primary"></div>
+                <div ref={stepRefs.current[2]} id="step-3" className="flex items-center whitespace-nowrap">
+                  <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-highlight-primary text-white rounded-full flex items-center justify-center text-[10px] xs:text-xs sm:text-sm font-semibold shadow-sm">
                     3
                   </div>
-                  <span className="ml-2 text-text-primary font-medium">Details</span>
+                  <span className="ml-1 xs:ml-1 sm:ml-2 text-xs xs:text-sm sm:text-base text-text-primary font-medium">Details</span>
                 </div>
-                <div className="w-8 sm:w-12 h-0.5 bg-border-secondary"></div>
-                <div className="flex items-center">
-                  <div className="w-8 h-8 bg-border-secondary text-text-secondary rounded-full flex items-center justify-center text-sm shadow-sm">
+                <div className="w-4 xs:w-6 sm:w-8 md:w-12 h-0.5 bg-border-secondary"></div>
+                <div ref={stepRefs.current[3]} id="step-4" className="flex items-center whitespace-nowrap pr-6 xs:pr-4">
+                  <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-border-secondary text-text-secondary rounded-full flex items-center justify-center text-[10px] xs:text-xs sm:text-sm shadow-sm">
                     4
                   </div>
-                  <span className="ml-2 text-text-secondary">Confirmation</span>
+                  <span className="ml-1 xs:ml-1 sm:ml-2 text-xs xs:text-sm sm:text-base text-text-secondary">Confirmation</span>
                 </div>
               </div>
             </div>
@@ -435,7 +453,7 @@ const OrderFormPage = () => {
                     <motion.button
                       type="button"
                       onClick={() => navigate('/cart')}
-                      className="flex items-center justify-center gap-2 px-6 py-3 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm"
+                      className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm"
                       whileHover={{ x: -4 }}
                       whileTap={{ scale: 0.95 }}
                     >

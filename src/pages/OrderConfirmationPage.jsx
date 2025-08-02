@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useGlobalData } from '../components/contexts/GlobalDataContext';
 import { useRestClient } from '../components/contexts/RestContext';
+import useProgressBarScroll from '../hooks/useProgressBarScroll';
 import PageContainer from '../components/common/PageContainer';
 import FadeInItem from '../components/common/FadeInItem';
 import { Card, CardContent } from '../components/ui/card';
@@ -27,6 +28,9 @@ const OrderConfirmationPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const [isSuccess, setIsSuccess] = useState(false);
+  
+  // Initialize progress bar scroll hook (step 4 of 4)
+  const { containerRef, stepRefs } = useProgressBarScroll(4, 4);
 
   if (!orderFormData || !orderFormData.items || orderFormData.items.length === 0) {
     navigate('/accessories/categories');
@@ -116,16 +120,51 @@ const OrderConfirmationPage = () => {
         >
           {/* Header */}
           <div className="text-center mb-8">
-            <FadeInItem element="h1" direction="y" className="text-3xl sm:text-4xl font-bold mb-4">
+            <FadeInItem element="h1" direction="y" className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
               {isSuccess ? "Order Placed Successfully!" : "Review Your Order"}
             </FadeInItem>
-            <FadeInItem element="p" direction="y" className="text-xl text-text-secondary">
+            <FadeInItem element="p" direction="y" className="text-base sm:text-xl text-text-secondary px-2">
               {isSuccess 
                 ? "Thank you for your order. You will be redirected to your status page shortly."
                 : "Please review your order details before confirming"
               }
             </FadeInItem>
           </div>
+
+          {/* Progress Indicator */}
+          {!isSuccess && (
+            <div ref={containerRef} className="flex items-center justify-center mb-8 overflow-x-auto pb-2 -mx-4 px-6 sm:px-8 scrollbar-thin scrollbar-thumb-border-secondary hide-scrollbar" style={{ scrollbarWidth: 'none' }}>
+              <div className="flex items-center space-x-1 xs:space-x-2 sm:space-x-3 md:space-x-4 px-8 xs:px-10 sm:px-12 py-2 bg-background-secondary rounded-lg shadow-sm min-w-[800px]">
+                <div ref={stepRefs.current[0]} id="step-1" className="flex items-center cursor-pointer whitespace-nowrap pl-6 xs:pl-4" onClick={() => navigate('/accessories/categories')}>
+                  <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-[10px] xs:text-xs sm:text-sm font-semibold shadow-sm">
+                    ✓
+                  </div>
+                  <span className="ml-1 xs:ml-1 sm:ml-2 text-xs xs:text-sm sm:text-base text-text-primary font-medium hover:text-highlight-primary">Category</span>
+                </div>
+                <div className="w-4 xs:w-6 sm:w-8 md:w-12 h-0.5 bg-green-500"></div>
+                <div ref={stepRefs.current[1]} id="step-2" className="flex items-center cursor-pointer whitespace-nowrap" onClick={() => navigate('/cart')}>
+                  <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-[10px] xs:text-xs sm:text-sm font-semibold shadow-sm">
+                    ✓
+                  </div>
+                  <span className="ml-1 xs:ml-1 sm:ml-2 text-xs xs:text-sm sm:text-base text-text-primary font-medium hover:text-highlight-primary">Items</span>
+                </div>
+                <div className="w-4 xs:w-6 sm:w-8 md:w-12 h-0.5 bg-green-500"></div>
+                <div ref={stepRefs.current[2]} id="step-3" className="flex items-center cursor-pointer whitespace-nowrap" onClick={() => navigate('/order-form')}>
+                  <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-[10px] xs:text-xs sm:text-sm font-semibold shadow-sm">
+                    ✓
+                  </div>
+                  <span className="ml-1 xs:ml-1 sm:ml-2 text-xs xs:text-sm sm:text-base text-text-primary font-medium hover:text-highlight-primary">Details</span>
+                </div>
+                <div className="w-4 xs:w-6 sm:w-8 md:w-12 h-0.5 bg-highlight-primary"></div>
+                <div ref={stepRefs.current[3]} id="step-4" className="flex items-center whitespace-nowrap pr-6 xs:pr-4">
+                  <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-highlight-primary text-white rounded-full flex items-center justify-center text-[10px] xs:text-xs sm:text-sm font-semibold shadow-sm">
+                    4
+                  </div>
+                  <span className="ml-1 xs:ml-1 sm:ml-2 text-xs xs:text-sm sm:text-base text-text-primary font-medium">Confirmation</span>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Success Animation */}
           {isSuccess && (
