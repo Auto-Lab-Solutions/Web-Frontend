@@ -57,8 +57,8 @@ const PaymentSummary = ({ paymentData }) => {
   };
 
   const renderAppointmentDetails = () => {
-    const service = getServiceById(paymentData.serviceInfo?.serviceId);
-    const plan = getPlanById(paymentData.serviceInfo?.serviceId, paymentData.serviceInfo?.planId);
+    const service = getServiceById(paymentData.serviceId);
+    const plan = getPlanById(paymentData.serviceId, paymentData.planId);
 
     return (
       <>
@@ -71,12 +71,12 @@ const PaymentSummary = ({ paymentData }) => {
           <InfoItem
             icon={<CheckCircle />}
             label="Service Type"
-            value={service?.name || 'Vehicle Inspection'}
+            value={paymentData.title || 'Vehicle Inspection'}
           />
           <InfoItem
             icon={<Package />}
             label="Plan"
-            value={plan?.name || 'Standard Plan'}
+            value={paymentData.subtitle || 'Standard Plan'}
           />
           <InfoItem
             icon={<Calendar />}
@@ -94,17 +94,17 @@ const PaymentSummary = ({ paymentData }) => {
           <InfoItem
             icon={<Car />}
             label="Make & Model"
-            value={`${paymentData.serviceInfo.vehicle.make} ${paymentData.serviceInfo.vehicle.model}`}
+            value={`${paymentData.vehicleInfo.make} ${paymentData.vehicleInfo.model}`}
           />
           <InfoItem
             icon={<Calendar />}
             label="Year"
-            value={paymentData.serviceInfo.vehicle.year}
+            value={paymentData.vehicleInfo.year}
           />
           <InfoItem
             icon={<MapPin />}
             label="Location"
-            value={paymentData.serviceInfo.vehicle.location}
+            value={paymentData.vehicleInfo.location || 'Not specified'}
           />
         </SectionCard>
       </>
