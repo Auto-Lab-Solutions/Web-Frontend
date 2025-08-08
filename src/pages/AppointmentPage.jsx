@@ -43,7 +43,6 @@ const AppointmentPage = () => {
       });
 
       if (response.data && response.data.success && response.data.appointment) {
-        console.log('Appointment details fetched successfully:', response.data.appointment);
         const formattedAppointment = formatAppointmentData(response.data.appointment);
         setAppointment(formattedAppointment);
       } else {
