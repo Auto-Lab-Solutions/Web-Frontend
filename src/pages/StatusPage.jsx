@@ -27,26 +27,13 @@ const StatusPage = () => {
   // Clear any lingering cart data when viewing status page
   useEffect(() => {
     clearFormData();
-  }, [clearFormData]);
+  }, []); // Remove clearFormData from dependencies to prevent infinite loop
 
   useEffect(() => {
     if (userId && restClient) {
       fetchData();
     }
   }, [userId, restClient]);
-
-  // Add cleanup function to ensure component unmounts properly
-  useEffect(() => {
-    // Add event listener only if necessary
-    const cleanup = () => {
-      // Clear any timers, event listeners, or other cleanup
-      setAppointments([]);
-      setOrders([]);
-      setLoading(false);
-    };
-    
-    return cleanup;
-  }, []);
 
   const fetchData = async () => {
     setLoading(true);
@@ -144,6 +131,7 @@ const StatusPage = () => {
     const plan = getPlanById(appointment.serviceId, appointment.planId);
 
     const handleCardClick = (e) => {
+      console.log('Card clicked:', appointment.appointmentId);
       // Use navigate instead of direct location change
       // navigate(`/appointment/${appointment.appointmentId}`);
       window.location.href = `/appointment/${appointment.appointmentId}`;

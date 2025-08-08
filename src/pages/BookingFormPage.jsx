@@ -386,14 +386,15 @@ function BookingFormPage() {
                       id="carYear"
                       name="carYear"
                       label="Year"
-                      type="number"
+                      type="text"
                       value={clientData.carYear}
                       onChange={handleChange}
                       error={errors.carYear}
                       required={true}
                       tooltip="Manufacturing year of the vehicle"
-                      min="1900"
-                      max={new Date().getFullYear() + 1}
+                      placeholder="e.g., 2008"
+                      pattern="[0-9]{4}"
+                      inputMode="numeric"
                     />
                     <FormField
                       id="carLocation"
