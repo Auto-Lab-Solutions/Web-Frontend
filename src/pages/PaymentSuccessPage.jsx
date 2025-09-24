@@ -38,6 +38,15 @@ const PaymentSuccessPage = () => {
 
       if (response.data && response.data.success) {
         setConfirmationData(response.data);
+        
+        // Auto-redirect to appointment page after confirmation
+        setTimeout(() => {
+          if (response.data.type && response.data.referenceNumber) {
+            navigate(`/${response.data.type}/${response.data.referenceNumber}`);
+          } else {
+            navigate('/status');
+          }
+        }, 5000); // Give user time to see the success message
       }
     } catch (error) {
       console.error('Error confirming payment success:', error);
@@ -111,7 +120,7 @@ const PaymentSuccessPage = () => {
                   <div className="flex justify-between">
                     <span className="text-text-secondary">Amount:</span>
                     <span className="text-text-primary font-medium">
-                      ${(confirmationData.amount / 100).toFixed(2)}
+                      AUD {(confirmationData.amount / 100).toFixed(2)}
                     </span>
                   </div>
                 </div>
@@ -177,7 +186,7 @@ const PaymentSuccessPage = () => {
             transition={{ delay: 0.7 }}
             className="text-text-secondary text-sm mt-6"
           >
-            You will be redirected to your status page automatically in a few moments.
+            You will be redirected to your appointment details page automatically in a few moments.
           </motion.p>
         </motion.div>
       </div>

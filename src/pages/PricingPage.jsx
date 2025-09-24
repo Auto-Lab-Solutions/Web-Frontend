@@ -28,14 +28,20 @@ const PricingPage = ({ serviceId }) => {
   return (
     <PageContainer>
       <div className="py-16 bg-background-primary text-text-primary">
-        <h2 className="text-3xl font-bold text-center mb-4 mt-4 px-4">
-          Choose Your Pricing Plan
+        <h2 className="sm:text-4xl text-3xl font-bold text-center mb-4 mt-4 px-4">
+          Choose Your Service Plan
         </h2>
         
         {/* Step Indicator */}
         <AppointmentStepIndicator currentStep={1} className="mb-8" />
         
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
+        <div className={`max-w-6xl mx-auto grid gap-8 px-4 ${
+          plans.length === 1 
+            ? 'grid-cols-1 place-items-center max-w-md' 
+            : plans.length === 2 
+            ? 'grid-cols-1 md:grid-cols-2 place-items-center max-w-4xl' 
+            : 'grid-cols-1 md:grid-cols-3'
+        }`}>
           {plans.map((plan, idx) => (
             <motion.div
               key={idx}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useGlobalData } from "../components/contexts/GlobalDataContext";
 import { useRestClient } from "../components/contexts/RestContext";
-import { getServiceById, getPlanById } from "../meta/menu";
+import { getServiceById, getPlanById, isInspectionService } from "../meta/menu";
 import { formatAppointmentForSubmission, validateAppointmentData, handleAppointmentError } from "../utils/appointmentUtils";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,10 +11,10 @@ import AppointmentStepIndicator from "../components/common/AppointmentStepIndica
 import BackArrow from "../components/common/BackArrow";
 
 // Reusable components
-const InfoItem = ({ label, value, labelWidth = "w-16" }) => (
-  <div className="flex items-center gap-3">
-    <span className={`text-text-secondary font-medium ${labelWidth}`}>{label}:</span>
-    <span className="text-text-primary font-semibold">{value}</span>
+const InfoItem = ({ label, value, labelWidth = "w-12 sm:w-16" }) => (
+  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+    <span className={`text-text-secondary font-medium ${labelWidth} flex-shrink-0`}>{label}:</span>
+    <span className="text-text-primary font-semibold break-all">{value}</span>
   </div>
 );
 
@@ -28,7 +28,7 @@ const ContactSection = ({ title, data, gradientClass }) => (
       </div>
       <h4 className="text-xl font-semibold text-text-primary">{title}</h4>
     </div>
-    <div className="space-y-3 pl-13">
+    <div className="space-y-3 pl-2 sm:pl-4">
       {data?.name && <InfoItem label="Name" value={data.name} />}
       {data?.email && <InfoItem label="Email" value={data.email} />}
       {data?.phoneNumber && <InfoItem label="Phone" value={data.phoneNumber} />}
@@ -39,7 +39,7 @@ const ContactSection = ({ title, data, gradientClass }) => (
 const VehicleInfoCard = ({ label, value }) => (
   <div className="dark-gradient-primary rounded-xl p-4 border border-border-primary backdrop-blur-sm">
     <div className="text-sm text-text-primary font-medium mb-1">{label}</div>
-    <div className="text-lg font-semibold text-text-primary">{value}</div>
+    <div className="text-base font-semibold text-text-primary">{value}</div>
   </div>
 );
 
@@ -58,6 +58,9 @@ function BookingConfirmationPage() {
   const [submitError, setSubmitError] = useState(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+
+  // Check if current service is an inspection service
+  const isInspection = isInspectionService(appointmentFormData?.serviceId);
 
   if (!appointmentFormData || !appointmentFormData?.serviceId || !appointmentFormData?.planId || !appointmentFormData?.selectedSlots?.length) {
     if (!isSuccess) {
@@ -126,10 +129,10 @@ function BookingConfirmationPage() {
       <div className="max-w-6xl mx-auto space-y-10 text-black py-20 px-3 sm:px-12">
         <BackArrow to={handleBack} />
         <div className="text-center mb-4">
-          <h1 className="text-3xl font-bold mb-2 bg-text-primary bg-clip-text text-transparent">
+          <h1 className="sm:text-4xl text-3xl font-bold mb-2 bg-text-primary bg-clip-text text-transparent">
             Confirm Your Booking
           </h1>
-          <p className="text-lg text-text-secondary max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg text-text-secondary max-w-3xl mx-auto">
             Please review your appointment details below and confirm to complete your booking.
           </p>
         </div>
@@ -319,21 +322,21 @@ function BookingConfirmationPage() {
             
             <div className={`grid gap-8 ${
               (appointmentFormData?.buyerData?.name || appointmentFormData?.buyerData?.email || appointmentFormData?.buyerData?.phoneNumber) &&
-              (appointmentFormData?.sellerData?.name || appointmentFormData?.sellerData?.email || appointmentFormData?.sellerData?.phoneNumber)
+              isInspection && (appointmentFormData?.sellerData?.name || appointmentFormData?.sellerData?.email || appointmentFormData?.sellerData?.phoneNumber)
                 ? 'grid-cols-1 lg:grid-cols-2' 
                 : 'grid-cols-1'
             }`}>
-              {/* Buyer Information */}
+              {/* Customer/Buyer Information */}
               {(appointmentFormData?.buyerData?.name || appointmentFormData?.buyerData?.email || appointmentFormData?.buyerData?.phoneNumber) && (
                 <ContactSection 
-                  title="Buyer Information"
+                  title={isInspection ? "Buyer Information" : "Customer Information"}
                   data={appointmentFormData.buyerData}
                   gradientClass="blue-light-gradient"
                 />
               )}
 
-              {/* Seller Information */}
-              {(appointmentFormData?.sellerData?.name || appointmentFormData?.sellerData?.email || appointmentFormData?.sellerData?.phoneNumber) && (
+              {/* Seller Information - Only show for inspection services */}
+              {isInspection && (appointmentFormData?.sellerData?.name || appointmentFormData?.sellerData?.email || appointmentFormData?.sellerData?.phoneNumber) && (
                 <ContactSection 
                   title="Seller Information"
                   data={appointmentFormData.sellerData}

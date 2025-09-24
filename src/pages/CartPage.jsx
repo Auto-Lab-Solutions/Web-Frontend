@@ -240,7 +240,7 @@ const CartPage = () => {
                           <div className="flex-1 mb-3 sm:mb-0">
                             <h3 className="font-medium text-text-primary">{item.itemName}</h3>
                             <p className="text-sm text-text-secondary">{item.itemDesc}</p>
-                            <p className="text-sm font-medium text-highlight-primary">${item.itemPrice.toFixed(2)} each</p>
+                            <p className="text-sm font-medium text-highlight-primary">AUD {item.itemPrice.toFixed(2)} each</p>
                           </div>
                           
                           <div className="flex flex-wrap items-center gap-2 sm:gap-6 w-full sm:w-auto">
@@ -279,7 +279,7 @@ const CartPage = () => {
                             
                             <div className="flex items-center justify-between w-full sm:w-auto">
                               <div className="font-semibold text-text-primary sm:min-w-[80px] sm:text-right">
-                                ${(item.itemPrice * currentQuantity).toFixed(2)}
+                                AUD {(item.itemPrice * currentQuantity).toFixed(2)}
                               </div>
                               
                               <Button
@@ -309,14 +309,14 @@ const CartPage = () => {
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between text-text-secondary">
                   <span>Subtotal ({cartItems.length} items)</span>
-                  <span>${totalAmount.toFixed(2)}</span>
+                  <span>AUD {totalAmount.toFixed(2)}</span>
                 </div>
               </div>
               
               <div className="pt-4 border-t border-border-secondary">
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-semibold">Total</span>
-                  <span className="text-2xl font-bold text-highlight-primary">${totalAmount.toFixed(2)}</span>
+                  <span className="text-2xl font-bold text-highlight-primary">AUD {totalAmount.toFixed(2)}</span>
                 </div>
               </div>
             </CardContent>

@@ -5,9 +5,13 @@ import App from './App.jsx'
 import '../css/index.css'
 import { initializeMobileOptimizations } from './utils/mobileUtils.js'
 import './utils/scrollPolyfill.js'
+import { logDeploymentConfig } from './config/deployment.js'
 
 // Initialize mobile optimizations
 initializeMobileOptimizations();
+
+// Log deployment configuration (development only)
+logDeploymentConfig();
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

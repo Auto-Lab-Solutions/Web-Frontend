@@ -338,7 +338,7 @@ const OrderConfirmationPage = () => {
                               </div>
                               <div className="text-right">
                                 <div className="font-semibold text-text-primary">
-                                  ${item.totalPrice.toFixed(2)}
+                                  AUD {item.totalPrice.toFixed(2)}
                                 </div>
                               </div>
                             </div>
@@ -351,7 +351,7 @@ const OrderConfirmationPage = () => {
                       </div>
                       
                       <div className="pt-3 border-t border-border-secondary">
-                        <InfoItem label="Total Amount" value={`$${totalAmount.toFixed(2)}`} highlight={true} />
+                        <InfoItem label="Total Amount" value={`AUD ${totalAmount.toFixed(2)}`} highlight={true} />
                       </div>
                     </div>
                   </InfoSection>

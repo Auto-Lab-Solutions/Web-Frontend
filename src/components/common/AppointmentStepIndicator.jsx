@@ -38,7 +38,7 @@ const AppointmentStepIndicator = ({ currentStep = 1, showLabels = true, classNam
                 <motion.div 
                   className={`w-10 h-10 rounded-full flex items-center justify-center z-10 mb-2 transition-all duration-300
                     ${currentStep > step.id 
-                      ? 'bg-highlight-primary text-white' 
+                      ? 'bg-highlight-primary text-black font-bold'
                       : currentStep === step.id 
                         ? 'border-2 border-highlight-primary bg-card-primary text-highlight-primary' 
                         : 'border-2 border-background-tertiary bg-card-primary text-text-secondary'

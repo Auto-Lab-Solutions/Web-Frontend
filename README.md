@@ -97,8 +97,9 @@ src/
 ## 🔨 Available Scripts
 
 - `npm run dev` - Start development server
-- `npm run build:dev` - Build for development
-- `npm run build:prod` - Build for production
+- `npm run build` - Build for current environment  
+- `npm run build:dev` - Build for development (us-east-1)
+- `npm run build:prod` - Build for production (ap-southeast-2)
 - `npm run lint` - Run ESLint
 - `npm run lint:fix` - Fix ESLint issues
 - `npm run preview` - Preview production build
@@ -108,20 +109,40 @@ src/
 
 ### Automated Deployment
 
-The application uses GitHub Actions for automated deployment:
+The application uses GitHub Actions for automated deployment with environment-specific AWS regions:
 
-- **Development**: Triggered on push to `dev` branch
-- **Production**: Triggered on push to `prod` or `main` branch
+- **Development**: Triggered on push to `dev` branch → Deploys to **us-east-1** region
+- **Production**: Triggered on push to `prod` or `main` branch → Deploys to **ap-southeast-2** region  
 - **Manual**: Use workflow_dispatch for manual deployments
+
+### AWS Region Configuration
+
+The deployment system is configured to use different AWS regions for each environment:
+
+| Environment | AWS Region | Region Name |
+|-------------|------------|-------------|
+| Development | `us-east-1` | US East (N. Virginia) |
+| Production | `ap-southeast-2` | Asia Pacific (Sydney) |
 
 ### Manual Deployment
 
 ```bash
-# Build for production
+# Build for development (us-east-1)
+npm run build:dev
+
+# Build for production (ap-southeast-2) 
 npm run build:prod
 
 # Deploy to AWS S3 (requires AWS CLI configuration)
-aws s3 sync dist/ s3://your-bucket-name/
+aws s3 sync dist/ s3://your-bucket-name/ --region <region>
+```
+
+### Deployment Verification
+
+Run the deployment configuration verification script:
+
+```bash
+./verify-deployment-config.sh
 ```
 
 ## 🧪 Testing

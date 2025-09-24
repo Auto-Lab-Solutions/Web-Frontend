@@ -24,12 +24,18 @@ import ItemSelectionPage from "./pages/ItemSelectionPage";
 import CartPage from "./pages/CartPage";
 import PaymentPage from "./pages/PaymentPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
+import AdminTimeslotAnalyzer from "./pages/AdminTimeslotAnalyzer";
 import { GlobalDataProvider, useGlobalData } from "./components/contexts/GlobalDataContext";
 import { RestProvider } from "./components/contexts/RestContext";
 import { WebSocketProvider } from "./components/contexts/WebSocketContext";
 import { useEffect, useState } from "react";
 import { companyName } from "./meta/companyData";
-// import ChatBox from "./components/ChatBox";
+import useScrollToTop from "./hooks/useScrollToTop";
+import { useUserValidation } from "./hooks/useUserValidation";
+import { useWelcomeNotification } from "./hooks/useWelcomeNotification";
+import ChatBox from "./components/common/ChatBox";
+import WelcomeNotification from "./components/common/WelcomeNotification";
+import "./utils/devUtils"; // Development utilities for testing
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -39,7 +45,7 @@ function AnimatedRoutes() {
       <Route path={getMenuByName("Home").path} element={<HomePage />} />
       <Route path={getMenuByName("Inspections").path} element={<InspectionsPage />} />
       {
-        services.map(service => (
+        services.filter(service => service.active).map(service => (
           <Route
             key={service.name}
             path={`${getMenuByName("Plans & Pricing").path}${service.subpath}`}
@@ -66,13 +72,15 @@ function AnimatedRoutes() {
         <Route path="slot-selection" element={<SlotsSelectionPage />} />
         <Route path="booking-confirmation" element={<BookingConfirmationPage />} />
         <Route path="appointment/:referenceNumber" element={<AppointmentPage />} />
-        <Route path="order-form" element={<OrderFormPage />} />
+        {/* Order and Accessories routes temporarily hidden */}
+        {/* <Route path="order-form" element={<OrderFormPage />} />
         <Route path="order-confirmation" element={<OrderConfirmationPage />} />
         <Route path="order/:referenceNumber" element={<OrderPage />} />
-        <Route path="status" element={<StatusPage />} />
         <Route path="accessories/categories" element={<CategorySelectionPage />} />
         <Route path="accessories/items" element={<ItemSelectionPage />} />
-        <Route path="cart" element={<CartPage />} />
+        <Route path="cart" element={<CartPage />} /> */}
+        <Route path="status" element={<StatusPage />} />
+        <Route path="admin/timeslot-analyzer" element={<AdminTimeslotAnalyzer />} />
         <Route path="payment/:type/:referenceNumber" element={<PaymentPage />} />
         <Route path="payment/success" element={<PaymentSuccessPage />} />
         {/* Catch-all route for 404 */}
@@ -86,15 +94,26 @@ function AppContent() {
   const navigate = useNavigate();
   const location = useLocation();
   const { orderFormData } = useGlobalData();
-  const [cartItemCount, setCartItemCount] = useState(0);
+  // Cart functionality temporarily disabled
+  // const [cartItemCount, setCartItemCount] = useState(0);
   
-  useEffect(() => {
-    if (orderFormData && orderFormData.items && orderFormData.items.length > 0) {
-      setCartItemCount(orderFormData.items.length);
-    } else {
-      setCartItemCount(0);
-    }
-  }, [orderFormData]);
+  // Validate user on app startup
+  useUserValidation();
+  
+  // Welcome notification for first-time visitors
+  const { showWelcomeNotification, handleDismissWelcome } = useWelcomeNotification();
+  
+  // Automatically scroll to top on route changes
+  useScrollToTop();
+  
+  // Cart item count tracking temporarily disabled
+  // useEffect(() => {
+  //   if (orderFormData && orderFormData.items && orderFormData.items.length > 0) {
+  //     setCartItemCount(orderFormData.items.length);
+  //   } else {
+  //     setCartItemCount(0);
+  //   }
+  // }, [orderFormData]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -117,12 +136,9 @@ function AppContent() {
           <nav className="px-3.5 flex-center-between w-full max-w-7xl mx-auto">
             <div className="flex-center gap-x-3 z-[10] relative" onClick={() => navigate('/')}>
               <img src={Logo} alt="" className="size-8" />
-              {cartItemCount === 0 ? (
-                <>
-                  <h3 className="text-lg font-semibold block md:hidden">{ companyName.split(" ").slice(0,2).join(" ") }</h3>
-                  <h3 className="text-lg font-semibold hidden md:block">{ companyName }</h3>
-                </>
-              ) : null}
+              {/* Always show company name since cart is hidden */}
+              <h3 className="text-lg font-semibold block md:hidden">{ companyName.split(" ").slice(0,2).join(" ") }</h3>
+              <h3 className="text-lg font-semibold hidden md:block">{ companyName }</h3>
             </div>
 
             <ul className="gap-x-1 hidden lg:flex lg:items-center">
@@ -131,7 +147,8 @@ function AppContent() {
               ))}
             </ul>
             <div className="flex-center gap-x-5">
-              {cartItemCount > 0 && (
+              {/* Cart functionality temporarily hidden */}
+              {/* {cartItemCount > 0 && (
                 <button
                   aria-label="cart"
                   onClick={() => navigate('/cart')}
@@ -147,7 +164,7 @@ function AppContent() {
                     {cartItemCount}
                   </span>
                 </button>
-              )}
+              )} */}
               <button
                 aria-label="inspection-progress"
                 onClick={() => navigate('/status')}
@@ -166,6 +183,11 @@ function AppContent() {
           <AnimatedRoutes />
         </main>
         
+        <ChatBox />
+        <WelcomeNotification 
+          isVisible={showWelcomeNotification}
+          onDismiss={handleDismissWelcome}
+        />
         <Footer />
     </div>
   );
@@ -182,3 +204,4 @@ export default function App() {
     </GlobalDataProvider>
   );
 }
+

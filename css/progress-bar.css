@@ -24,6 +24,87 @@
   scrollbar-color: var(--color-border-secondary, #e2e8f0) transparent;
 }
 
+/* Ensure scrolling works on all devices - chatbox specific */
+.chatbox .scrollbar-thin,
+.chatbox-messages,
+.chatbox .chatbox-messages {
+  overflow-y: scroll !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  scroll-behavior: smooth !important;
+  max-height: 100% !important;
+  position: relative !important;
+  pointer-events: auto !important;
+  user-select: none !important; /* Prevent text selection while scrolling */
+}
+
+/* Super aggressive scrollbar enforcement */
+div[class*="chatbox-messages"],
+.chatbox div[class*="scrollbar-thin"],
+.chatbox div[class*="overflow-y"] {
+  overflow-y: scroll !important;
+}
+
+/* Force scrollbar visibility for all screen sizes */
+.chatbox .scrollbar-thin::-webkit-scrollbar,
+.chatbox-messages::-webkit-scrollbar,
+.chatbox .chatbox-messages::-webkit-scrollbar {
+  width: 12px !important;
+  height: 12px !important;
+  display: block !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+.chatbox .scrollbar-thin::-webkit-scrollbar-track,
+.chatbox-messages::-webkit-scrollbar-track,
+.chatbox .chatbox-messages::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1) !important;
+  border-radius: 6px !important;
+  margin: 2px !important;
+}
+
+.chatbox .scrollbar-thin::-webkit-scrollbar-thumb,
+.chatbox-messages::-webkit-scrollbar-thumb,
+.chatbox .chatbox-messages::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.8) !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  min-height: 30px !important;
+  min-width: 12px !important;
+}
+
+.chatbox .scrollbar-thin::-webkit-scrollbar-thumb:hover,
+.chatbox-messages::-webkit-scrollbar-thumb:hover,
+.chatbox .chatbox-messages::-webkit-scrollbar-thumb:hover {
+  background: rgba(71, 85, 105, 0.95) !important;
+  cursor: pointer !important;
+}
+
+.chatbox .scrollbar-thin::-webkit-scrollbar-thumb:active,
+.chatbox-messages::-webkit-scrollbar-thumb:active,
+.chatbox .chatbox-messages::-webkit-scrollbar-thumb:active {
+  background: rgba(51, 65, 85, 1) !important;
+}
+
+/* Ensure Firefox scrollbar is always visible */
+.chatbox .scrollbar-thin,
+.chatbox-messages {
+  scrollbar-width: auto !important;
+  scrollbar-color: rgba(100, 116, 139, 0.7) rgba(0, 0, 0, 0.1) !important;
+}
+
+/* NUCLEAR OPTION - Override everything */
+.chatbox * {
+  scrollbar-width: auto !important;
+}
+
+.chatbox [class*="h-96"],
+.chatbox [class*="h-80"],
+.chatbox [class*="overflow-y"] {
+  overflow-y: scroll !important;
+  scrollbar-width: auto !important;
+}
+
 /* Extra small screens utility class */
 @media (max-width: 479px) {
   .xs\:hidden {

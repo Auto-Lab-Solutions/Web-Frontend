@@ -27,8 +27,8 @@ export default function MobMenu({ Menus }) {
   };
   
   const handleNavigation = (path) => {
-    // Force a full page reload instead of using React Router
-    window.location.href = path;
+    // Use React Router navigation instead of forcing page reload
+    navigate(path);
     toggleDrawer();
   };
 
@@ -95,7 +95,7 @@ export default function MobMenu({ Menus }) {
                     variants={subMenuDrawer}
                     className="bg-white/5"
                   >
-                    {subMenu.map(({ name: subName, subpath, icon: Icon }) => (
+                    {subMenu.filter(submenu => submenu.active !== false).map(({ name: subName, subpath, icon: Icon }) => (
                       <div key={`${path}${subpath}`}>
                         <li
                           className="p-4 flex items-center hover:bg-white/10 gap-x-3 cursor-pointer transition-colors"

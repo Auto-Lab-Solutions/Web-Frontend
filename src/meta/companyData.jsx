@@ -1,14 +1,14 @@
 import { ShieldCheck, SearchCheck, Users, Settings2, FileText, Smile, BookCheck, 
   BadgeCheck, MapPinCheckInside, Search, Leaf, Brain, Star, Wallet, DollarSign, CalendarClock
 } from 'lucide-react';
-import imageJanitha from "/mechanics/janitha.webp";
+import imageMechanic from "/mechanics/mechanic1.webp";
 
 const iconStyles = "w-8 h-8 text-highlight-primary";
 
 const companyName = "Auto Lab Solutions";
 const companyPhone = "+61 451 237 048";
 const companyLocalPhone = "0451 237 048";
-const companyEmail = "autolabsolutions1@gmail.com";
+const companyEmail = import.meta.env.VITE_MAIL_FROM_ADDRESS || "autolabsolutions1@gmail.com";
 const companyDesc = "We deliver cutting-edge automotive inspection and repair solutions with state-of-the-art technology, expert service, and a commitment to safety and quality."
 
 const companyAddress = "70b Division St, Welshpool WA 6106, Australia";
@@ -123,11 +123,11 @@ const ourValues = [
 
 const mechanics = [
     {
-        name: "Janitha",
+        name: "Mechanic 1",
         location: "Perth",
-        imgSrc: imageJanitha,
-        description: "With over 5 years of hands-on experience, Janitha ensures each inspection is done thoroughly and professionally.",
-        linkedInUrl: "https://www.linkedin.com/in/janitha31"
+        imgSrc: imageMechanic,
+        description: "With over 5 years of hands-on experience, Mechanic 1 ensures each inspection is done thoroughly and professionally.",
+        linkedInUrl: "https://www.linkedin.com/in/mechanic1"
     }
 ];
 

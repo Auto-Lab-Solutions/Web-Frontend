@@ -26,7 +26,7 @@ export const faqs = [
         id: 4,
         question: "How do I book a mobile inspection?",
         answer: [
-            "You can book a mobile inspection through our website by selecting your preferred inspection type, providing the vehicle details, and choosing a set of timeslots that suit your schedule. Our team will then confirm the appointment based on your preferences."
+            "You can book a mobile inspection through our website by selecting your preferred inspection type, providing the vehicle details, and choosing timeslots that suit your schedule. Our team will then confirm the appointment based on your preferences."
         ]
     },
     {
@@ -41,7 +41,7 @@ export const faqs = [
         question: "How can I pay for the inspection?",
         answer: [
             "When the booking is confirmed by our team, you will receive a payment link via email. You can pay securely online using various payment methods, including credit/debit cards and PayPal.",
-            "We also accept cash payments on-site, but we recommend paying online for convenience and security."
+            "We also accept cash payments on-site, but we recommend paying online for convenience."
         ]
     },
     {

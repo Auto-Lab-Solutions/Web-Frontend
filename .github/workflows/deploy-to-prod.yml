@@ -17,6 +17,7 @@ env:
   API_GATEWAY_BASE_URL: ${{ vars.API_GATEWAY_BASE_URL }}
   WEB_SOCKET_BASE_URL: ${{ vars.WEB_SOCKET_BASE_URL }}
   STRIPE_PUBLISHABLE_KEY: ${{ vars.STRIPE_PUBLISHABLE_KEY }}
+  MAIL_FROM_ADDRESS: ${{ vars.MAIL_FROM_ADDRESS }}
 
 jobs:
   deploy:
@@ -42,7 +43,10 @@ jobs:
           echo "VITE_API_GATEWAY_BASE_URL=$API_GATEWAY_BASE_URL" > .env
           echo "VITE_WEB_SOCKET_BASE_URL=$WEB_SOCKET_BASE_URL" >> .env
           echo "VITE_STRIPE_PUBLISHABLE_KEY=$STRIPE_PUBLISHABLE_KEY" >> .env
+          echo "VITE_MAIL_FROM_ADDRESS=$MAIL_FROM_ADDRESS" >> .env
           echo "VITE_ENVIRONMENT=$ENVIRONMENT" >> .env
+          echo "VITE_AWS_REGION=$AWS_REGION" >> .env
+          echo "VITE_NODE_ENV=production" >> .env
           cat .env
 
       - name: Configure AWS credentials
@@ -53,7 +57,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Build React app
-        run: npm run build
+        run: npm run build:prod
 
       - name: Deploy to S3
         run: |

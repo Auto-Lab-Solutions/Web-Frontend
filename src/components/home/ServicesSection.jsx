@@ -5,13 +5,17 @@ import SectionHeading from "@/components/common/SectionHeading";
 import FadeInItem from "../common/FadeInItem";
 
 const ServicesSection = () => {
+  const activeServices = services.filter(service => service.active !== false);
+  
   return (
     <section className="mx-auto px-6 pb-8 sm:pb-12 bg-background-tertiary">
       {/* <h2 className="text-3xl font-semibold mb-8 text-center">Our Services</h2> */}
       <SectionHeading text="Our Services" />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 justify-items-center mt-8">
-        {services.map((f) => (
-          <ServiceCard service={f} key={f.name} />
+      <div className="flex flex-wrap justify-center gap-6 sm:gap-8 lg:gap-10 mt-8">
+        {activeServices.map((f) => (
+          <div key={f.name} className="w-full sm:w-[calc(50%-16px)] lg:w-[calc(33.333%-26.67px)] max-w-[400px]">
+            <ServiceCard service={f} />
+          </div>
         ))}
       </div>
     </section>

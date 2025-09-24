@@ -14,6 +14,7 @@ import {
 import { Link } from 'react-router-dom';
 import FadeInItem from "../common/FadeInItem";
 import { companyName, companyAddress, companyEmail, companyLocalPhone, companyDesc } from "../../meta/companyData";
+import { getPerthCurrentDateTime } from "../../utils/timezoneUtils";
 
 const Footer = () => {
   return (
@@ -58,6 +59,15 @@ const Footer = () => {
               <ul className="space-y-2">
                 <li>
                   <Link
+                    to="/inspections"
+                    className="text-text-primary/90 hover:text-highlight-primary transition flex items-center"
+                  >
+                    <span className="inline-block w-1.5 h-1.5 bg-highlight-primary rounded-full mr-2"></span>
+                    About Inspections
+                  </Link>
+                </li>
+                <li>
+                  <Link
                     to="/pricing/pre-purchase-inspection"
                     className="text-text-primary/90 hover:text-highlight-primary transition flex items-center"
                   >
@@ -72,15 +82,6 @@ const Footer = () => {
                   >
                     <span className="inline-block w-1.5 h-1.5 bg-highlight-primary rounded-full mr-2"></span>
                     Inspection Status
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/pricing/accessories"
-                    className="text-text-primary/90 hover:text-highlight-primary transition flex items-center"
-                  >
-                    <span className="inline-block w-1.5 h-1.5 bg-highlight-primary rounded-full mr-2"></span>
-                    Accessories
                   </Link>
                 </li>
                 <li>
@@ -138,8 +139,11 @@ const Footer = () => {
               <div className="mt-6 flex justify-end">
                 <button
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                  className="bg-text-primary hover:bg-highlight-primary text-text-tertiary px-6 py-2 rounded-full font-medium transition"
+                  className="bg-text-primary hover:bg-highlight-primary text-text-tertiary px-6 py-2 rounded-full font-medium transition flex items-center gap-2"
                 >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                  </svg>
                   Back to top
                 </button>
               </div>
@@ -150,7 +154,7 @@ const Footer = () => {
 
       {/* Bottom Bar */}
       <div className="bg-card-primary py-4 text-center text-text-secondary text-sm">
-        © {new Date().getFullYear()}{" "}
+        © {getPerthCurrentDateTime().getFullYear()}{" "}
         <Link
           to="/"
           className="text-text-primary font-semibold hover:text-highlight-primary transition"

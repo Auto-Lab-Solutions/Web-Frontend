@@ -92,6 +92,27 @@ export const GlobalDataProvider = ({ children }) => {
     localStorage.removeItem(STORAGE_KEYS.ORDER_FORM_DATA);
   };
 
+  const clearAllUserData = () => {
+    // Clear all user-related data completely
+    setUserId(null);
+    setUserData({});
+    setMessages([]);
+    setStaffUserTyping(false);
+    setAppointmentFormData({});
+    setOrderFormData({items: []});
+    
+    // Clear from localStorage
+    Object.values(STORAGE_KEYS).forEach(key => {
+      localStorage.removeItem(key);
+    });
+    
+    // Clear additional auth-related items
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userFormDataSubmitted');
+    localStorage.removeItem('storedMessagesProcessed'); // Clear processed flag
+    localStorage.removeItem('welcomeNotificationShown'); // Clear welcome notification flag
+  };
+
   const contextValue = useMemo(() => ({
     userId,
     userData,
@@ -109,6 +130,7 @@ export const GlobalDataProvider = ({ children }) => {
     clearMessages,
     clearStaffUserTyping,
     clearFormData,
+    clearAllUserData,
   }), [
     userId, userData, messages, staffUserTyping, 
     appointmentFormData, orderFormData

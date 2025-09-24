@@ -74,6 +74,7 @@ export const services = [
         id: 1,
         name: "Standard Pre Purchase Inspection",
         price: 220,
+        duration: 2, // Duration in hours
         features: [
           "Engine bay & powertrain visual inspection",
           "Structure & body check",
@@ -93,6 +94,7 @@ export const services = [
         id: 2,
         name: "Comprehensive Pre Purchase Inspection",
         price: 280,
+        duration: 3, // Duration in hours
         features: [
           "Full chassis / frame structural examination",
           "Advanced suspension / steering / drivetrain assessment",
@@ -112,6 +114,7 @@ export const services = [
         id: 3,
         name: "Advanced Diagnostic Inspection",
         price: 350,
+        duration: 4, // Duration in hours
         features: [
           "Oscilloscope-based cam / crank correlation",
           "Ignition waveform analysis",
@@ -138,7 +141,21 @@ export const services = [
     desc: "Get your car battery replaced",
     icon: BatteryCharging,
     imgLocation: "/services/mobile-battery-replacement",
-    plans: [],
+    plans: [
+      {
+        id: 1,
+        name: "Standard Battery Replacement",
+        price: 180,
+        duration: 1, // Duration in hours
+        features: [
+          "Battery testing and diagnosis",
+          "Professional battery replacement",
+          "Electrical connections check",
+          "System functionality test"
+        ],
+        active: true
+      }
+    ],
     active: true
   },
   {
@@ -148,7 +165,35 @@ export const services = [
     desc: "Keep track of your car's services",
     icon: Book,
     imgLocation: "/services/logbook-services",
-    plans: [],
+    plans: [
+      {
+        id: 1,
+        name: "Basic Service",
+        price: 250,
+        duration: 2, // Duration in hours
+        features: [
+          "Oil and filter change",
+          "Basic fluid checks",
+          "Visual inspection",
+          "Logbook stamping"
+        ],
+        active: true
+      },
+      {
+        id: 2,
+        name: "Major Service",
+        price: 450,
+        duration: 4, // Duration in hours
+        features: [
+          "Comprehensive fluid changes",
+          "Filter replacements",
+          "Detailed inspection",
+          "Component testing",
+          "Logbook documentation"
+        ],
+        active: true
+      }
+    ],
     active: true
   },
   {
@@ -158,7 +203,35 @@ export const services = [
     desc: "Improve your car's performance",
     icon: Settings,
     imgLocation: "/services/engine-tuneup",
-    plans: [],
+    plans: [
+      {
+        id: 1,
+        name: "Basic Tuneup",
+        price: 300,
+        duration: 2.5, // Duration in hours
+        features: [
+          "Spark plug replacement",
+          "Air filter change",
+          "Basic engine diagnostics",
+          "Performance check"
+        ],
+        active: true
+      },
+      {
+        id: 2,
+        name: "Performance Tuneup",
+        price: 500,
+        duration: 3.5, // Duration in hours
+        features: [
+          "Complete ignition system service",
+          "Fuel system cleaning",
+          "Advanced diagnostics",
+          "ECU optimization",
+          "Performance testing"
+        ],
+        active: true
+      }
+    ],
     active: true
   },
   {
@@ -168,7 +241,35 @@ export const services = [
     desc: "Cut & Polish, Detailing",
     icon: Brush,
     imgLocation: "/services/paint-correction",
-    plans: [],
+    plans: [
+      {
+        id: 1,
+        name: "Basic Paint Correction",
+        price: 400,
+        duration: 3, // Duration in hours
+        features: [
+          "Single-stage paint correction",
+          "Exterior wash and prep",
+          "Basic polishing",
+          "Protective wax application"
+        ],
+        active: true
+      },
+      {
+        id: 2,
+        name: "Premium Paint Correction",
+        price: 650,
+        duration: 5, // Duration in hours
+        features: [
+          "Multi-stage paint correction",
+          "Deep scratch removal",
+          "Professional polishing",
+          "Ceramic coating application",
+          "Interior detailing"
+        ],
+        active: true
+      }
+    ],
     active: true
   },
   {
@@ -178,7 +279,7 @@ export const services = [
     desc: "Order automotive parts & accessories",
     icon: Package,
     imgLocation: "/services/accessories",
-    active: true
+    active: false
   }
 ];
 
@@ -227,6 +328,16 @@ export const getServiceById = (id) => {
 export const getPlanById = (serviceId, planId) => {
   const service = getServiceById(serviceId);
   return service?.plans?.find((plan) => plan.id === planId);
+};
+
+export const getPlanDuration = (serviceId, planId) => {
+  const plan = getPlanById(serviceId, planId);
+  return plan?.duration || 2; // Default to 2 hours if no duration specified
+};
+
+export const isInspectionService = (serviceId) => {
+  // Only "Pre Purchase Inspection" (ID: 1) is an inspection service
+  return serviceId === 1;
 };
 
 export const getMenuByName = (name) => {

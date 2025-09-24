@@ -318,7 +318,7 @@ const ItemSelectionPage = () => {
                       
                       {quantities[item.id] && (
                         <div className="text-sm font-semibold text-text-primary mt-2 sm:mt-0">
-                          ${(item.price * quantities[item.id]).toFixed(2)}
+                          AUD {(item.price * quantities[item.id]).toFixed(2)}
                         </div>
                       )}
                     </div>
@@ -352,7 +352,7 @@ const ItemSelectionPage = () => {
                 {/* Total cart value */}
                 <div className="flex justify-between items-center">
                   <span className="font-semibold">Total:</span>
-                  <span className="text-xl font-bold text-highlight-primary">${getTotalCartPrice().toFixed(2)}</span>
+                  <span className="text-xl font-bold text-highlight-primary">AUD {getTotalCartPrice().toFixed(2)}</span>
                 </div>
               </div>
             </motion.div>

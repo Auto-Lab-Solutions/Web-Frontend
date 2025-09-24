@@ -2,6 +2,8 @@
  * Payment utility functions for handling payment operations, formatting, and validation
  */
 
+import { formatPerthDateTime, createPerthTimestamp } from './timezoneUtils';
+
 /**
  * Formats payment amount for display
  * @param {number} amount - The amount in cents or dollars
@@ -9,7 +11,7 @@
  * @returns {string} Formatted amount string
  */
 export const formatPaymentAmount = (amount, inCents = false) => {
-  if (!amount && amount !== 0) return '$0.00';
+  if (!amount && amount !== 0) return 'AUD 0.00';
   
   const dollars = inCents ? amount / 100 : amount;
   return new Intl.NumberFormat('en-AU', {
@@ -55,11 +57,11 @@ export const validatePaymentAmount = (amount) => {
   }
   
   if (amount < 0.50) {
-    errors.push('Minimum payment amount is $0.50');
+    errors.push('Minimum payment amount is AUD 0.50');
   }
   
   if (amount > 999999.99) {
-    errors.push('Maximum payment amount is $999,999.99');
+    errors.push('Maximum payment amount is AUD 999,999.99');
   }
   
   return {
@@ -70,57 +72,40 @@ export const validatePaymentAmount = (amount) => {
 
 /**
  * Gets payment status display information
- * @param {string} paymentStatus - Payment status from backend
+ * @param {string} paymentStatus - Payment status from backend (pending, paid, failed, cancelled)
  * @returns {Object} Status display information
  */
 export const getPaymentStatusInfo = (paymentStatus) => {
   switch (paymentStatus?.toLowerCase()) {
+    case 'pending':
+      return {
+        text: 'Payment Pending',
+        textColor: 'text-black',
+        bg: 'bg-yellow-500'
+      };
     case 'paid':
-    case 'completed':
-    case 'succeeded':
       return {
         text: 'Paid',
-        color: 'text-green-500',
-        bg: 'bg-green-500/10 border border-green-500/20',
-        textColor: 'text-green-500'
-      };
-    case 'pending':
-    case 'processing':
-      return {
-        text: 'Pending',
-        color: 'text-yellow-500',
-        bg: 'bg-yellow-500/10 border border-yellow-500/20',
-        textColor: 'text-yellow-500'
+        textColor: 'text-black',
+        bg: 'bg-green-500'
       };
     case 'failed':
-    case 'declined':
-    case 'canceled':
       return {
         text: 'Failed',
-        color: 'text-red-500',
-        bg: 'bg-red-500/10 border border-red-500/20',
-        textColor: 'text-red-500'
+        textColor: 'text-black',
+        bg: 'bg-red-500'
       };
-    case 'refunded':
+    case 'cancelled':
       return {
-        text: 'Refunded',
-        color: 'text-blue-500',
-        bg: 'bg-blue-500/10 border border-blue-500/20',
-        textColor: 'text-blue-500'
-      };
-    case 'requires_payment_method':
-      return {
-        text: 'Required',
-        color: 'text-orange-500',
-        bg: 'bg-orange-500/10 border border-orange-500/20',
-        textColor: 'text-orange-500'
+        text: 'Cancelled',
+        textColor: 'text-black',
+        bg: 'bg-red-500'
       };
     default:
       return {
-        text: 'Payment Required',
-        color: 'text-gray-500',
-        bg: 'bg-gray-500/10 border border-gray-500/20',
-        textColor: 'text-gray-500'
+        text: paymentStatus || 'Unknown',
+        textColor: 'text-black',
+        bg: 'bg-gray-500'
       };
   }
 };
@@ -144,7 +129,7 @@ export const formatPaymentForSubmission = (paymentData, userId) => {
       type: paymentData.type,
       customerName: paymentData.customerInfo?.name,
       customerEmail: paymentData.customerInfo?.email,
-      timestamp: new Date().toISOString()
+      timestamp: createPerthTimestamp()
     }
   };
 };
@@ -225,7 +210,7 @@ export const createPaymentMetadata = (data) => {
     type: data.type,
     customerName: data.customerName,
     customerEmail: data.customerEmail,
-    timestamp: new Date().toISOString(),
+    timestamp: createPerthTimestamp(),
     source: 'web-frontend',
     version: '1.0'
   };
@@ -279,19 +264,19 @@ export const generatePaymentReceipt = (paymentData, paymentIntent) => {
     lastFour: paymentIntent.charges?.data?.[0]?.payment_method_details?.card?.last4,
     brand: paymentIntent.charges?.data?.[0]?.payment_method_details?.card?.brand,
     customerInfo: paymentData.customerInfo,
-    paidAt: new Date(paymentIntent.created * 1000).toISOString(),
+    paidAt: createPerthTimestamp(paymentIntent.created * 1000),
     description: paymentData.description
   };
 };
 
 /**
  * Checks if payment is required for given status
- * @param {string} paymentStatus - Current payment status
+ * @param {string} paymentStatus - Current payment status (pending, paid, failed, cancelled)
  * @returns {boolean} Whether payment is required
  */
 export const isPaymentRequired = (paymentStatus) => {
-  const nonPaymentRequiredStatuses = ['paid', 'completed', 'succeeded', 'refunded'];
-  return !nonPaymentRequiredStatuses.includes(paymentStatus?.toLowerCase());
+  // Payment is NOT required only when status is 'paid'
+  return paymentStatus?.toLowerCase() !== 'paid';
 };
 
 /**
@@ -309,7 +294,7 @@ export const getPaymentButtonText = (paymentStatus, amount) => {
 };
 
 /**
- * Formats payment date for display
+ * Formats payment date for display using Perth timezone
  * @param {string|Date} date - Date to format
  * @returns {string} Formatted date string
  */
@@ -317,8 +302,7 @@ export const formatPaymentDate = (date) => {
   if (!date) return 'N/A';
   
   try {
-    const dateObj = typeof date === 'string' ? new Date(date) : date;
-    return dateObj.toLocaleDateString('en-US', {
+    return formatPerthDateTime(date, {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -328,4 +312,20 @@ export const formatPaymentDate = (date) => {
   } catch (error) {
     return date.toString();
   }
+};
+
+/**
+ * Formats payment method for display
+ * @param {string} paymentMethod - Payment method from backend (e.g., "Bank_transfer")
+ * @returns {string} Formatted payment method for display (e.g., "Bank Transfer")
+ */
+export const formatPaymentMethod = (paymentMethod) => {
+  if (!paymentMethod) return '';
+  
+  // Replace underscores with spaces and capitalize each word
+  return paymentMethod
+    .replace(/_/g, ' ')
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
 };

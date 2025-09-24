@@ -2,10 +2,8 @@ import React from 'react';
 import { Card, CardContent, CardHeader } from '../ui/card';
 import { 
   User, 
-  Car, 
   Package, 
   Calendar, 
-  MapPin, 
   Phone, 
   Mail,
   CheckCircle,
@@ -13,11 +11,12 @@ import {
   Settings
 } from 'lucide-react';
 import { getServiceById, getPlanById, getCategoryById, getItemById } from '../../meta/menu';
+import { formatPerthDateTime } from '../../utils/timezoneUtils';
 
 const PaymentSummary = ({ paymentData }) => {
   const InfoItem = ({ icon, label, value, className = '' }) => (
     <div className={`flex items-start gap-3 ${className}`}>
-      <div className="w-5 h-5 text-text-tertiary mt-0.5 flex-shrink-0">
+      <div className="w-5 h-5 text-primary mt-0.5 flex-shrink-0">
         {icon}
       </div>
       <div className="flex-1 min-w-0">
@@ -28,13 +27,13 @@ const PaymentSummary = ({ paymentData }) => {
   );
 
   const SectionCard = ({ title, icon, children, className = '' }) => (
-    <Card className={`bg-card-secondary border border-border-secondary ${className}`}>
+    <Card className={`bg-card-primary border border-border-primary shadow-xl backdrop-blur-sm ${className}`}>
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 text-text-tertiary">
+          <div className="w-5 h-5 text-primary">
             {icon}
           </div>
-          <h3 className="text-lg font-semibold text-text-primary">{title}</h3>
+          <h3 className="text-xl font-semibold text-text-primary">{title}</h3>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -43,16 +42,113 @@ const PaymentSummary = ({ paymentData }) => {
     </Card>
   );
 
-  const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+  const formatTimeslot = (paymentData) => {
+    if (!paymentData.scheduledDate) return 'Not scheduled';
+    
     try {
-      return new Date(dateString).toLocaleDateString('en-US', {
+      // If we have scheduledTimeSlot with start and end times
+      if (paymentData.scheduledTimeSlot && paymentData.scheduledTimeSlot.start && paymentData.scheduledTimeSlot.end) {
+        // Format just the date part without time
+        const date = new Date(paymentData.scheduledDate);
+        const dateStr = date.toLocaleDateString('en-AU', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        
+        return `${dateStr}, ${paymentData.scheduledTimeSlot.start} - ${paymentData.scheduledTimeSlot.end}`;
+      }
+      
+      // If we have selectedSlots array, use the first slot
+      if (paymentData.selectedSlots && paymentData.selectedSlots.length > 0) {
+        const slot = paymentData.selectedSlots[0];
+        if (slot.start && slot.end) {
+          const date = new Date(slot.date || paymentData.scheduledDate);
+          const dateStr = date.toLocaleDateString('en-AU', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+          
+          return `${dateStr}, ${slot.start} - ${slot.end}`;
+        }
+      }
+      
+      // Fallback to just the date if no time slot information is available
+      const date = new Date(paymentData.scheduledDate);
+      const dateStr = date.toLocaleDateString('en-AU', {
+        weekday: 'long',
         year: 'numeric',
         month: 'long',
         day: 'numeric'
       });
+      
+      return `${dateStr} (Time TBD)`;
+      
     } catch (error) {
-      return dateString;
+      console.error('Error formatting timeslot:', error);
+      return 'Schedule information unavailable';
+    }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    
+    try {
+      let date;
+      
+      // Handle different date formats
+      if (typeof dateString === 'number') {
+        // If it's a number, treat as timestamp
+        // Check if it's in seconds (Unix timestamp) or milliseconds
+        if (dateString < 10000000000) {
+          // Likely seconds, convert to milliseconds
+          date = new Date(dateString * 1000);
+        } else {
+          // Already in milliseconds
+          date = new Date(dateString);
+        }
+      } else if (typeof dateString === 'string') {
+        // Handle string dates
+        if (dateString.includes('T') || dateString.includes('Z')) {
+          // ISO format
+          date = new Date(dateString);
+        } else if (dateString.match(/^\d+$/)) {
+          // String that's all numbers (timestamp as string)
+          const timestamp = parseInt(dateString);
+          // Use a higher threshold: 100000000000 (March 2973) to distinguish seconds vs milliseconds
+          // Timestamps in seconds for current era will be < 100000000000
+          // Timestamps in milliseconds for current era will be > 100000000000
+          if (timestamp < 100000000000) {
+            date = new Date(timestamp * 1000);
+          } else {
+            date = new Date(timestamp);
+          }
+        } else {
+          // Other string format
+          date = new Date(dateString);
+        }
+      } else {
+        date = new Date(dateString);
+      }
+      
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        console.error('Invalid date parsed from:', dateString);
+        return 'Invalid date';
+      }
+      
+      return date.toLocaleDateString('en-AU', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      
+    } catch (error) {
+      console.error('Error formatting date:', error, 'Original value:', dateString);
+      return 'Date unavailable';
     }
   };
 
@@ -80,31 +176,8 @@ const PaymentSummary = ({ paymentData }) => {
           />
           <InfoItem
             icon={<Calendar />}
-            label="Booked Date"
-            value={formatDate(paymentData.createdAt)}
-          />
-        </SectionCard>
-
-        {/* Vehicle Information */}
-        <SectionCard
-          title="Vehicle Details"
-          icon={<Car />}
-          className="mb-6"
-        >
-          <InfoItem
-            icon={<Car />}
-            label="Make & Model"
-            value={`${paymentData.vehicleInfo.make} ${paymentData.vehicleInfo.model}`}
-          />
-          <InfoItem
-            icon={<Calendar />}
-            label="Year"
-            value={paymentData.vehicleInfo.year}
-          />
-          <InfoItem
-            icon={<MapPin />}
-            label="Location"
-            value={paymentData.vehicleInfo.location || 'Not specified'}
+            label="Scheduled Timeslot"
+            value={formatTimeslot(paymentData)}
           />
         </SectionCard>
       </>
@@ -126,14 +199,14 @@ const PaymentSummary = ({ paymentData }) => {
               const itemData = getItemById(item.categoryId, item.itemId);
               
               return (
-                <div key={index} className="bg-background-secondary/50 rounded-lg p-3 border border-border-secondary">
+                <div key={index} className="bg-background-secondary/30 rounded-lg p-4 border border-border-secondary">
                   <div className="flex justify-between items-start mb-2">
                     <div className="flex-1">
                       <h4 className="font-semibold text-text-primary">{itemData?.name || 'Unknown Item'}</h4>
                       <p className="text-sm text-text-secondary">{category?.name || 'Unknown Category'}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-text-primary">AUD ${(item.totalPrice || 0).toFixed(2)}</p>
+                      <p className="font-semibold text-highlight-primary">AUD {(item.totalPrice || 0).toFixed(2)}</p>
                       <p className="text-sm text-text-secondary">Qty: {item.quantity || 1}</p>
                     </div>
                   </div>
@@ -151,31 +224,6 @@ const PaymentSummary = ({ paymentData }) => {
             </div>
           </div>
         </SectionCard>
-
-        {/* Vehicle Information */}
-        <SectionCard
-          title="Vehicle Details"
-          icon={<Car />}
-          className="mb-6"
-        >
-          <InfoItem
-            icon={<Car />}
-            label="Make & Model"
-            value={`${paymentData.vehicleInfo.make} ${paymentData.vehicleInfo.model}`}
-          />
-          <InfoItem
-            icon={<Calendar />}
-            label="Year"
-            value={paymentData.vehicleInfo.year}
-          />
-          {paymentData.deliveryLocation && (
-            <InfoItem
-              icon={<MapPin />}
-              label="Delivery Location"
-              value={paymentData.deliveryLocation}
-            />
-          )}
-        </SectionCard>
       </>
     );
   };
@@ -183,7 +231,7 @@ const PaymentSummary = ({ paymentData }) => {
   return (
     <div className="space-y-6">
       {/* Payment Summary Header */}
-      <Card className="bg-card-primary border border-border-primary shadow-xl">
+      <Card className="bg-card-primary border border-border-primary shadow-xl backdrop-blur-sm">
         <CardHeader className="pb-4">
           <div className="text-center">
             <h2 className="text-2xl font-bold text-text-primary mb-2">Payment Summary</h2>
@@ -191,16 +239,16 @@ const PaymentSummary = ({ paymentData }) => {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="bg-gradient-to-r from-blue-500/10 to-purple-600/10 rounded-lg p-4 border border-blue-500/20">
-            <div className="flex justify-between items-center">
+          <div className="bg-primary/5 rounded-lg p-4 border border-border-secondary">
+            <div className="flex flex-col space-y-4 sm:flex-row sm:justify-between sm:items-center sm:space-y-0">
               <div>
                 <p className="text-text-secondary font-medium">Reference Number</p>
                 <p className="text-lg font-bold text-text-primary">{paymentData.referenceNumber}</p>
               </div>
-              <div className="text-right">
+              <div className="text-left sm:text-right">
                 <p className="text-text-secondary font-medium">Amount Due</p>
                 <p className="text-3xl font-bold text-highlight-primary">
-                  AUD ${paymentData.amount.toFixed(2)}
+                  AUD {paymentData.amount.toFixed(2)}
                 </p>
               </div>
             </div>
@@ -250,10 +298,10 @@ const PaymentSummary = ({ paymentData }) => {
           label="Payment Type"
           value={paymentData.type === 'appointment' ? 'Service Payment' : 'Product Order'}
         />
-        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 mt-4">
+        <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4 mt-4">
           <div className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-blue-500" />
-            <p className="text-sm font-medium text-blue-400">
+            <CheckCircle className="w-4 h-4 text-green-500" />
+            <p className="text-sm font-medium text-green-400">
               Secure payment powered by Stripe
             </p>
           </div>

@@ -14,6 +14,7 @@ import { TooltipProvider } from '../components/ui/tooltip';
 import { ArrowLeft, Package, ShoppingCart, Car, User } from 'lucide-react';
 import { categories, getCategoryById, getItemById } from '../meta/menu';
 import { useMobileInputStyling } from '../hooks/useMobileOptimization';
+import { getPerthCurrentDateTime } from '../utils/timezoneUtils';
 
 const OrderFormPage = () => {
   const navigate = useNavigate();
@@ -88,7 +89,7 @@ const OrderFormPage = () => {
   const validateYear = (year) => {
     try {
       const yearInt = parseInt(year);
-      const currentYear = new Date().getFullYear();
+      const currentYear = getPerthCurrentDateTime().getFullYear();
       if (isNaN(yearInt) || yearInt < 1900 || yearInt > currentYear + 1) {
         return { isValid: false, message: `Year must be between 1900 and ${currentYear + 1}` };
       }
@@ -317,7 +318,7 @@ const OrderFormPage = () => {
                                   </div>
                                   <div className="text-right">
                                     <div className="font-semibold text-text-primary">
-                                      ${item.totalPrice.toFixed(2)}
+                                      AUD {item.totalPrice.toFixed(2)}
                                     </div>
                                   </div>
                                 </div>
@@ -332,7 +333,7 @@ const OrderFormPage = () => {
                         <div className="flex items-center justify-between">
                           <span className="text-lg font-semibold text-text-primary">Total:</span>
                           <span className="text-2xl font-bold text-highlight-primary">
-                            ${totalAmount.toFixed(2)}
+                            AUD {totalAmount.toFixed(2)}
                           </span>
                         </div>
                       </div>

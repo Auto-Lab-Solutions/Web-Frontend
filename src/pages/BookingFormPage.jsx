@@ -4,20 +4,25 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import FormField from "@/components/common/FormField"
 import FormSection from "@/components/common/FormSection"
 import AppointmentStepIndicator from "@/components/common/AppointmentStepIndicator"
 import { useMobileInputStyling } from "../hooks/useMobileOptimization"
-import { getPlansAndPricingUrl } from "@/meta/menu"
+import { getPlansAndPricingUrl, isInspectionService } from "@/meta/menu"
 import BackArrow from '@/components/common/BackArrow'
+import { getPerthCurrentDateTime } from '../utils/timezoneUtils'
 
 function BookingFormPage() {
   const navigate = useNavigate()
   const { appointmentFormData, updateAppointmentFormData } = useGlobalData()
   const [errors, setErrors] = useState({})
   const [isBuyer, setIsBuyer] = useState(true) // Toggle state
+
+  // Check if current service is an inspection service
+  const isInspection = isInspectionService(appointmentFormData?.serviceId)
 
   // Apply mobile input optimizations
   useMobileInputStyling();
@@ -41,7 +46,7 @@ function BookingFormPage() {
   const validateYear = (year) => {
     try {
       const yearInt = parseInt(year);
-      const currentYear = new Date().getFullYear();
+      const currentYear = getPerthCurrentDateTime().getFullYear();
       if (isNaN(yearInt) || yearInt < 1900 || yearInt > currentYear + 1) {
         return { isValid: false, message: `Year must be between 1900 and ${currentYear + 1}` };
       }
@@ -81,8 +86,10 @@ function BookingFormPage() {
       sellerPhoneNumber: appointmentFormData.sellerData?.phoneNumber || "",
       notes: appointmentFormData.notes || "",
     })
-    setIsBuyer(appointmentFormData.isBuyer || true)
-  }, [appointmentFormData])
+    // For non-inspection services, always set as buyer (customer)
+    const initialIsBuyer = isInspection ? (appointmentFormData.isBuyer || true) : true
+    setIsBuyer(initialIsBuyer)
+  }, [appointmentFormData, isInspection])
 
   if (!appointmentFormData || !appointmentFormData?.serviceId || !appointmentFormData?.planId) {
     navigate('/')
@@ -134,12 +141,18 @@ function BookingFormPage() {
     const isValidYear = (year) => {
       if (!year) return false
       const yearNum = parseInt(year)
-      const currentYear = new Date().getFullYear()
+      const currentYear = getPerthCurrentDateTime().getFullYear()
       return !isNaN(yearNum) && yearNum >= 1900 && yearNum <= currentYear + 1
     }
 
     const hasValidCarData = clientData.carMake && clientData.carModel && isValidYear(clientData.carYear)
 
+    // For non-inspection services, only customer (buyer) data is required
+    if (!isInspection) {
+      return clientData.buyerName && clientData.buyerEmail && clientData.buyerPhoneNumber && hasValidCarData
+    }
+
+    // For inspection services, validate based on buyer/seller toggle
     if (isBuyer) {
       return clientData.buyerName && clientData.buyerEmail && clientData.buyerPhoneNumber && hasValidCarData
     } else {
@@ -151,7 +164,11 @@ function BookingFormPage() {
     e.preventDefault()
     const newErrors = {}
 
-    if (isBuyer) {
+    // For non-inspection services, always validate customer (buyer) data
+    const validateBuyer = !isInspection || isBuyer
+    const validateSeller = isInspection && !isBuyer
+
+    if (validateBuyer) {
       if (!clientData.buyerName || !clientData.buyerName.trim()) {
         newErrors.buyerName = "Name is required"
       }
@@ -165,7 +182,9 @@ function BookingFormPage() {
       } else if (!validatePhoneNumber(clientData.buyerPhoneNumber)) {
         newErrors.buyerPhoneNumber = "Please enter a valid phone number (7-15 digits, optional +country code)"
       }
-    } else {
+    }
+
+    if (validateSeller) {
       if (!clientData.sellerName || !clientData.sellerName.trim()) {
         newErrors.sellerName = "Name is required"
       }
@@ -203,7 +222,7 @@ function BookingFormPage() {
 
     updateAppointmentFormData({
       ...appointmentFormData,
-      isBuyer,
+      isBuyer: isInspection ? isBuyer : true, // Always true for non-inspection services
       buyerData: {
         name: clientData.buyerName.trim(),
         email: clientData.buyerEmail.trim(),
@@ -237,54 +256,66 @@ function BookingFormPage() {
           className="max-w-6xl mx-auto"
         >
           <div className="text-center mb-4">
-            <h1 className="text-4xl font-bold mb-2 bg-text-primary bg-clip-text text-transparent">
+            <h1 className="sm:text-4xl text-3xl font-bold mb-2 bg-text-primary bg-clip-text text-transparent">
               Vehicle & Contact Details
             </h1>
-            <p className="text-text-secondary text-lg">
-              Please provide your information and vehicle details for the inspection
+            <p className="text-text-secondary sm:text-lg text-base">
+              Please provide your information and vehicle details for the Appointment.
             </p>
           </div>
           
           {/* Step Indicator */}
           <AppointmentStepIndicator currentStep={2} className="mb-8" />
 
-          {/* TOGGLE BUTTON */}
-          <div className="flex justify-center mb-8">
-            <div className="bg-card-primary rounded-3xl p-1 border border-border-primary shadow-lg">
-              <Button
-                type="button"
-                onClick={() => handleToggleChange(true)}
-                className={`px-6 py-2 rounded-2xl transition-all duration-300 font-semibold
-                  ${
-                    isBuyer
-                      ? "bg-highlight-primary text-text-tertiary shadow-lg transform scale-105 ml-1"
-                      : "bg-transparent text-text-secondary hover:bg-gray-800/50 hover:text-text-primary"
-                  }`}
-              >
-                I'm the Buyer
-              </Button>
-              <Button
-                type="button"
-                onClick={() => handleToggleChange(false)}
-                className={`px-6 py-2 rounded-2xl transition-all duration-300 font-semibold
-                  ${
-                    !isBuyer
-                      ? "bg-highlight-primary text-text-tertiary shadow-lg transform scale-105 mr-1"
-                      : "bg-transparent text-text-secondary hover:bg-gray-800/50 hover:text-text-primary"
-                  }`}
-              >
-                I'm the Seller
-              </Button>
+          {/* TOGGLE BUTTON - Only show for inspection services */}
+          {isInspection && (
+            <div className="flex justify-center mb-8">
+              <div className="bg-card-primary rounded-3xl p-1 border border-border-primary shadow-lg">
+                <Button
+                  type="button"
+                  onClick={() => handleToggleChange(true)}
+                  className={`px-6 py-2 rounded-2xl transition-all duration-300 font-semibold
+                    ${
+                      isBuyer
+                        ? "bg-highlight-primary text-text-tertiary shadow-lg transform scale-105 ml-1"
+                        : "bg-transparent text-text-secondary hover:bg-gray-800/50 hover:text-text-primary"
+                    }`}
+                >
+                  I'm the Buyer
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => handleToggleChange(false)}
+                  className={`px-6 py-2 rounded-2xl transition-all duration-300 font-semibold
+                    ${
+                      !isBuyer
+                        ? "bg-highlight-primary text-text-tertiary shadow-lg transform scale-105 mr-1"
+                        : "bg-transparent text-text-secondary hover:bg-gray-800/50 hover:text-text-primary"
+                    }`}
+                >
+                  I'm the Seller
+                </Button>
+              </div>
             </div>
-          </div>
+          )}
 
           <Card className="bg-card-primary border border-border-primary shadow-xl backdrop-blur-sm">
-            <CardContent className="p-8">
-              <form onSubmit={handleSubmit} className="space-y-12">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                  {/* Buyer Info */}
-                  <FormSection title="Buyer Information">
-                    <div className="grid gap-6">
+            <CardContent className="p-4 sm:p-8">
+              <form onSubmit={handleSubmit} className="space-y-8 sm:space-y-12">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
+                  {/* Customer/Buyer Info */}
+                  <FormSection title={isInspection ? "Buyer Information" : "Customer Information"}>
+                    {!isBuyer && isInspection && (
+                      <div className="mb-4 p-3 bg-card-secondary/50 border border-border-secondary rounded-lg backdrop-blur-sm">
+                        <p className="text-sm text-text-secondary">
+                          <svg className="w-4 h-4 inline mr-2 text-text-tertiary" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                          </svg>
+                          This section is optional. You may skip these fields if buyer information is not available at this time.
+                        </p>
+                      </div>
+                    )}
+                    <div className="grid gap-4 sm:gap-6">
                       <FormField
                         id="buyerName"
                         name="buyerName"
@@ -292,8 +323,9 @@ function BookingFormPage() {
                         value={clientData.buyerName}
                         onChange={handleChange}
                         error={errors.buyerName}
-                        required={isBuyer}
-                        tooltip={isBuyer ? "Enter your first and last name" : "Enter the buyer's first and last name"}
+                        required={isInspection ? isBuyer : true}
+                        tooltip={isInspection ? (isBuyer ? "Enter your first and last name" : "Enter the buyer's first and last name") : "Enter your first and last name"}
+                        placeholder="e.g., John Smith"
                       />
                       <FormField
                         id="buyerEmail"
@@ -303,8 +335,9 @@ function BookingFormPage() {
                         value={clientData.buyerEmail}
                         onChange={handleChange}
                         error={errors.buyerEmail}
-                        required={isBuyer}
-                        tooltip={isBuyer ? "Enter your email address" : "Enter the buyer's email address"}
+                        required={isInspection ? isBuyer : true}
+                        tooltip={isInspection ? (isBuyer ? "Enter your email address" : "Enter the buyer's email address") : "Enter your email address"}
+                        placeholder="john.smith@example.com"
                       />
                       <FormField
                         id="buyerPhoneNumber"
@@ -314,54 +347,70 @@ function BookingFormPage() {
                         value={clientData.buyerPhoneNumber}
                         onChange={handleChange}
                         error={errors.buyerPhoneNumber}
-                        required={isBuyer}
-                        tooltip={isBuyer ? "Enter your phone number" : "Enter the buyer's phone number"}
+                        required={isInspection ? isBuyer : true}
+                        tooltip={isInspection ? (isBuyer ? "Enter your phone number" : "Enter the buyer's phone number") : "Enter your phone number"}
+                        placeholder="+61 412 345 678"
                       />
                     </div>
                   </FormSection>
 
-                  {/* Seller Info */}
-                  <FormSection title="Seller Information">
-                    <div className="grid gap-6">
-                      <FormField
-                        id="sellerName"
-                        name="sellerName"
-                        label="Full Name"
-                        value={clientData.sellerName}
-                        onChange={handleChange}
-                        error={errors.sellerName}
-                        required={!isBuyer}
-                        tooltip={!isBuyer ? "Enter your first and last name" : "Enter the seller's first and last name"}
-                      />
-                      <FormField
-                        id="sellerEmail"
-                        name="sellerEmail"
-                        label="Email Address"
-                        type="email"
-                        value={clientData.sellerEmail}
-                        onChange={handleChange}
-                        error={errors.sellerEmail}
-                        required={!isBuyer}
-                        tooltip={!isBuyer ? "Enter your email address" : "Enter the seller's email address"}
-                      />
-                      <FormField
-                        id="sellerPhoneNumber"
-                        name="sellerPhoneNumber"
-                        label="Phone Number"
-                        type="tel"
-                        value={clientData.sellerPhoneNumber}
-                        onChange={handleChange}
-                        error={errors.sellerPhoneNumber}
-                        required={!isBuyer}
-                        tooltip={!isBuyer ? "Enter your phone number" : "Enter the seller's phone number"}
-                      />
-                    </div>
-                  </FormSection>
+                  {/* Seller Info - Only show for inspection services */}
+                  {isInspection && (
+                    <FormSection title="Seller Information">
+                      {isBuyer && (
+                        <div className="mb-4 p-3 bg-card-secondary/50 border border-border-secondary rounded-lg backdrop-blur-sm">
+                          <p className="text-sm text-text-secondary">
+                            <svg className="w-4 h-4 inline mr-2 text-text-tertiary" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                            </svg>
+                            This section is optional. You may skip these fields if seller information is not available at this time.
+                          </p>
+                        </div>
+                      )}
+                      <div className="grid gap-4 sm:gap-6">
+                        <FormField
+                          id="sellerName"
+                          name="sellerName"
+                          label="Full Name"
+                          value={clientData.sellerName}
+                          onChange={handleChange}
+                          error={errors.sellerName}
+                          required={!isBuyer}
+                          tooltip={!isBuyer ? "Enter your first and last name" : "Enter the seller's first and last name"}
+                          placeholder="e.g., Jane Doe"
+                        />
+                        <FormField
+                          id="sellerEmail"
+                          name="sellerEmail"
+                          label="Email Address"
+                          type="email"
+                          value={clientData.sellerEmail}
+                          onChange={handleChange}
+                          error={errors.sellerEmail}
+                          required={!isBuyer}
+                          tooltip={!isBuyer ? "Enter your email address" : "Enter the seller's email address"}
+                          placeholder="jane.doe@example.com"
+                        />
+                        <FormField
+                          id="sellerPhoneNumber"
+                          name="sellerPhoneNumber"
+                          label="Phone Number"
+                          type="tel"
+                          value={clientData.sellerPhoneNumber}
+                          onChange={handleChange}
+                          error={errors.sellerPhoneNumber}
+                          required={!isBuyer}
+                          tooltip={!isBuyer ? "Enter your phone number" : "Enter the seller's phone number"}
+                          placeholder="+61 423 456 789"
+                        />
+                      </div>
+                    </FormSection>
+                  )}
                 </div>
 
                 {/* Car Info */}
                 <FormSection title="Vehicle Information">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                     <FormField
                       id="carMake"
                       name="carMake"
@@ -371,6 +420,7 @@ function BookingFormPage() {
                       error={errors.carMake}
                       required={true}
                       tooltip="Vehicle manufacturer (e.g., Toyota, Honda, BMW)"
+                      placeholder="e.g., Toyota"
                     />
                     <FormField
                       id="carModel"
@@ -381,6 +431,7 @@ function BookingFormPage() {
                       error={errors.carModel}
                       required={true}
                       tooltip="Specific model name (e.g., Camry, Civic, 3 Series)"
+                      placeholder="e.g., Camry"
                     />
                     <FormField
                       id="carYear"
@@ -396,15 +447,43 @@ function BookingFormPage() {
                       pattern="[0-9]{4}"
                       inputMode="numeric"
                     />
-                    <FormField
-                      id="carLocation"
-                      name="carLocation"
-                      label="Current Location"
-                      value={clientData.carLocation}
-                      onChange={handleChange}
-                      tooltip="Where the vehicle is located for inspection scheduling"
-                      placeholder="City, State or Address"
-                    />
+                    <div>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Label htmlFor="carLocation" className="text-text-primary font-medium text-base">
+                            Vehicle Location
+                          </Label>
+                        </div>
+                        <div className="mb-2 p-2 bg-card-secondary/30 border border-border-secondary rounded-md backdrop-blur-sm">
+                          <p className="text-xs text-text-secondary">
+                            <svg className="w-3 h-3 inline mr-1 text-text-tertiary" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                            </svg>
+                            This field is optional if our mechanics will not need to visit your specified location for the appointment.
+                          </p>
+                        </div>
+                        <div className="relative">
+                          <Input 
+                            id="carLocation"
+                            name="carLocation"
+                            type="text"
+                            value={clientData.carLocation}
+                            onChange={handleChange}
+                            className="transition-all duration-200 focus:ring-2 focus:ring-border-tertiary/20 border-border-secondary hover:border-border-tertiary/50 focus:border-border-tertiary pr-10"
+                            placeholder="e.g., Perth, WA or 123 Main St, Suburb, State"
+                          />
+                          <div className="hidden md:block">
+                            <button 
+                              type="button"
+                              className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 rounded-full bg-border-primary text-white text-xs flex items-center justify-center cursor-help hover:bg-border-secondary transition-colors"
+                              title="Where the vehicle is located for inspection scheduling"
+                            >
+                              ?
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </FormSection>
 
@@ -422,7 +501,7 @@ function BookingFormPage() {
                       value={clientData.notes} 
                       onChange={handleChange} 
                       rows={4} 
-                      placeholder="Any specific concerns, requests, or information about the vehicle..."
+                      placeholder="Any specific concerns, requests, or information about the vehicle or appointment..."
                       className="w-full rounded-lg border border-border-secondary px-4 py-3 text-base shadow-sm focus:outline-none focus:ring-2 focus:ring-border-tertiary/20 focus:border-border-tertiary resize-none transition-all duration-200 hover:border-border-tertiary/50 min-h-[2.75rem]" 
                     />
                   </div>
@@ -442,13 +521,13 @@ function BookingFormPage() {
                   <button
                     type="submit" 
                     disabled={!isFormValid()}
-                    className={`px-7 sm:px-20 py-3 rounded-xl text-lg font-semibold transition-all duration-200 transform ${
+                    className={`px-7 py-3 rounded-xl text-lg font-semibold transition-all duration-200 transform ${
                       isFormValid()
                         ? 'animated-button-primary'
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }`}
                   >
-                    Continue to Slot Selection →
+                    Continue to TimeSlots →
                   </button>
                 </motion.div>
               </form>

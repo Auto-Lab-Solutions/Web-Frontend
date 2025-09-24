@@ -40,8 +40,8 @@ export default function DesktopMenu({ menu }) {
   const hasSubMenu = menu?.subMenu?.length;
   
   const handleNavigation = (path) => {
-    // Force a full page reload instead of using React Router
-    window.location.href = path;
+    // Use React Router navigation instead of forcing page reload
+    navigate(path);
   };
 
   return (
@@ -76,7 +76,7 @@ export default function DesktopMenu({ menu }) {
             `}
           >
             {hasSubMenu &&
-              menu.subMenu.map((submenu, i) => (
+              menu.subMenu.filter(submenu => submenu.active !== false).map((submenu, i) => (
                 <div className="relative cursor-pointer" key={i}>
                   <div 
                     onClick={() => handleNavigation(`${menu.path}${submenu.subpath}`)}

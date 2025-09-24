@@ -17,8 +17,10 @@
  */
 
 /**
- * Utility functions for order handling
+ * Utility functions for order handling and management
  */
+
+import { getPerthCurrentDateTime } from './timezoneUtils';
 
 /**
  * Removes empty fields from an object
@@ -143,7 +145,7 @@ export const validateOrderData = (orderData) => {
     errors.push('Car year is required');
   } else {
     const year = parseInt(carData.year);
-    const currentYear = new Date().getFullYear();
+    const currentYear = getPerthCurrentDateTime().getFullYear();
     if (isNaN(year) || year < 1900 || year > currentYear + 1) {
       errors.push(`Car year must be between 1900 and ${currentYear + 1}`);
     }
@@ -213,41 +215,40 @@ export const calculateMultiItemTotal = (items) => {
 
 /**
  * Formats order status for display
- * @param {string} status - Order status from backend
+ * @param {string} status - Order status from backend (PENDING, SCHEDULED, DELIVERED, CANCELLED)
  * @returns {Object} Formatted status info
  */
 export const getOrderStatusInfo = (status) => {
-  switch (status?.toLowerCase()) {
-    case 'pending':
-    case 'created':
+  switch (status?.toUpperCase()) {
+    case 'PENDING':
       return {
         text: 'Pending',
-        color: 'text-yellow-500',
-        bg: 'bg-yellow-500/10 border border-yellow-500/20'
+        textColor: 'text-black',
+        bg: 'bg-yellow-500'
       };
-    case 'scheduled':
+    case 'SCHEDULED':
       return {
         text: 'Scheduled',
-        color: 'text-blue-500',
-        bg: 'bg-blue-500/10 border border-blue-500/20'
+        textColor: 'text-black',
+        bg: 'bg-blue-500'
       };
-    case 'delivered':
+    case 'DELIVERED':
       return {
         text: 'Delivered',
-        color: 'text-green-500',
-        bg: 'bg-green-500/10 border border-green-500/20'
+        textColor: 'text-black',
+        bg: 'bg-green-500'
       };
-    case 'cancelled':
+    case 'CANCELLED':
       return {
         text: 'Cancelled',
-        color: 'text-red-500',
-        bg: 'bg-red-500/10 border border-red-500/20'
+        textColor: 'text-black',
+        bg: 'bg-red-500'
       };
     default:
       return {
         text: status || 'Unknown',
-        color: 'text-gray-500',
-        bg: 'bg-gray-500/10 border border-gray-500/20'
+        textColor: 'text-black',
+        bg: 'bg-gray-500'
       };
   }
 };
