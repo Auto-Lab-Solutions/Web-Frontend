@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useGlobalData } from '../components/contexts/GlobalDataContext';
 import { useRestClient } from '../components/contexts/RestContext';
+import useProgressBarScroll from '../hooks/useProgressBarScroll';
 import PageContainer from '../components/common/PageContainer';
 import FadeInItem from '../components/common/FadeInItem';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
+import BackArrow from '../components/common/BackArrow';
 import { 
   ArrowLeft, 
   ShoppingCart, 
@@ -27,10 +29,16 @@ const OrderConfirmationPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  
+  // Initialize progress bar scroll hook (step 4 of 4)
+  const { containerRef, stepRefs } = useProgressBarScroll(4, 4);
 
   if (!orderFormData || !orderFormData.items || orderFormData.items.length === 0) {
-    navigate('/accessories/categories');
-    return null;
+    if (!isSuccess) {
+      navigate('/accessories/categories');
+      return null;
+    }
   }
 
   const selectedItems = orderFormData.items || [];
@@ -62,13 +70,22 @@ const OrderConfirmationPage = () => {
 
       if (response.data && response.data.success) {
         console.log("Order created successfully:", response.data);
+        
+        // First set success state
         setIsSuccess(true);
         
-        // Show success state for 3 seconds before navigating
+        // Then explicitly trigger the success alert modal
         setTimeout(() => {
-          navigate("/status");
+          setShowAlert(true);
+          console.log("Setting showAlert to true");
+        }, 300);
+        
+        // Set a longer delay for redirection to ensure the alert is visible
+        setTimeout(() => {
+          console.log("Redirecting to status page...");
           clearFormData();
-        }, 3000);
+          navigate("/status");
+        }, 2000);
       } else {
         throw new Error(response.data?.message || "Failed to create order");
       }
@@ -105,6 +122,14 @@ const OrderConfirmationPage = () => {
     </div>
   );
 
+  // Add an effect to ensure the success alert is shown when success state changes
+  useEffect(() => {
+    if (isSuccess) {
+      console.log("Success state is true, showing alert");
+      setShowAlert(true);
+    }
+  }, [isSuccess]);
+
   return (
     <PageContainer>
       <div className="bg-background-primary text-text-primary min-h-screen px-4 py-20">
@@ -114,18 +139,55 @@ const OrderConfirmationPage = () => {
           transition={{ duration: 0.5 }}
           className="max-w-4xl mx-auto"
         >
+          <BackArrow to={handleBack} />
+          
           {/* Header */}
           <div className="text-center mb-8">
-            <FadeInItem element="h1" direction="y" className="text-3xl sm:text-4xl font-bold mb-4">
+            <FadeInItem element="h1" direction="y" className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
               {isSuccess ? "Order Placed Successfully!" : "Review Your Order"}
             </FadeInItem>
-            <FadeInItem element="p" direction="y" className="text-xl text-text-secondary">
+            <FadeInItem element="p" direction="y" className="text-base sm:text-xl text-text-secondary px-2">
               {isSuccess 
                 ? "Thank you for your order. You will be redirected to your status page shortly."
                 : "Please review your order details before confirming"
               }
             </FadeInItem>
           </div>
+
+          {/* Progress Indicator */}
+          {!isSuccess && (
+            <div ref={containerRef} className="flex items-center justify-center mb-8 overflow-x-auto pb-2 -mx-4 px-6 sm:px-8 scrollbar-thin scrollbar-thumb-border-secondary hide-scrollbar" style={{ scrollbarWidth: 'none' }}>
+              <div className="flex items-center space-x-1 xs:space-x-2 sm:space-x-3 md:space-x-4 px-8 xs:px-10 sm:px-12 py-2 bg-background-secondary rounded-lg shadow-sm min-w-[800px]">
+                <div ref={stepRefs.current[0]} id="step-1" className="flex items-center cursor-pointer whitespace-nowrap pl-6 xs:pl-4" onClick={() => navigate('/accessories/categories')}>
+                  <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-[10px] xs:text-xs sm:text-sm font-semibold shadow-sm">
+                    ✓
+                  </div>
+                  <span className="ml-1 xs:ml-1 sm:ml-2 text-xs xs:text-sm sm:text-base text-text-primary font-medium hover:text-highlight-primary">Category</span>
+                </div>
+                <div className="w-4 xs:w-6 sm:w-8 md:w-12 h-0.5 bg-green-500"></div>
+                <div ref={stepRefs.current[1]} id="step-2" className="flex items-center cursor-pointer whitespace-nowrap" onClick={() => navigate('/cart')}>
+                  <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-[10px] xs:text-xs sm:text-sm font-semibold shadow-sm">
+                    ✓
+                  </div>
+                  <span className="ml-1 xs:ml-1 sm:ml-2 text-xs xs:text-sm sm:text-base text-text-primary font-medium hover:text-highlight-primary">Items</span>
+                </div>
+                <div className="w-4 xs:w-6 sm:w-8 md:w-12 h-0.5 bg-green-500"></div>
+                <div ref={stepRefs.current[2]} id="step-3" className="flex items-center cursor-pointer whitespace-nowrap" onClick={() => navigate('/order-form')}>
+                  <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-[10px] xs:text-xs sm:text-sm font-semibold shadow-sm">
+                    ✓
+                  </div>
+                  <span className="ml-1 xs:ml-1 sm:ml-2 text-xs xs:text-sm sm:text-base text-text-primary font-medium hover:text-highlight-primary">Details</span>
+                </div>
+                <div className="w-4 xs:w-6 sm:w-8 md:w-12 h-0.5 bg-highlight-primary"></div>
+                <div ref={stepRefs.current[3]} id="step-4" className="flex items-center whitespace-nowrap pr-6 xs:pr-4">
+                  <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-highlight-primary text-white rounded-full flex items-center justify-center text-[10px] xs:text-xs sm:text-sm font-semibold shadow-sm">
+                    4
+                  </div>
+                  <span className="ml-1 xs:ml-1 sm:ml-2 text-xs xs:text-sm sm:text-base text-text-primary font-medium">Confirmation</span>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Success Animation */}
           {isSuccess && (
@@ -139,6 +201,120 @@ const OrderConfirmationPage = () => {
                 <CheckCircle className="w-12 h-12 text-white" />
               </motion.div>
             </div>
+          )}
+
+          {/* Custom Success Alert Modal - Moved to portal root for guaranteed visibility */}
+          {showAlert && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4"
+              // Only allow closing after a short delay to ensure it's seen
+              onClick={(e) => {
+                e.preventDefault(); // Prevent bubbling
+                // Don't close immediately to prevent accidental dismissal
+                if (isSuccess) {
+                  // Do nothing, let the automatic redirect happen
+                }
+              }}
+            >
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                transition={{ type: "spring", damping: 20, stiffness: 300 }}
+                className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl shadow-2xl border border-green-200 dark:border-green-700 p-8 max-w-md w-full mx-4 backdrop-blur-lg"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Success Icon */}
+                <div className="flex justify-center mb-6">
+                  <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+                    <motion.svg
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.2, type: "spring", damping: 15 }}
+                      className="w-10 h-10 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </motion.svg>
+                  </div>
+                </div>
+
+                {/* Alert Content */}
+                <div className="text-center space-y-4">
+                  <motion.h3
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-2xl font-bold text-green-800 dark:text-green-200"
+                  >
+                    🎉 Success!
+                  </motion.h3>
+                  
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="text-green-700 dark:text-green-300 text-lg font-medium"
+                  >
+                    Your order has been placed successfully!
+                  </motion.p>
+                  
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                    className="text-green-600 dark:text-green-400 text-sm"
+                  >
+                    You will be redirected to your status page shortly.
+                  </motion.p>
+
+                  {/* Progress bar */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.6 }}
+                    className="mt-6"
+                  >
+                    <div className="bg-green-200 dark:bg-green-800 rounded-full h-2 overflow-hidden">
+                      <motion.div
+                        initial={{ width: "0%" }}
+                        animate={{ width: "100%" }}
+                        transition={{ duration: 3, ease: "linear", delay: 0.7 }}
+                        className="h-full bg-gradient-to-r from-green-500 to-emerald-600 rounded-full"
+                      />
+                    </div>
+                    <p className="text-xs text-green-600 dark:text-green-400 mt-2 redirecting-text">
+                      Redirecting automatically...
+                    </p>
+                  </motion.div>
+
+                  {/* Close button */}
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.8 }}
+                    onClick={() => {
+                      if (isSuccess) {
+                        // If we're in success state, don't close - let the redirect happen
+                        // but we can provide feedback that it's working
+                        const redirectEl = document.querySelector('.redirecting-text');
+                        if (redirectEl) {
+                          redirectEl.textContent = 'Redirecting now...';
+                        }
+                      } else {
+                        setShowAlert(false);
+                      }
+                    }}
+                    className="mt-4 px-6 py-2 bg-gradient-to-r from-green-600 to-emerald-700 text-white rounded-lg hover:from-green-700 hover:to-emerald-800 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                  >
+                    {isSuccess ? 'Redirecting...' : 'Close'}
+                  </motion.button>
+                </div>
+              </motion.div>
+            </motion.div>
           )}
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -162,7 +338,7 @@ const OrderConfirmationPage = () => {
                               </div>
                               <div className="text-right">
                                 <div className="font-semibold text-text-primary">
-                                  ${item.totalPrice.toFixed(2)}
+                                  AUD {item.totalPrice.toFixed(2)}
                                 </div>
                               </div>
                             </div>
@@ -175,7 +351,7 @@ const OrderConfirmationPage = () => {
                       </div>
                       
                       <div className="pt-3 border-t border-border-secondary">
-                        <InfoItem label="Total Amount" value={`$${totalAmount.toFixed(2)}`} highlight={true} />
+                        <InfoItem label="Total Amount" value={`AUD ${totalAmount.toFixed(2)}`} highlight={true} />
                       </div>
                     </div>
                   </InfoSection>
@@ -268,7 +444,7 @@ const OrderConfirmationPage = () => {
                 type="button"
                 onClick={handleBack}
                 disabled={isSubmitting}
-                className={`flex items-center justify-center gap-2 px-6 py-3 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm ${
+                className={`flex items-center justify-center gap-2 px-6 py-3 text-text-secondary hover:text-text-primary hover:bg-card-primary/50 rounded-lg transition-all duration-200 group backdrop-blur-sm shadow-sm hover:shadow border border-border-secondary ${
                   isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
                 whileHover={isSubmitting ? {} : { x: -4 }}

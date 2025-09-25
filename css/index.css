@@ -2,6 +2,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "./variables.css";
+@import "./progress-bar.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -15,16 +16,89 @@ body {
   .sub-menu {
     @apply absolute top-[4.2rem] p-[15px] rounded-[6px] origin-[50%_-170px] backdrop-blur bg-white/[0.04];
   }
-  .chatbox {
+    .chatbox {
     position: fixed;
     bottom: 4%;
-    right: 3%;
-    z-index: 1030;
-    border-radius: 50%;
-    max-width: 20%;
-    max-height: 80%;
-    padding: 0;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    right: 4%;
+    z-index: 1000;
+  }
+
+  /* Enhanced notification styles */
+  .notification-container {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    pointer-events: none;
+  }
+  
+  .notification-card {
+    pointer-events: auto;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+  
+  /* Mobile optimizations for notifications */
+  @media (max-width: 640px) {
+    .notification-container {
+      top: 0.5rem;
+      left: 2%;
+      right: 2%;
+      transform: none;
+      width: auto;
+    }
+  }
+  
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .notification-card {
+      border-width: 2px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+    }
+  }
+  
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .notification-card * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  
+  /* Responsive chatbox adjustments */
+  @media screen and (max-width: 640px) {
+    .chatbox {
+      right: 2%;
+      bottom: 3%;
+      max-width: 25%;
+    }
+  }
+  
+  /* Chat message specific styles */
+  .chatbox-messages {
+    /* Enhanced scrollbar for better UX */
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border-secondary) var(--color-background-secondary);
+  }
+  
+  .chatbox-messages::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .chatbox-messages::-webkit-scrollbar-track {
+    background: var(--color-background-secondary);
+    border-radius: 3px;
+  }
+  
+  .chatbox-messages::-webkit-scrollbar-thumb {
+    background: var(--color-border-secondary);
+    border-radius: 3px;
+  }
+  
+  .chatbox-messages::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-secondary);
   }
   
   /* Mobile-specific styles to prevent zoom on input focus */
@@ -152,7 +226,7 @@ body {
   }
 
   .card-description {
-    @apply text-text-secondary leading-snug text-center md:text-left text-base;
+    @apply text-text-secondary leading-snug text-left text-base;
   }
 }
 

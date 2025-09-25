@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { RestClient } from '../../classes/RestClient';
 
+const envData = import.meta.env;
+console.log('ENV:', envData);
 const REST_ENDPOINT = import.meta.env.VITE_API_GATEWAY_BASE_URL;
 
 const RestContext = createContext(undefined);

@@ -1,0 +1,69 @@
+name: Deploy to Production Environment
+
+on:
+  push:
+    branches: [ prod ]
+  pull_request:
+    branches: [ prod ]
+    types: [closed]
+
+env:
+  AWS_REGION: ap-southeast-2
+  ENVIRONMENT: production
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  S3_BUCKET_NAME: ${{ vars.S3_BUCKET_NAME }}
+  CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
+  API_GATEWAY_BASE_URL: ${{ vars.API_GATEWAY_BASE_URL }}
+  WEB_SOCKET_BASE_URL: ${{ vars.WEB_SOCKET_BASE_URL }}
+  STRIPE_PUBLISHABLE_KEY: ${{ vars.STRIPE_PUBLISHABLE_KEY }}
+  MAIL_FROM_ADDRESS: ${{ vars.MAIL_FROM_ADDRESS }}
+
+jobs:
+  deploy:
+    name: Deploy to Production Environment
+    runs-on: ubuntu-latest
+    environment: production
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create env file
+        run: |
+          echo "VITE_API_GATEWAY_BASE_URL=$API_GATEWAY_BASE_URL" > .env
+          echo "VITE_WEB_SOCKET_BASE_URL=$WEB_SOCKET_BASE_URL" >> .env
+          echo "VITE_STRIPE_PUBLISHABLE_KEY=$STRIPE_PUBLISHABLE_KEY" >> .env
+          echo "VITE_MAIL_FROM_ADDRESS=$MAIL_FROM_ADDRESS" >> .env
+          echo "VITE_ENVIRONMENT=$ENVIRONMENT" >> .env
+          echo "VITE_AWS_REGION=$AWS_REGION" >> .env
+          echo "VITE_NODE_ENV=production" >> .env
+          cat .env
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Build React app
+        run: npm run build:prod
+
+      - name: Deploy to S3
+        run: |
+          aws s3 sync dist/ s3://$S3_BUCKET_NAME --delete --region $AWS_REGION
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*" --region $AWS_REGION
+          echo "CloudFront cache invalidated"

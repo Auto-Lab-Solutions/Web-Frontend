@@ -11,15 +11,17 @@ import {
   CarFront,
   Car
 } from "lucide-react";
+import { Link } from 'react-router-dom';
 import FadeInItem from "../common/FadeInItem";
 import { companyName, companyAddress, companyEmail, companyLocalPhone, companyDesc } from "../../meta/companyData";
+import { getPerthCurrentDateTime } from "../../utils/timezoneUtils";
 
 const Footer = () => {
   return (
     <footer className="bg-background-secondary text-text-primary text-base">
       {/* Top Social Section */}
       <FadeInItem element="div" direction="y">
-        <div className="border-b border-border-primary px-6 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="border-b border-border-primary px-6 lg:px-12 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-center md:text-left text-text-secondary font-medium">
             Get connected with us on social networks:
           </p>
@@ -54,17 +56,52 @@ const Footer = () => {
             {/* Useful Links */}
             <div>
               <h6 className="uppercase font-bold text-text-primary mb-4">Useful Links</h6>
-              <ul className="space-y-3">
-                {["About Us", "Contact Us", "Newsfeed", "Inspection Status"].map((text, idx) => (
-                  <li key={idx}>
-                    <a
-                      href="#"
-                      className="text-text-primary/90 hover:text-highlight-primary transition"
-                    >
-                      {text}
-                    </a>
-                  </li>
-                ))}
+              <ul className="space-y-2">
+                <li>
+                  <Link
+                    to="/inspections"
+                    className="text-text-primary/90 hover:text-highlight-primary transition flex items-center"
+                  >
+                    <span className="inline-block w-1.5 h-1.5 bg-highlight-primary rounded-full mr-2"></span>
+                    About Inspections
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/pricing/pre-purchase-inspection"
+                    className="text-text-primary/90 hover:text-highlight-primary transition flex items-center"
+                  >
+                    <span className="inline-block w-1.5 h-1.5 bg-highlight-primary rounded-full mr-2"></span>
+                    Inspection Plans
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/status"
+                    className="text-text-primary/90 hover:text-highlight-primary transition flex items-center"
+                  >
+                    <span className="inline-block w-1.5 h-1.5 bg-highlight-primary rounded-full mr-2"></span>
+                    Inspection Status
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/about"
+                    className="text-text-primary/90 hover:text-highlight-primary transition flex items-center"
+                  >
+                    <span className="inline-block w-1.5 h-1.5 bg-highlight-primary rounded-full mr-2"></span>
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/more/contact"
+                    className="text-text-primary/90 hover:text-highlight-primary transition flex items-center"
+                  >
+                    <span className="inline-block w-1.5 h-1.5 bg-highlight-primary rounded-full mr-2"></span>
+                    Contact Us
+                  </Link>
+                </li>
               </ul>
             </div>
 
@@ -102,9 +139,12 @@ const Footer = () => {
               <div className="mt-6 flex justify-end">
                 <button
                   onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                  className="bg-text-primary hover:bg-highlight-primary text-text-tertiary px-6 py-2 rounded-full font-medium transition"
+                  className="bg-text-primary hover:bg-highlight-primary text-text-tertiary px-6 py-2 rounded-full font-medium transition flex items-center gap-2"
                 >
-                  Scroll to top
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                  </svg>
+                  Back to top
                 </button>
               </div>
             </div>
@@ -114,13 +154,13 @@ const Footer = () => {
 
       {/* Bottom Bar */}
       <div className="bg-card-primary py-4 text-center text-text-secondary text-sm">
-        © {new Date().getFullYear()}{" "}
-        <a
-          href="https://yourcompany.com"
+        © {getPerthCurrentDateTime().getFullYear()}{" "}
+        <Link
+          to="/"
           className="text-text-primary font-semibold hover:text-highlight-primary transition"
         >
           AutoLabSolutions.com
-        </a>
+        </Link>
       </div>
     </footer>
   );

@@ -5,6 +5,7 @@ import { getServiceById, getPlanById } from "../meta/menu";
 import { useGlobalData } from '../components/contexts/GlobalDataContext';
 import { Check } from 'lucide-react';
 import { companyLocalPhone, companyEmail } from '../meta/companyData';
+import AppointmentStepIndicator from '../components/common/AppointmentStepIndicator';
 
 const PricingPage = ({ serviceId }) => {
   const navigate = useNavigate();
@@ -27,10 +28,20 @@ const PricingPage = ({ serviceId }) => {
   return (
     <PageContainer>
       <div className="py-16 bg-background-primary text-text-primary">
-        <h2 className="text-3xl font-bold text-center mb-10 mt-4 px-4">
-          Choose Your Pricing Plan
+        <h2 className="sm:text-4xl text-3xl font-bold text-center mb-4 mt-4 px-4">
+          Choose Your Service Plan
         </h2>
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
+        
+        {/* Step Indicator */}
+        <AppointmentStepIndicator currentStep={1} className="mb-8" />
+        
+        <div className={`max-w-6xl mx-auto grid gap-8 px-4 ${
+          plans.length === 1 
+            ? 'grid-cols-1 place-items-center max-w-md' 
+            : plans.length === 2 
+            ? 'grid-cols-1 md:grid-cols-2 place-items-center max-w-4xl' 
+            : 'grid-cols-1 md:grid-cols-3'
+        }`}>
           {plans.map((plan, idx) => (
             <motion.div
               key={idx}
@@ -62,7 +73,7 @@ const PricingPage = ({ serviceId }) => {
         </div>
         <div className="mt-12 text-center px-4 max-w-2xl mx-auto text-text-secondary">
           <p>
-            Our mobile vehicle inspection service travels across Perth metro
+            Our automotive services travels across Perth metro
             including Southern River, Canning Vale, Rockingham, Mandurah,
             Fremantle, Joondalup & more.
           </p>

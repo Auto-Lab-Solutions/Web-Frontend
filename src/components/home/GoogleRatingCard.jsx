@@ -1,8 +1,9 @@
 import { FaStar } from 'react-icons/fa';
 import { reviewsSummary } from '@/meta/reviews';
 import googleLogo from '/google-logo.svg';
+import { companyGoogleBusinessLink } from '../../meta/companyData';
 
-const GoogleRatingCard = () => {
+const GoogleRatingCard = ({ displayDescription = true }) => {
   return (
     <div className="w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto bg-background-primary rounded-lg shadow-md border-3 border-highlight-primary p-4 text-center">
       <div className="flex items-center justify-center mb-2">
@@ -11,7 +12,7 @@ const GoogleRatingCard = () => {
           alt="Google logo"
           className="w-8 h-8 mr-2"
         />
-        <span className="card-heading">Google Rating</span>
+        <span className="card-heading">Google Ratings</span>
       </div>
 
       <div className="flex items-center justify-center mb-1">
@@ -25,11 +26,13 @@ const GoogleRatingCard = () => {
         </div>
       </div>
       
-      <div className="flex flex-col items-center">
-        <p className="card-description underline hover:text-blue-500 transition-colors">
-          Read our {reviewsSummary.reviewsCount} reviews
-        </p>
-      </div>
+      {displayDescription && (
+        <div className="flex flex-col items-center" onClick={() => window.open(companyGoogleBusinessLink, '_blank')}>
+          <p className="card-description underline hover:text-blue-500 transition-colors">
+            Read our {reviewsSummary.reviewsCount}+ reviews
+          </p>
+        </div>
+      )}
     </div>
   );
 };

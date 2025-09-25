@@ -1,28 +1,29 @@
 import { ShieldCheck, SearchCheck, Users, Settings2, FileText, Smile, BookCheck, 
   BadgeCheck, MapPinCheckInside, Search, Leaf, Brain, Star, Wallet, DollarSign, CalendarClock
 } from 'lucide-react';
-import imageJanitha from "/mechanics/janitha.webp";
+import imageMechanic from "/mechanics/mechanic1.webp";
 
 const iconStyles = "w-8 h-8 text-highlight-primary";
 
 const companyName = "Auto Lab Solutions";
-const companyPhone = "+61 451 237 048";
-const companyLocalPhone = "0451 237 048";
-const companyEmail = "autolabsolutions1@gmail.com";
+const companyPhone = "+61 400 123 456";
+const companyLocalPhone = "0400 123 456";
+const companyEmail = import.meta.env.VITE_MAIL_FROM_ADDRESS || "info@autolabsolutions.com";
 const companyDesc = "We deliver cutting-edge automotive inspection and repair solutions with state-of-the-art technology, expert service, and a commitment to safety and quality."
 
-const companyAddress = "70b Division St, Welshpool WA 6106, Australia";
-const locationDesc = "Proudly based in Southern River, our team travels across Perth to reach you—whether you're in Midland, Mandurah, Joondalup, or anywhere in between.";
-const companyMapLink = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3443.1358526901827!2d115.93484588994839!3d-31.988424921166033!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2a32bd151492dc2f%3A0x63cadc40b16b2176!2sPerth%20Cars%20Pre-Purchase%20Inspection%20Service!5e0!3m2!1sen!2slk!4v1750826884985!5m2!1sen!2slk";
+const companyAddress = "123 Business Park Drive, Industrial District, State 6000, Australia";
+const locationDesc = "Proudly serving the metropolitan area and surrounding regions, our team travels across the city to reach you—whether you're in the north, south, east, or west suburbs.";
+const companyMapLink = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3400.0000000000000!2d115.00000000000000!3d-32.00000000000000!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0000000000000000%3A0x0000000000000000!2sAuto%20Lab%20Solutions!5e0!3m2!1sen!2sau!4v1000000000000!5m2!1sen!2sau";
+const companyGoogleBusinessLink = "https://g.co/kgs/AutoLabSolutions";
 
-const coverageAreas = ['Perth', 'Rockingham', 'Mandurah', 'Fremantle'];
+const coverageAreas = ['Metropolitan Area', 'Northern Suburbs', 'Southern Districts', 'Eastern Region'];
 
 const aboutShort = "Making informed car buying decisions is crucial. That’s why we provide detailed insights and expert evaluations you can trust.";
 const ourMission = "Our mission is to provide thorough, transparent, and technology-backed inspections that empower you to make confident vehicle purchasing decisions. We aim to bring clarity and peace of mind to every customer, every time.";
 const ourVision = "Our vision is to be Perth’s most trusted car inspection service—known for precision, integrity, and customer-first service. We envision a future where every vehicle buyer feels informed, secure, and confident.";
 
 const whoWeAreDesc = [
-    "Based in Southern River, we proudly serve Perth and surrounding suburbs with expert mobile automotive services. While our core focus is pre-purchase car inspections, we also provide mobile battery replacement, oil and filter changes, paint correction, and more.",
+    "Based in the industrial district, we proudly serve the metropolitan area and surrounding suburbs with expert mobile automotive services. While our core focus is pre-purchase car inspections, we also provide mobile battery replacement, oil and filter changes, paint correction, and more.",
     "Our skilled team delivers workshop-level service at your doorstep, assessing mechanical, structural, and safety aspects of your vehicle — so you can make confident decisions wherever you are."
 ];
 const whoWeArePoints = [
@@ -38,8 +39,8 @@ const whoWeArePoints = [
   },
   {
     icon: <MapPinCheckInside className={iconStyles} />,
-    title: "Located in Perth",
-    description: "We are proudly based in Southern River, serving all of Perth and surrounding suburbs with our mobile inspection services.",
+    title: "Centrally Located",
+    description: "We are strategically based in the business district, serving all metropolitan areas and surrounding regions with our mobile inspection services.",
   },
 ];
 
@@ -122,11 +123,11 @@ const ourValues = [
 
 const mechanics = [
     {
-        name: "Janitha",
-        location: "Perth",
-        imgSrc: imageJanitha,
-        description: "With over 5 years of hands-on experience, Janitha ensures each inspection is done thoroughly and professionally.",
-        linkedInUrl: "https://www.linkedin.com/in/janitha31"
+        name: "Lead Technician",
+        location: "Metropolitan Area",
+        imgSrc: imageMechanic,
+        description: "With over 8 years of hands-on experience in automotive inspection and repair, our lead technician ensures each inspection is done thoroughly and professionally.",
+        linkedInUrl: "https://www.linkedin.com/company/autolabsolutions"
     }
 ];
 
@@ -140,6 +141,7 @@ export {
     companyAddress,
     locationDesc,
     companyMapLink,
+    companyGoogleBusinessLink,
     coverageAreas,
 
     aboutShort,

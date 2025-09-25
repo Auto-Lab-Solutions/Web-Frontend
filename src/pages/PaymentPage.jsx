@@ -12,8 +12,12 @@ import { Button } from '../components/ui/button';
 import { ArrowLeft, CreditCard, Lock, Shield, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import PaymentForm from '../components/payment/PaymentForm';
 import PaymentSummary from '../components/payment/PaymentSummary';
+import { getServiceById, getPlanById, getCategoryById, getItemById } from '../meta/menu';
+import { isPaymentRequired, getPaymentStatusInfo } from '../utils/paymentUtils';
+import BackArrow from '../components/common/BackArrow';
+import { da } from 'date-fns/locale/da';
 
-const STRIPE_PUBLISHABLE_KEY = 'qe34w567i8o';
+const STRIPE_PUBLISHABLE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
 
 // Initialize Stripe with environment configuration
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
@@ -53,11 +57,11 @@ const PaymentPage = () => {
       let response;
       if (type === 'appointment') {
         response = await restClient.get(`appointments/${referenceNumber}`, { 
-          userId: userId || 'guest' 
+          userId: userId
         });
       } else if (type === 'order') {
         response = await restClient.get(`orders/${referenceNumber}`, { 
-          userId: userId || 'guest' 
+          userId: userId
         });
       } else {
         throw new Error('Invalid payment type');
@@ -69,7 +73,7 @@ const PaymentPage = () => {
         
         // Create payment intent if not already paid
         const paymentStatus = data.paymentStatus?.toLowerCase();
-        if (paymentStatus !== 'paid' && paymentStatus !== 'completed') {
+        if (paymentStatus !== 'paid') {
           await createPaymentIntent(data);
         }
       } else {
@@ -94,56 +98,53 @@ const PaymentPage = () => {
       return {
         type: 'appointment',
         referenceNumber: data.appointmentId,
-        title: 'Vehicle Inspection Payment',
-        description: `Payment for vehicle inspection service`,
+        title: getServiceById(data.serviceId)?.name || 'Service Appointment',
+        subtitle: getPlanById(data.serviceId, data.planId)?.name || 'Standard Plan',
+        description: data.description || 'Service appointment details',
         amount: data.price || 0,
         currency: 'AUD',
         status: data.status,
         paymentStatus: data.paymentStatus,
+        createdAt: data.createdAt,
+        scheduledDate: data.scheduledDate,
+        scheduledTimeSlot: data.scheduledTimeSlot,
+        selectedSlots: data.selectedSlots,
         customerInfo: {
-          name: data.buyerData?.name || data.sellerData?.name || 'N/A',
-          email: data.buyerData?.email || data.sellerData?.email || 'N/A',
-          phone: data.buyerData?.phoneNumber || data.sellerData?.phoneNumber || 'N/A',
+          name: data.isBuyer ? data.buyerName : data.sellerName,
+          email: data.isBuyer ? data.buyerEmail : data.sellerEmail,
+          phone: data.isBuyer ? data.buyerPhone : data.sellerPhone
         },
-        serviceInfo: {
-          serviceId: data.serviceId,
-          planId: data.planId,
-          vehicle: {
-            make: data.carData?.make || 'N/A',
-            model: data.carData?.model || 'N/A',
-            year: data.carData?.year || 'N/A',
-            location: data.carData?.location || 'Not specified'
-          }
+        vehicleInfo: {
+          make: data.carMake,
+          model: data.carModel,
+          year: data.carYear,
+          location: data.carLocation || 'Not specified'
         },
-        createdAt: data.createdDate || data.createdAt
       };
     } else if (dataType === 'order') {
-      const totalAmount = data.items?.reduce((sum, item) => sum + (item.totalPrice || 0), 0) || data.totalPrice || 0;
-      
       return {
         type: 'order',
         referenceNumber: data.orderId,
-        title: 'Auto Parts & Services Order',
-        description: `Payment for ${data.items?.length || 1} item(s)`,
-        amount: totalAmount,
+        title: getCategoryById(data.categoryId)?.name || 'Order',
+        subtitle: getItemById(data.categoryId, data.itemId)?.name || 'Order',
+        description: data.description || 'Order details',
+        amount: data.totalPrice || 0,
         currency: 'AUD',
         status: data.status,
         paymentStatus: data.paymentStatus,
+        createdAt: data.createdAt,
         customerInfo: {
-          name: data.customerData?.name || 'N/A',
-          email: data.customerData?.email || 'N/A',
-          phone: data.customerData?.phoneNumber || 'N/A',
+          name: data.customerName || '',
+          email: data.customerEmail || '',
+          phone: data.customerPhone || ''
         },
-        orderInfo: {
-          items: data.items || [],
-          vehicle: {
-            make: data.carData?.make || 'N/A',
-            model: data.carData?.model || 'N/A',
-            year: data.carData?.year || 'N/A',
-          },
-          deliveryLocation: data.deliveryLocation
+        items: data.items || [],
+        vehicleInfo: {
+          make: data.carMake || '',
+          model: data.carModel || '',
+          year: data.carYear || ''
         },
-        createdAt: data.createdDate || data.createdAt
+        deliveryLocation: data.deliveryLocation || ''
       };
     }
   };
@@ -152,13 +153,14 @@ const PaymentPage = () => {
     try {
       const amount = type === 'appointment' 
         ? data.price || 0
-        : (data.items?.reduce((sum, item) => sum + (item.totalPrice || 0), 0) || data.totalPrice || 0);
+        : data.totalPrice || data.items?.reduce((sum, item) => sum + (item.totalPrice || 0), 0) || 0;
 
-      const response = await restClient.post('payments/create-intent', {
-        amount: Math.round(amount * 100), // Convert to cents
-        currency: 'aud',
+      const response = await restClient.post('payments/stripe/intent', {
+        userId: userId || 'guest',
         referenceNumber,
         type,
+        amount: Math.round(amount * 100), // Convert to cents
+        currency: 'aud',
         metadata: {
           userId: userId || 'guest',
           referenceNumber,
@@ -173,7 +175,11 @@ const PaymentPage = () => {
       }
     } catch (error) {
       console.error('Error creating payment intent:', error);
-      setError('Failed to initialize payment. Please try again.');
+      if (error.response?.status === 400 && error.response?.data?.message) {
+        setError(error.response.data.message);
+      } else {
+        setError('Failed to initialize payment. Please try again.');
+      }
     }
   };
 
@@ -182,7 +188,7 @@ const PaymentPage = () => {
       setPaymentStatus('processing');
       
       // Update payment status in backend
-      await restClient.post(`payments/confirm`, {
+      await restClient.post(`/payments/stripe/confirm`, {
         paymentIntentId: paymentIntent.id,
         referenceNumber,
         type,
@@ -191,15 +197,9 @@ const PaymentPage = () => {
 
       setPaymentStatus('success');
       
-      // Redirect to status page after success
+      // Redirect to appointment page after success
       setTimeout(() => {
-        navigate('/status', { 
-          state: { 
-            paymentSuccess: true, 
-            referenceNumber,
-            type 
-          } 
-        });
+        navigate(`/${type}/${referenceNumber}`);
       }, 3000);
 
     } catch (error) {
@@ -212,41 +212,6 @@ const PaymentPage = () => {
   const handlePaymentError = (error) => {
     setPaymentStatus('error');
     setError(error.message || 'Payment failed. Please try again.');
-  };
-
-  const getPaymentStatusInfo = (status) => {
-    switch (status?.toLowerCase()) {
-      case 'paid':
-      case 'completed':
-        return {
-          icon: <CheckCircle className="w-6 h-6" />,
-          text: 'Payment Completed',
-          color: 'text-green-500',
-          bg: 'bg-green-500/10 border border-green-500/20'
-        };
-      case 'pending':
-        return {
-          icon: <AlertCircle className="w-6 h-6" />,
-          text: 'Payment Pending',
-          color: 'text-yellow-500',
-          bg: 'bg-yellow-500/10 border border-yellow-500/20'
-        };
-      case 'failed':
-      case 'declined':
-        return {
-          icon: <XCircle className="w-6 h-6" />,
-          text: 'Payment Failed',
-          color: 'text-red-500',
-          bg: 'bg-red-500/10 border border-red-500/20'
-        };
-      default:
-        return {
-          icon: <AlertCircle className="w-6 h-6" />,
-          text: 'Payment Required',
-          color: 'text-blue-500',
-          bg: 'bg-blue-500/10 border border-blue-500/20'
-        };
-    }
   };
 
   if (loading) {
@@ -265,20 +230,24 @@ const PaymentPage = () => {
   if (error) {
     return (
       <PageContainer>
-        <div className="font-sans min-h-screen bg-background-primary">
-          <section className="bg-background-tertiary text-text-primary py-20 px-6 text-center">
-            <div className="max-w-2xl mx-auto">
-              <h1 className="text-3xl sm:text-4xl font-bold mb-4 mt-8">Payment Error</h1>
-              <p className="text-xl text-text-secondary mb-8">{error}</p>
+        <div className="min-h-screen bg-background-primary flex items-center justify-center px-4">
+          <div className="text-center max-w-md">
+            <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <XCircle className="w-8 h-8 text-red-500" />
+            </div>
+            <h2 className="text-2xl font-bold text-text-primary mb-2">Payment Error</h2>
+            <p className="text-text-secondary mb-6">{error}</p>
+            <div className="flex gap-4 justify-center">
               <Button
                 onClick={() => navigate('/status')}
-                className="animated-button-primary"
+                variant="outline"
+                className="border-border-secondary text-text-secondary hover:border-highlight-primary hover:text-highlight-primary hover:bg-card-primary/50 shadow-sm hover:shadow flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200"
               >
-                <ArrowLeft className="w-4 h-4 mr-2" />
+                <ArrowLeft className="w-4 h-4 mr-1" />
                 Back to Status
               </Button>
             </div>
-          </section>
+          </div>
         </div>
       </PageContainer>
     );
@@ -289,31 +258,56 @@ const PaymentPage = () => {
   }
 
   // Check if already paid
-  const paymentStatusInfo = getPaymentStatusInfo(paymentData.paymentStatus);
-  const isAlreadyPaid = ['paid', 'completed'].includes(paymentData.paymentStatus?.toLowerCase());
+  const isAlreadyPaid = ['paid'].includes(paymentData.paymentStatus?.toLowerCase());
 
   if (isAlreadyPaid) {
     return (
       <PageContainer>
         <div className="font-sans min-h-screen bg-background-primary">
-          <section className="bg-background-tertiary text-text-primary py-20 px-6 text-center">
-            <div className="max-w-2xl mx-auto">
-              <div className="mb-8">
-                <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="w-10 h-10 text-white" />
+          {/* Hero Section */}
+          <section className="bg-background-tertiary text-text-primary pt-15 pb-20 px-6 text-center">
+            <BackArrow to={() => navigate('/status')} />
+            <div className="max-w-4xl mx-auto">
+              <FadeInItem element="h1" direction="y" className="text-3xl sm:text-4xl font-bold mb-6">
+                Payment Completed
+              </FadeInItem>
+              <FadeInItem element="div" direction="y" className="inline-block">
+                <div className="bg-card-primary border-2 border-highlight-primary rounded-lg p-4 shadow-lg backdrop-blur-sm max-w-sm sm:max-w-none mx-auto">
+                  <div className="text-sm font-medium text-text-secondary mb-2 uppercase tracking-wide">
+                    Reference Number
+                  </div>
+                  <div className="text-lg sm:text-xl font-bold text-highlight-primary font-mono tracking-wider break-all sm:break-normal">
+                    {paymentData.referenceNumber.toUpperCase()}
+                  </div>
                 </div>
-                <h1 className="text-3xl sm:text-4xl font-bold mb-4">Payment Already Completed</h1>
-                <p className="text-xl text-text-secondary mb-8">
-                  This {type} has already been paid for.
-                </p>
-              </div>
-              <Button
-                onClick={() => navigate('/status')}
-                className="animated-button-primary"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Status
-              </Button>
+              </FadeInItem>
+            </div>
+          </section>
+
+          {/* Payment Completed Message */}
+          <section className="bg-background-secondary py-16 px-6">
+            <div className="max-w-4xl mx-auto">
+              <FadeInItem element="div" direction="y">
+                <Card className="bg-card-primary border border-border-primary shadow-xl backdrop-blur-sm">
+                  <CardContent className="p-8 text-center">
+                    <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <CheckCircle className="w-10 h-10 text-black" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-text-primary mb-4">Payment Already Completed</h2>
+                    <p className="text-text-secondary mb-6">
+                      This {type} has already been paid for.
+                    </p>
+                    <Button
+                      onClick={() => navigate('/status')}
+                      variant="outline"
+                      className="border-border-secondary text-text-secondary hover:border-highlight-primary hover:text-highlight-primary hover:bg-card-primary/50 shadow-sm hover:shadow flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200"
+                    >
+                      <ArrowLeft className="w-4 h-4 mr-1" />
+                      Back to Status
+                    </Button>
+                  </CardContent>
+                </Card>
+              </FadeInItem>
             </div>
           </section>
         </div>
@@ -325,28 +319,21 @@ const PaymentPage = () => {
     <PageContainer>
       <div className="font-sans min-h-screen bg-background-primary">
         {/* Hero Section */}
-        <section className="bg-background-tertiary text-text-primary py-20 px-6">
+        <section className="bg-background-tertiary text-text-primary pt-15 pb-20 px-6 text-center">
+          <BackArrow to={() => navigate('/status')} />
           <div className="max-w-4xl mx-auto">
-            <FadeInItem element="div" direction="y" className="mb-6">
-              <Button
-                onClick={() => navigate('/status')}
-                variant="outline"
-                className="mb-4 border-border-secondary text-text-secondary hover:border-highlight-primary hover:text-highlight-primary"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Status
-              </Button>
+            <FadeInItem element="h1" direction="y" className="text-3xl sm:text-4xl font-bold mb-6">
+              Secure Payment
             </FadeInItem>
-
-            <FadeInItem element="h1" direction="y" className="text-3xl sm:text-4xl font-bold mb-4">
-              {paymentData.title}
-            </FadeInItem>
-            <FadeInItem
-              element="p"
-              direction="y"
-              className="text-xl text-text-secondary"
-            >
-              Reference: {paymentData.referenceNumber}
+            <FadeInItem element="div" direction="y" className="inline-block">
+              <div className="bg-card-primary border-2 border-highlight-primary rounded-lg p-4 shadow-lg backdrop-blur-sm max-w-sm sm:max-w-none mx-auto">
+                <div className="text-sm font-medium text-text-secondary mb-2 uppercase tracking-wide">
+                  Reference Number
+                </div>
+                <div className="text-lg sm:text-xl font-bold text-highlight-primary font-mono tracking-wider break-all sm:break-normal">
+                  {paymentData.referenceNumber.toUpperCase()}
+                </div>
+              </div>
             </FadeInItem>
           </div>
         </section>
@@ -387,16 +374,6 @@ const PaymentPage = () => {
                       <Lock className="w-5 h-5 text-text-secondary" />
                     </div>
 
-                    {/* Payment Status */}
-                    <div className={`flex items-center gap-3 p-3 rounded-lg mb-6 ${paymentStatusInfo.bg}`}>
-                      <span className={paymentStatusInfo.color}>
-                        {paymentStatusInfo.icon}
-                      </span>
-                      <span className={`font-medium ${paymentStatusInfo.color}`}>
-                        {paymentStatusInfo.text}
-                      </span>
-                    </div>
-
                     {/* Show payment form only if not already paid and we have clientSecret */}
                     {!isAlreadyPaid && clientSecret && (
                       <Elements stripe={stripePromise} options={{ clientSecret }}>
@@ -413,7 +390,7 @@ const PaymentPage = () => {
                     {/* Loading state for payment intent creation */}
                     {!isAlreadyPaid && !clientSecret && !error && (
                       <div className="text-center py-8">
-                        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                        <div className="w-8 h-8 border-4 border-highlight-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                         <p className="text-text-secondary">Initializing secure payment...</p>
                       </div>
                     )}
@@ -426,9 +403,9 @@ const PaymentPage = () => {
                         className="text-center py-8"
                       >
                         <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <CheckCircle className="w-8 h-8 text-white" />
+                          <CheckCircle className="w-8 h-8 text-black" />
                         </div>
-                        <h3 className="text-xl font-semibold text-green-500 mb-2">Payment Successful!</h3>
+                        <h3 className="text-xl font-semibold text-text-primary mb-2">Payment Successful!</h3>
                         <p className="text-text-secondary mb-4">
                           Your payment has been processed successfully.
                         </p>
@@ -446,9 +423,9 @@ const PaymentPage = () => {
                         className="text-center py-8"
                       >
                         <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <XCircle className="w-8 h-8 text-white" />
+                          <XCircle className="w-8 h-8 text-black" />
                         </div>
-                        <h3 className="text-xl font-semibold text-red-500 mb-2">Payment Failed</h3>
+                        <h3 className="text-xl font-semibold text-text-primary mb-2">Payment Failed</h3>
                         <p className="text-text-secondary mb-4">{error}</p>
                         <Button
                           onClick={() => {

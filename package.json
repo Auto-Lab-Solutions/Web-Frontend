@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:dev": "vite build --mode development",
+    "build:prod": "vite build --mode production",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -31,6 +33,7 @@
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "framer-motion": "^11.18.2",
+    "html2pdf.js": "^0.11.1",
     "keen-slider": "^6.8.6",
     "lenis": "^1.3.4",
     "lucide-react": "^0.445.0",

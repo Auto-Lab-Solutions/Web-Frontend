@@ -1,4 +1,3 @@
-import { se } from "date-fns/locale/se";
 import { ShoppingCart } from "lucide-react";
 import { Settings } from "lucide-react";
 import { Book } from "lucide-react";
@@ -7,130 +6,58 @@ import { Droplet } from "lucide-react";
 import { Brush } from "lucide-react";
 import { Phone } from "lucide-react";
 import { Package } from "lucide-react";
+import { act } from "react";
 
 export const categories = [
   {
     id: 1,
-    name: "Parts & Components",
-    desc: "Auto parts and replacement components",
-    imgLocation: "/categories/parts-components",
+    name: "Engines & Parts",
+    desc: "Engines, engine parts, and components",
+    imgLocation: "/categories/engines",
     items: [
       {
         id: 1,
-        name: "Car Battery",
-        imgLocation: "/items/battery/car-battery.jpg",
+        name: "V8 Engine",
+        imgLocation: "/items/engines/v8.jpg",
         price: 150,
-        desc: "12V automotive battery with warranty",
+        desc: "High-performance V8 engine",
+        active: true
       },
       {
         id: 2,
-        name: "Oil Filter",
-        imgLocation: "/items/filters/oil-filter.jpg",
-        price: 25,
-        desc: "High-quality oil filter for various makes",
+        name: "V10 Engine",
+        imgLocation: "/items/engines/v10.jpg",
+        price: 120,
+        desc: "Powerful V10 engine",
+        active: true
       },
-      {
-        id: 3,
-        name: "Air Filter",
-        imgLocation: "/items/filters/air-filter.jpg",
-        price: 35,
-        desc: "Engine air filter replacement",
-      },
-      {
-        id: 4,
-        name: "Brake Pads",
-        imgLocation: "/items/brakes/brake-pads.jpg",
-        price: 80,
-        desc: "Front/rear brake pad set",
-      }
-    ]
+    ],
+    active: true
   },
   {
     id: 2,
-    name: "Fluids & Lubricants",
-    desc: "Engine oils, coolants, and other fluids",
-    imgLocation: "/categories/fluids-lubricants",
+    name: "Tyres & Wheels",
+    desc: "Tyres, wheels, and related components",
+    imgLocation: "/categories/tyres-wheels",
     items: [
       {
-        id: 5,
-        name: "Engine Oil (5W-30)",
-        imgLocation: "/items/fluids/engine-oil.jpg",
-        price: 45,
-        desc: "Premium synthetic engine oil",
+        id: 1,
+        name: "Alloy Wheels",
+        imgLocation: "/items/tyres-wheels/alloy-wheels.jpg",
+        price: 200,
+        desc: "Stylish alloy wheels for your car",
+        active: true
       },
       {
-        id: 6,
-        name: "Coolant",
-        imgLocation: "/items/fluids/coolant.jpg",
-        price: 25,
-        desc: "Antifreeze coolant for radiator",
+        id: 2,
+        name: "Winter Tyres",
+        imgLocation: "/items/tyres-wheels/winter-tyres.jpg",
+        price: 100,
+        desc: "Durable winter tyres for better grip",
+        active: true
       },
-      {
-        id: 7,
-        name: "Brake Fluid",
-        imgLocation: "/items/fluids/brake-fluid.jpg",
-        price: 20,
-        desc: "DOT 4 brake fluid",
-      }
-    ]
-  },
-  {
-    id: 3,
-    name: "Detailing Supplies",
-    desc: "Car care and detailing products",
-    imgLocation: "/categories/detailing-supplies",
-    items: [
-      {
-        id: 8,
-        name: "Car Wax",
-        imgLocation: "/items/detailing/car-wax.jpg",
-        price: 35,
-        desc: "Premium carnauba wax for protection",
-      },
-      {
-        id: 9,
-        name: "Tire Shine",
-        imgLocation: "/items/detailing/tire-shine.jpg",
-        price: 15,
-        desc: "Long-lasting tire shine spray",
-      },
-      {
-        id: 10,
-        name: "Glass Cleaner",
-        imgLocation: "/items/detailing/glass-cleaner.jpg",
-        price: 12,
-        desc: "Streak-free automotive glass cleaner",
-      }
-    ]
-  },
-  {
-    id: 4,
-    name: "Service Packages",
-    desc: "Complete service and maintenance packages",
-    imgLocation: "/categories/service-packages",
-    items: [
-      {
-        id: 11,
-        name: "Basic Service Package",
-        imgLocation: "/items/services/basic-service.jpg",
-        price: 120,
-        desc: "Oil change, filter replacement, basic check",
-      },
-      {
-        id: 12,
-        name: "Premium Service Package",
-        imgLocation: "/items/services/premium-service.jpg",
-        price: 250,
-        desc: "Comprehensive service with inspection",
-      },
-      {
-        id: 13,
-        name: "Brake Service",
-        imgLocation: "/items/services/brake-service.jpg",
-        price: 180,
-        desc: "Complete brake system service",
-      }
-    ]
+    ],
+    active: true
   }
 ]
 
@@ -147,6 +74,7 @@ export const services = [
         id: 1,
         name: "Standard Pre Purchase Inspection",
         price: 220,
+        duration: 2, // Duration in hours
         features: [
           "Engine bay & powertrain visual inspection",
           "Structure & body check",
@@ -159,12 +87,14 @@ export const services = [
           "Safety systems & electrics",
           "Detailed report & consultation",
           "Test drive on request"
-        ]
+        ],
+        active: true
       },
       {
         id: 2,
         name: "Comprehensive Pre Purchase Inspection",
         price: 280,
+        duration: 3, // Duration in hours
         features: [
           "Full chassis / frame structural examination",
           "Advanced suspension / steering / drivetrain assessment",
@@ -177,12 +107,14 @@ export const services = [
           "Advanced electrical systems check",
           "High-res report with photos",
           "Priority consultation"
-        ]
+        ],
+        active: true
       },
       {
         id: 3,
         name: "Advanced Diagnostic Inspection",
         price: 350,
+        duration: 4, // Duration in hours
         features: [
           "Oscilloscope-based cam / crank correlation",
           "Ignition waveform analysis",
@@ -196,63 +128,158 @@ export const services = [
           "Real-time oscilloscope data logging",
           "Diagnostic graphs in report",
           "Extended technical consultation"
-        ]
+        ],
+        active: true
       }
-    ]
+    ],
+    active: true
   },
   {
     id: 2,
-    name: "Engine Tuneup",
-    subpath: "/engine-tuneup",
-    desc: "Improve your car's performance",
-    icon: Settings,
-    imgLocation: "/services/engine-tuneup",
-    plans: []
-  },
-  {
-    id: 3,
-    name: "Services & Logbook",
-    subpath: "/services-logbook",
-    desc: "Keep track of your car's services",
-    icon: Book,
-    imgLocation: "/services/services-logbook",
-    plans: []
-  },
-  {
-    id: 4,
     name: "Mobile Battery Replacement",
     subpath: "/mobile-battery-replacement",
     desc: "Get your car battery replaced",
     icon: BatteryCharging,
     imgLocation: "/services/mobile-battery-replacement",
-    plans: []
+    plans: [
+      {
+        id: 1,
+        name: "Standard Battery Replacement",
+        price: 180,
+        duration: 1, // Duration in hours
+        features: [
+          "Battery testing and diagnosis",
+          "Professional battery replacement",
+          "Electrical connections check",
+          "System functionality test"
+        ],
+        active: true
+      }
+    ],
+    active: true
+  },
+  {
+    id: 3,
+    name: "Logbook & Services",
+    subpath: "/logbook-services",
+    desc: "Keep track of your car's services",
+    icon: Book,
+    imgLocation: "/services/logbook-services",
+    plans: [
+      {
+        id: 1,
+        name: "Basic Service",
+        price: 250,
+        duration: 2, // Duration in hours
+        features: [
+          "Oil and filter change",
+          "Basic fluid checks",
+          "Visual inspection",
+          "Logbook stamping"
+        ],
+        active: true
+      },
+      {
+        id: 2,
+        name: "Major Service",
+        price: 450,
+        duration: 4, // Duration in hours
+        features: [
+          "Comprehensive fluid changes",
+          "Filter replacements",
+          "Detailed inspection",
+          "Component testing",
+          "Logbook documentation"
+        ],
+        active: true
+      }
+    ],
+    active: true
+  },
+  {
+    id: 4,
+    name: "Engine Tuneup",
+    subpath: "/engine-tuneup",
+    desc: "Improve your car's performance",
+    icon: Settings,
+    imgLocation: "/services/engine-tuneup",
+    plans: [
+      {
+        id: 1,
+        name: "Basic Tuneup",
+        price: 300,
+        duration: 2.5, // Duration in hours
+        features: [
+          "Spark plug replacement",
+          "Air filter change",
+          "Basic engine diagnostics",
+          "Performance check"
+        ],
+        active: true
+      },
+      {
+        id: 2,
+        name: "Performance Tuneup",
+        price: 500,
+        duration: 3.5, // Duration in hours
+        features: [
+          "Complete ignition system service",
+          "Fuel system cleaning",
+          "Advanced diagnostics",
+          "ECU optimization",
+          "Performance testing"
+        ],
+        active: true
+      }
+    ],
+    active: true
   },
   {
     id: 5,
-    name: "Oil & Filter Replacement",
-    subpath: "/oil-filter-replacement",
-    desc: "Change your car's oil and filter",
-    icon: Droplet,
-    imgLocation: "/services/oil-filter-replacement",
-    plans: []
-  },
-  {
-    id: 6,
     name: "Paint Correction",
     subpath: "/paint-correction",
     desc: "Cut & Polish, Detailing",
     icon: Brush,
     imgLocation: "/services/paint-correction",
-    plans: []
+    plans: [
+      {
+        id: 1,
+        name: "Basic Paint Correction",
+        price: 400,
+        duration: 3, // Duration in hours
+        features: [
+          "Single-stage paint correction",
+          "Exterior wash and prep",
+          "Basic polishing",
+          "Protective wax application"
+        ],
+        active: true
+      },
+      {
+        id: 2,
+        name: "Premium Paint Correction",
+        price: 650,
+        duration: 5, // Duration in hours
+        features: [
+          "Multi-stage paint correction",
+          "Deep scratch removal",
+          "Professional polishing",
+          "Ceramic coating application",
+          "Interior detailing"
+        ],
+        active: true
+      }
+    ],
+    active: true
   },
   {
-    id: 7,
+    id: 6,
     name: "Accessories",
     subpath: "/accessories",
     desc: "Order automotive parts & accessories",
     icon: Package,
     imgLocation: "/services/accessories",
-    plans: []
+    active: false
   }
 ];
 
@@ -301,6 +328,16 @@ export const getServiceById = (id) => {
 export const getPlanById = (serviceId, planId) => {
   const service = getServiceById(serviceId);
   return service?.plans?.find((plan) => plan.id === planId);
+};
+
+export const getPlanDuration = (serviceId, planId) => {
+  const plan = getPlanById(serviceId, planId);
+  return plan?.duration || 2; // Default to 2 hours if no duration specified
+};
+
+export const isInspectionService = (serviceId) => {
+  // Only "Pre Purchase Inspection" (ID: 1) is an inspection service
+  return serviceId === 1;
 };
 
 export const getMenuByName = (name) => {

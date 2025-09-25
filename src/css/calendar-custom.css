@@ -1,0 +1,52 @@
+/* Custom Calendar Styles */
+
+.calendar-container [data-selected-single="true"] {
+  background-color: #3b82f6 !important;
+  color: white !important;
+  border-color: #3b82f6 !important;
+}
+
+.calendar-container [data-selected-single="true"]:hover {
+  background-color: #2563eb !important;
+  color: white !important;
+  border-color: #2563eb !important;
+}
+
+.calendar-container [data-selected-single="true"]:focus {
+  background-color: #3b82f6 !important;
+  color: white !important;
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+  border-color: #3b82f6 !important;
+}
+
+.calendar-container [data-selected-single="true"]:focus-visible {
+  background-color: #3b82f6 !important;
+  color: white !important;
+  border-color: #3b82f6 !important;
+}
+
+/* Ensure selected state persists after click away */
+.calendar-container button[data-selected-single="true"] {
+  background-color: #3b82f6 !important;
+  color: white !important;
+  border-color: #3b82f6 !important;
+}
+
+/* Ensure selected state is visible in all states */
+.calendar-container .rdp-day_selected {
+  background-color: #3b82f6 !important;
+  color: white !important;
+}
+
+.calendar-container .rdp-day_selected:hover {
+  background-color: #2563eb !important;
+  color: white !important;
+}
+
+.calendar-container .rdp-day_selected:focus {
+  background-color: #3b82f6 !important;
+  color: white !important;
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}

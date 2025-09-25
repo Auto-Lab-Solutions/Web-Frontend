@@ -6,9 +6,10 @@ import FadeInItem from '@/components/common/FadeInItem';
 import GoogleMap from '../components/GoogleMap';
 import MechanicsSection from '@/components/common/MechanicsSection';
 import { companyName, whoWeAreDesc, ourValues, aboutShort, ourMission, ourVision, locationDesc } from '../meta/companyData';
-
+import { useNavigate } from 'react-router-dom';
 
 const AboutUsPage = () => {
+  const navigate = useNavigate();
   return (
     <PageContainer>
       <div className="font-sans">
@@ -99,7 +100,9 @@ const AboutUsPage = () => {
         </section>
 
         {/* Mechanics Section */}
+        <div className="lg:px-50">
         <MechanicsSection />
+        </div>
 
         {/* Google Map Section */}
         <section className="bg-background-primary py-16 px-6 text-center text-text-primary">
@@ -124,7 +127,9 @@ const AboutUsPage = () => {
             direction="x"
             className="section-subheading mb-6 mt-6"
           >
-            <button className="px-10 py-2.5 bg-button-primary text-text-tertiary font-semibold rounded-full hover:bg-highlight-primary transition shadow">
+            <button className="px-10 py-2.5 bg-button-primary text-text-tertiary font-semibold rounded-full hover:bg-highlight-primary transition shadow"
+              onClick={() => navigate('/pricing/pre-purchase-inspection')}
+            >
               Book Now with Confidence
             </button>
           </FadeInItem>

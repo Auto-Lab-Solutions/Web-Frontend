@@ -1,7 +1,7 @@
 import { useState } from "react";
 // import { ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const navBarItem = (menuName) => (
   <span className="flex-center gap-1 font-semibold hover:bg-highlight-primary hover:text-text-tertiary cursor-pointer px-3 py-1 rounded-xl">
@@ -13,10 +13,8 @@ const navBarItem = (menuName) => (
 );
 
 export default function DesktopMenu({ menu }) {
-  const [isHover, toggleHover] = useState(false);
-  const toggleHoverMenu = () => {
-    toggleHover(!isHover);
-  };
+  const navigate = useNavigate();
+  const [isHover, setHover] = useState(false);
 
   const subMenuAnimate = {
     enter: {
@@ -40,26 +38,29 @@ export default function DesktopMenu({ menu }) {
   };
 
   const hasSubMenu = menu?.subMenu?.length;
+  
+  const handleNavigation = (path) => {
+    // Use React Router navigation instead of forcing page reload
+    navigate(path);
+  };
 
   return (
     <motion.li
-      className="group/link"
-      onHoverStart={() => {
-        toggleHoverMenu();
-      }}
-      onHoverEnd={toggleHoverMenu}
+      className="group/link relative"
+      onHoverStart={() => setHover(true)}
+      onHoverEnd={() => setHover(false)}
       key={menu.name}
     >
       {!hasSubMenu ? (
-        <Link to={menu.path}>
+        <div onClick={() => handleNavigation(menu.path)}>
           {navBarItem(menu.name)}
-        </Link>
+        </div>
       ) : 
         navBarItem(menu.name)
       }
       {hasSubMenu && (
         <motion.div
-          className="sub-menu"
+          className="sub-menu absolute left-0 top-full mt-2 z-50 min-w-[220px] w-max"
           initial="exit"
           animate={isHover ? "enter" : "exit"}
           variants={subMenuAnimate}
@@ -75,10 +76,10 @@ export default function DesktopMenu({ menu }) {
             `}
           >
             {hasSubMenu &&
-              menu.subMenu.map((submenu, i) => (
+              menu.subMenu.filter(submenu => submenu.active !== false).map((submenu, i) => (
                 <div className="relative cursor-pointer" key={i}>
-                  <Link
-                    to={`${menu.path}${submenu.subpath}`}
+                  <div 
+                    onClick={() => handleNavigation(`${menu.path}${submenu.subpath}`)}
                   >
                     {menu.gridCols > 1 && menu?.subMenuHeading?.[i] && (
                       <p className="text-sm mb-4 text-gray-700">
@@ -94,7 +95,7 @@ export default function DesktopMenu({ menu }) {
                         <p className="text-sm text-text-secondary group-hover/menubox:text-highlight-primary">{submenu.desc}</p>
                       </div>
                     </div>
-                  </Link>
+                  </div>
                 </div>
               ))}
           </div>
